@@ -90,6 +90,8 @@ Testing on the listed Horizon build does not guarantee that every RC13 structure
 
 **Current release: RC13 — Release Candidate / Testing**
 
+> **Known issue with Horizon Rust RC13:** Some generated structure chests and barrels may be empty. A Rust RC14 hotfix with prefilled NBT container inventories has been prepared, but **the GitHub Release still contains the old Rust RC13 asset until it is manually replaced**. Java RC13 is unchanged. Existing generated chunks are not fixed retroactively. The RC14 workaround uses pre-generated (non-rerolled) loot and requires in-game testing.
+
 The datapacks have undergone static checks for JSON, NBT structures, loot references and world-generation ordering.
 
 The Java RC11 baseline was confirmed to load in-game. RC13 includes additional world-generation content and requires further in-game verification.
