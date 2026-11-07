@@ -80,10 +80,11 @@ Existing generated chunks will not automatically regenerate.
 
 ## Compatibility
 
-- Minecraft Java Edition 26.3
-- Horizon Rust 26.3 (requires compatible datapack and structure-template support)
+- **Minecraft Java Edition:** 26.3.
+- **Horizon Rust:** Nightly **2026-11-07**, build/commit **`2ebf00a`** (Minecraft 26.3) — **tested in-game on this build**.
+- **Other Horizon Rust Nightly builds:** You can try them, but compatibility has **not been tested or confirmed**. Changes in the game engine may affect datapack loading and world generation.
 
-Java Edition and Horizon Rust have separate builds because their world-generation implementations may differ.
+Testing on the listed Horizon build does not guarantee that every RC13 structure or feature has been verified. Java Edition and Horizon Rust use separate datapack builds because their world-generation implementations may differ.
 
 ## Development status
 
