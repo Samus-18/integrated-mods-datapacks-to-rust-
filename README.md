@@ -40,6 +40,12 @@ The latest **private experimental test ZIP** is RC20, built from RC19. It reorde
 
 [RC20 change log, SHA-256 and test limitations](docs/RC20_Horizon_Rust_Nether1024_TERRAIN_END_TEST.md).
 
+## Experimental RC21 for Horizon Rust (Nether 1024)
+
+The newest private **RC21 TEST** ZIP repairs structure-set discovery and chosen large-structure loot inventories in RC20. It enables two TREK structures that had no registered placement sets (`birch_trade` and the mushroom village), separates four Nether biome-specialized surface watches from generic structures, separates three highland-only End ruins from an 11-way all-biome island set, and enriches 103 underfilled chests/barrels across 15 large NBT templates with 214 moderate additional item stacks. **Static checks passed, but no in-game Horizon runtime test was performed.** The 1,024-block Nether terrain, ore parameters, End terrain and Photon renderer were **not** changed in this revision.
+
+[RC21 details, hash and verification limitations](docs/RC21_Horizon_Rust_Nether1024_STRUCTURES_LOOT_TEST.md). Because third-party map redistribution permissions are not verified, this experimental binary **has not been uploaded publicly to GitHub Releases**.
+
 ## Features
 
 ### 🌿 Overworld
