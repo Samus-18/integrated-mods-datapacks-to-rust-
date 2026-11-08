@@ -86,6 +86,10 @@ The latest private **RC29 TEST** honors the clarified dimensions: **Overworld �
 
 The newest **RC30 experimental ZIP** moves the existing small natural End sky-island feature from Y68–132 to **Y104–276**, reduces its rarity-filter attempt rate (24 → 36), and retains the **End 512** build height. It deliberately **does not change** JJThunder Overworld (-64…2031), Nether (0…1023) or any of the 1,102 NBT structures. This is a targeted JSON worldgen improvement, **not** a finished natural End terrain overhaul or Horizon runtime test. See [RC30 audit](docs/RC30_END_HIGH_ISLANDS_TEST.md) and [still-open problems](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2). The ZIP remains a private test attachment until third-party map redistribution permissions are verified.
 
+## RC31 private Overworld experiment (Horizon Rust 26.3)
+
+**User requirements part 1** addresses Overworld biome-like vegetation, extreme mountains, mountain/woodland cave openings, terrain-relative Sky Islands and a forgotten custom pack icon. The private **RC31** test pack contains **four new original pixel-block sky-island structures** plus Sky Garden in a single weighted set (spacing 51 / frequency 0.66), gently accented extreme JJThunder mountain density, broadened cave carvers and a high-elevation alpine passage, three small habitat variants inside existing vanilla biome IDs, and a new pixel-art `pack.png`. Nether remains 1024 and End remains 512 **byte-identically**. **Static checks passed; no in-game Horizon test was performed.** Newly registered biome IDs and custom F3 names are not supported by the current datapack-only Horizon implementation. [Detailed RC31 audit](docs/RC31_OVERWORLD_SKY_MOUNTAINS_CAVES_ICON_PRIVATE_TEST.md) · [user requests in parts](docs/USER_REQUIREMENTS_BY_PART.md). The test ZIP is not publicly distributed pending external-map authors' permissions.
+
 ## Features
 
 ### 🌿 Overworld
