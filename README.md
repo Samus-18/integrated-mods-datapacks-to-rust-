@@ -1,5 +1,12 @@
 # Thalvoryn: Expanded Worlds
 
+## RC43 – další opravy po testu uloženého světa (soukromý experiment, 2026-11-08)
+
+**Latest private testing build: RC43**, rather than the older RC41 final candidate or RC42 patch. After analyzing the user's real RC41 save and building RC42 baked NBT loot, RC43 introduces a **high-Y cave density taper above Y320** to reduce very large exposed mountain voids, improves Lush/Dripstone/Deep Dark selection and rare cave sites, creates **two 32-step winding surface cave entrances**, and adds three small native End habitat formations. The two existing fireproof 13×12×17 Nether skiffs now have **experimental 26.3 feature-based spawning only if a full centered 13×17 hull has two layers of lava beneath it and adequate air clearance**, with rotation explicitly locked. This **does not** guarantee support in Horizon Nightly.
+
+**Independent QA PASS:** 3,136 files, 1,702 JSON/meta, **1,372 NBT / 5,273,603 block positions**, all 1,367 original RC42 NBT and their baked inventory contents **byte-identical**, all 26.3 offset/volume/scan bounds valid, both stair routes fully contiguous, no custom-reference or feature-order errors. World dimensions remain **Overworld Y−64..2031, Nether Y0..1023 no ceiling, End Y0..511**; own pixel-art icon preserved. **Not stable / no Horizon runtime test.** Horizon's native F3 custom biome registry, renderer LOD and portal safe search are **not fixed by this datapack**. Test a new world using only RC43 and send engine logs if unsupported; existing chunks do not regenerate. ZIP kept private due uncertain third-party map asset redistribution rights. [RC43 exact full QA](docs/RC43_TERRAIN_CAVES_LAVA_SHIPS_END_QA.md) · [requirements tracker](docs/USER_REQUIREMENTS_BY_PART.md) · [open issue #2](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2).
+
+
 ## RC42 – opravy po skutečném testu RC41 (8. 11. 2026)
 
 **RC41 Final Candidate se v uživatelském herním testu ukázala jako nehotová.** Ze zaslaného `New World.rar` a screenshotů byl ověřen prázdný loot v reálných kontejnerových NBT, velmi vzácné struktury v Netheru/Endu a prakticky jen Lush Caves v prozkoumaných biome palettech. V Overworldu mělo 551 ze 1001 uložených kontejnerových block entities prázdno bez LootTable, dalších 447 pouze odkaz na tabulku bez fyzických předmětů. V 4095 Nether chunkech byly jen **2 custom structure starts**, v 6044 End chunkech **1 custom start**. Counts nezahrnují drobné placed features.
