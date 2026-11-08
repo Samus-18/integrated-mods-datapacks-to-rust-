@@ -52,6 +52,12 @@ An experimental **RC22 private TEST** archive corrects **268** pre-26.3 `spawn_o
 
 [RC22 changelog, test results and SHA-256](docs/RC22_Horizon_Rust_Nether1024_SPAWN_FORMAT_TEST.md).
 
+## RC24 Horizon Rust — conservative structure placement experiment
+
+**Latest private test archive:** RC24 Nether 1024. Based on the user's screenshots/video in [issue #2](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2), this version removes duplicate End/Nether structure grids, limits overworld imported ships to ocean biomes and smaller hulls, pauses imported Nether buildings that cannot be safely grounded, and lowers density of cloned-looking or overlapping builds. The **1,102 original NBT templates are retained byte-identically**. ZIP/JSON/static reference checks passed; **in-game Horizon testing, safe portal arrival, full liquid/slope footprint validation and the Photon port remain undone.** No public binary release due to unverified third-party asset permissions.
+
+[RC24 technical audit and limitations](docs/RC24_HORIZON_RUST_PLACEMENT_HARDENING.md).
+
 ## Features
 
 ### 🌿 Overworld
