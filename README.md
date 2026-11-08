@@ -12,6 +12,12 @@ An **experimental RC15 test build** was assembled for Horizon Rust 26.3, with a 
 
 See [RC15 development notes](docs/RC15_Horizon_Rust_Nether1024.md) for feature details, limitations, tests, compatibility and licensing.
 
+## Experimental Horizon Rust RC16 update (Nether 1024)
+
+A new **RC16 private test ZIP** has been built from RC15, addressing the screenshot-reported hard Nether terrain cutoff, missing / rare Nether and End structures, Sky Island altitudes, Nether biome distribution and loot variety. It uses a 1,024-block roofless Nether, remixes *existing* Nether biome IDs (so no custom F3 biome names), makes structures more common, raises Overworld sky structures by 45 blocks relative to RC15, adds five End island designs and changes 640 prefilled containers. **Only static NBT/JSON/ZIP/reference checks passed; Horizon runtime testing has NOT happened.** Third-party map redistribution rights remain unverified, so **the RC16 ZIP is not publicly hosted on GitHub**. The earlier RC13 public-release guidance below is historical.
+
+[RC16 technical details, audit and limits](docs/RC16_Horizon_Rust_Nether1024_TEST.md)
+
 ## Features
 
 ### 🌿 Overworld
