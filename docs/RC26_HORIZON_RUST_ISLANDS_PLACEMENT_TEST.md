@@ -5,7 +5,7 @@
 ## RC25 → RC26: actual changes
 - **Five genuinely redesigned original End NBT island shapes** replace `thalvoryn:end/archipelago/asymmetric_1..5`: crescent, branching double-lobe, dark volcano-like plateau, split ravine and fragmented cluster. Five distinct materials/palettes. New geometries: **12,587 / 18,656 / 15,438 / 22,496 / 15,895 blocks**.
 - Island selection favors those five alternatives over older repetitive islands (weight 5 vs 1), but lowers the overall archipelago frequency to 0.44 on a 58/20 chunk grid. Sky airships now choose eight ships on a much rarer 115/43 grid at 0.19; small variant obelisks and groves are rarer.
-- **Overworld maritime structures:** 16 retained smaller imported ship templates are eligible only in deep-ocean biomes with start Y65, shared grid spacing 104, separation 45, frequency 0.27. This **cannot guarantee water under the entire ship**; it is a conservative biome approximation.
+- **Overworld maritime structures:** 16 retained smaller imported ship templates are eligible only in non-frozen deep-ocean biomes (deep ocean, deep cold, deep lukewarm) with start Y65, shared grid spacing 104, separation 45, frequency 0.27. This **cannot guarantee water under the entire ship**; it is a conservative biome approximation.
 - **Imported buildings** in Overworld and End: two natural-spawn sets removed rather than allowing ungrounded structures. Their NBT, structure definitions and pools are retained for a future full-footprint slope check.
 - **Nether:** Crimson camp, Warped garden, Basalt outpost and Soul waystation now each have the matching biome constraint and share a weighted group with their biome's existing watchtower. Four redundant independently scheduled site groups were removed. Other large Nether ruins are sparser. Several excessive blackstone/basalt surface accents were reduced to more selective noise thresholds.
 - **Not changed:** RC25 chest/barrel inventories, mob spawn overrides, dimension heights, world noise generation apart from the specified Nether material rule, Sky Garden altitude, native engine, Photon shader.
@@ -16,7 +16,7 @@
 - All 1,097 other NBT templates retained **byte-identically** from RC25.
 - Static self-reference traversal: no missing *owned* structure / pool / NBT targets. Built-in Minecraft resources may be inherited from game registries.
 - Dimension JSON: Overworld `min_y=-64, height=2096` (maximum build Y2031); Nether `min_y=0,height=1024`.
-- ZIP size: **8,902,771 B**; SHA-256: `07feaa12f32d05f42aac3b242d094fa9e3dbbb7ad1630e76c723d9e575461cdb`.
+- ZIP size: **8,902,693 B**; SHA-256: `118b29e9869c93d343663a609169604a18b2659d107e238dee88bfa709839ca4`.
 
 ## Unresolved: do not claim done
 - **No Horizon in-game validation**. Existing world chunks will not regenerate; make a fresh world and enable only RC26.
