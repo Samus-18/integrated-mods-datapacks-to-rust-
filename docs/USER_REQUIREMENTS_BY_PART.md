@@ -99,5 +99,28 @@ Doplněno v téže zprávě:
 
 [Podrobný RC34 audit](RC34_UNDERGROUND_VILLAGE_NETHER_NATURE_26_3.md).
 
+## Část 5 — End (přijato 2026-11-08)
+
+Původní zpráva uživatele:
+> 💜 End
+>
+> Předělat hlavní spawn ostrov, přidat výrazně odlišné biomy a ostrovy, vlastní vegetaci a další struktury
+
+Dodatečně potvrdil: „okej do toho“ a požadoval **kontrolu před/po, opravu chyb a kontrolu celého datapacku**.
+
+### RC35 – implementováno staticky
+- [x] Hlavní ostrov: vlastní 26.3 End `minecraft:end/islands` výšková funkce se **7 asymetrickými pobřežními výběžky**, zachované jádro dračí arény s nezměněnou density do radius 72.
+- [x] Obnovena originální vanilla `minecraft:end_island_decorated` u `small_end_islands`, kterou starší override nechtěně vypustil.
+- [x] Pět vzácných přírodních dekorací odlišujících existující Highlands, Midlands, Barrens a Small End Islands, + kalcitové ložisko a zachované starší purpur/amethyst akcenty.
+- [x] 3 nové malé stavby (krystalový úkryt, purpurová zastávka, temná hlídka) s nativními materiály, jednou skromnou truhlou na stavbu, podkladovými pilíři a jednou sdílenou vzácnou strukturální mřížkou.
+- [x] Druhý nezávislý TREK End City set vypnut, 3 vlastní přehnané variantní sety sjednocené/pozastavené, 5 dalších End skupin zředěno.
+- [x] **Před/po:** ZIP CRC, parse 1619 JSON/meta, žádná chybějící aktivní vlastní structure ID, 0 duplicit salts, 0 feature-order DAG cyklů, všech 3 nových NBT kompletně nezávisle dekódováno a **všech 1174 původních NBT byte-identických**.
+- [x] Zachována ikona `pack.png`, výška Overworld −64..2031, Nether 0..1023 a End 0..511.
+- [ ] Herní test RC35: dragon fight, spawn platforma, výběžky, přírodní malé ostrůvky, vizuální rozdíl regionů, kolize a hustota ruin.
+- [ ] Plnohodnotné nové biome ID s názvy ve F3 a kompletní nová End noise výška 512. RC35 používá stávající čtyři vanilla end biome ID a přirozený noise Endu 128.
+- [ ] Kontrola podkladu celého půdorysu velkých End struktur a bezpečnost všech sky structures zůstávají nedokončené.
+
+Podrobný [RC35 End audit](RC35_END_OVERHAUL_PRE_POST_AUDIT.md).
+
 ## Další části
 Čekají na postupné zaslání uživatelem. Neoznačovat dosud nezaslané části jako dokončené.
