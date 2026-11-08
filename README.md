@@ -18,6 +18,10 @@ A new **RC16 private test ZIP** has been built from RC15, addressing the screens
 
 [RC16 technical details, audit and limits](docs/RC16_Horizon_Rust_Nether1024_TEST.md)
 
+## Experimental RC17 Horizon Rust — imported map structures
+
+An experimental **private RC17 Nether-1024 test ZIP** builds on RC16 and adds **25 bounded structures** from the previously supplied 1.11/1.12 ship/medieval and modern Buildings Collection worlds. The test archive has 25 new NBT templates and 75 new worldgen JSON files. Static ZIP, JSON, NBT palette/index and resource-reference checks passed; **Horizon in-game generation has not been tested**. This is **not a public GitHub ZIP release** because rights to redistribute the supplied third-party builds remain unverified. [RC17 import audit and caveats](docs/RC17_Horizon_Rust_Nether1024_LEGACY_MAPS_TEST.md).
+
 ## Features
 
 ### 🌿 Overworld
