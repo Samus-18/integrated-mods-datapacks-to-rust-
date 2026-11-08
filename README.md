@@ -68,6 +68,10 @@ The latest **private experimental RC26** (Nether 1024) builds on RC25. Five prev
 
 [RC26 technical changelog and SHA-256](docs/RC26_HORIZON_RUST_ISLANDS_PLACEMENT_TEST.md).
 
+## RC27 — Overworld ship spam and ocean-island placement mitigation (private test)
+
+After the user's **RC26 in-game Overworld screenshots** ([issue #2](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2)), RC27 removes independent TREK ship-like starts, pauses seven badly anchored coastal/farm-island starts and the independent air vessel, and reduces the remaining 16 imported deep-ocean ships to one group at **spacing 144, separation 62, frequency 0.14**. All 1,102 NBT templates, Nether/End settings and Photon remain unchanged. **ZIP/JSON/resource-link tests passed; no RC27 Horizon gameplay test has been run.** The observed incorrect/missing distant LOD structures and biome appearance are **not fixed by this datapack**: Horizon's [graphics documentation](https://github.com/horizon-rust/horizon/blob/main/docs/graphics.md) explains its coarse distant generation. [RC27 findings, original screenshot coordinate manifest and test guide](docs/RC27_OCEAN_STRUCTURE_SPACING_AND_LOD_REPORT.md). The binary is a private ChatGPT test attachment, not a public GitHub Release.
+
 ## Features
 
 ### 🌿 Overworld
