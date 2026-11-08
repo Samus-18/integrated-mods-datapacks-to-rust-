@@ -58,6 +58,10 @@ An experimental **RC22 private TEST** archive corrects **268** pre-26.3 `spawn_o
 
 [RC24 technical audit and limitations](docs/RC24_HORIZON_RUST_PLACEMENT_HARDENING.md).
 
+## RC25 Horizon Rust — loot consistency update (private test)
+
+**Latest private experimental ZIP is RC25**, built on RC24. It carries forward the safer structure placement and deduplicated Nether/End spawn sets, and adds a full static inventory scan of all **1,102 NBT templates**. An exact-geometry NBT rewrite conservatively thinned **533 overly stocked/decorative containers** and enriched **60 sparse inventories** with 80 contextual item stacks across 29 templates. Existing Minecraft loot tables, entity data, palette indices and block positions were preserved. **Static tests passed; in-game Horizon generation is NOT verified.** Full water/lava footprint validation, world-height runtime confirmation, Nether portal safety, custom F3 biomes and Photon remain open. [RC25 audit](docs/RC25_HORIZON_RUST_LOOT_AUDIT.md) and [user issue #2](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2). The test ZIP is not publicly released because map-asset redistribution rights remain unverified.
+
 ## Features
 
 ### 🌿 Overworld
