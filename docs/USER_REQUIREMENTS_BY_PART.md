@@ -171,5 +171,27 @@ Požadováno povinné **ověření před/po, zda se nic nerozbilo**. Testovat v 
 
 [Technický dokument RC37](RC37_LOOT_DYNAMIC_26_3_PRE_POST.md).
 
+## Část 8 — Mobové + náhodný loot mezi kopiemi struktur (přijato 2026-11-08)
+
+Původní požadavek:
+> a jo at se ten loot samo i meni at toneni stejny v ty strktury kdz junajdu znovu ... 🧟 Mobové
+>
+> Vlastní osazení struktur, přiměřená obtížnost, správní nepřátelé a pasivní mobové
+
+Testování až **po dokončení celého seznamu**, povinná statická kontrola **před i po**.
+
+### RC38 – provedeno
+- [x] U **35 aktivních structure JSONů** přidána nativní `spawn_overrides` kategorie podle typu/prostředí; **26 hostile** + **9 creature**. Pouze `bounding_box=piece`, `minecraft:constant=1` na pokus, ne plošný spawn přes okolí.
+- [x] Příklady: huskové v pouštních ruinách; drowned v bažinách; pavouci v džungli; pillageři na hlídkách; zombíci v opuštěných domech; endermani v End ruinách; magma cubes u Nether pilíře. Farmy s ovcemi/slepicemi, tajgové domky s liškami, oáza s králíky, beehive house se včelami.
+- [x] V NBT podzemní osady fyzicky připojena **1 kočka + 1 železný golem** ke třem původním villagerům. Původní entity a všechny bloky/loot zachovány.
+- [x] Původní struktury vanilla, TREK villages, Deep Dark, End origin/archipelago a další existující odpovídající spawn override nezměněny.
+- [x] RC37: **všech 66 nových loot tabulek** má více vážených výsledků a nemá pevný `LootTableSeed` ve vlastních NBT truhlách. Simulace 16 různých RNG seedů pro každou tabulku ověřila rozdílné možné výsledky. **Každá nová truhla se generuje jednou** při prvním použití; stará otevřená se sama znovu nenaplní a dvě různé kopie se náhodou mohou shodovat.
+- [x] **Kontrola před/po + nezávislý NBT validátor**: 2947 členů ZIP, všech 1673 JSON, 1177 NBT, pouze 35 structure JSON doplněno o `spawn_overrides` a **1 NBT změněná jen o dvě nové entity**; všechny jiné bajty, worldgen, strukturální sady, ikona, loot, dimenze Overworld −64..2031 / Nether 0..1023 / End 0..511 zachovány. ZIP CRC PASS.
+- [ ] **Herní test/obtížnost:** `spawn_overrides` neurčuje skutečný počet mobů, jen budoucí spawn pokusy v boxu. Pasivní `creature` override se nepoužije na první zvířata při generování chunku. Proto nové umístění ještě není potvrzené v Horizon Nightly.
+- [ ] **Runtime lookup loot tabulek** běžných world datapacků v Horizonu nezaručený (stejná otevřená výhrada RC37), skutečná variabilita zatím staticky prokázaná, ne in-game.
+- [ ] Nová entitní ID nejsou implementována, všechny moby jsou původní Minecraft.
+
+Dokumentace: [RC38 audit](RC38_MOB_ECOLOGY_LOOT_VARIATION_PRE_POST.md).
+
 ## Další části
 Čekají na postupné zaslání uživatelem. Neoznačovat dosud nezaslané části jako dokončené.
