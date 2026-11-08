@@ -82,6 +82,10 @@ Original JJThunder To The Max documents terrain from Y −64 to 2032; its [Modri
 
 The latest private **RC29 TEST** honors the clarified dimensions: **Overworld −64…2031** (JJThunder/ThunderFusion worldgen unchanged), **roofless Nether 0…1023** (**183 Nether-related files byte-identical to RC28; no height increase**), and **End 0…511** (End build height expanded from 256 to 512). Five authored End islands use distinct low/mid/high placement bands without increasing their structure-set frequency. **Note:** the natural End noise generator is still vanilla `minecraft:end` with no new natural high-altitude terrain above its native noise extent. All **1,102 NBT** templates are unchanged, and static ZIP/JSON/reference checks passed; in-game Horizon verification is still outstanding. [RC29 audit and exact limits](docs/RC29_END512_NETHER1024_UNCHANGED.md). The private binary is not a public release pending third-party redistribution permission.
 
+## RC30 — End high sky islands (private test, Nether 1024 unchanged)
+
+The newest **RC30 experimental ZIP** moves the existing small natural End sky-island feature from Y68–132 to **Y104–276**, reduces its rarity-filter attempt rate (24 → 36), and retains the **End 512** build height. It deliberately **does not change** JJThunder Overworld (-64…2031), Nether (0…1023) or any of the 1,102 NBT structures. This is a targeted JSON worldgen improvement, **not** a finished natural End terrain overhaul or Horizon runtime test. See [RC30 audit](docs/RC30_END_HIGH_ISLANDS_TEST.md) and [still-open problems](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2). The ZIP remains a private test attachment until third-party map redistribution permissions are verified.
+
 ## Features
 
 ### 🌿 Overworld
