@@ -1,5 +1,12 @@
 # Thalvoryn: Expanded Worlds
 
+## RC41 — FINAL CANDIDATE, complete static QA (2026-11-08)
+
+**All ten user requirement sections have been collected.** Latest **private Horizon Rust / Minecraft 26.3 final test candidate:** `Thalvoryn_Horizon_Rust_RC41_FINAL_CANDIDATE_NETHER1024_MC26_3.zip` (SHA256 `80257f01e11bd14620ca05324f61afc0e53f3fdf40230467f0b18451482dfeb8`). Its **complete static regression passed**: 1,681 JSON/meta, 1,177 NBT templates containing **4,592,879 fully checked block positions**, 194 loot table files, 38 active structure sets, all owned references, feature-order graph, icon, and exact dimension heights Overworld −64…2031 / Nether 0…1023 **without a ceiling** / End 0…511. RC40's gameplay files are byte-identical; the only in-game-data change is a manual diagnostic status message changing RC40→RC41. Forty-six historical root README documents were archived separately into the private QA package, rather than shipped inside the install ZIP.
+
+**This is NOT a proven stable release**: no Horizon Nightly runtime test, and custom datapack loot-table loading, real-world footprint placement, floating ships, safe Nether portal placement, LOD rendering, performance, custom biome IDs in F3 and full natural End noise height remain unresolved or dependent on engine changes. Test the **new world with RC41 only**. The pack is not published as a public binary GitHub release while third-party map redistribution rights remain unverified. [Full RC41 audit](docs/RC41_FINAL_CANDIDATE_END_TO_END_AUDIT.md) · [all ten requirements and remaining tasks](docs/USER_REQUIREMENTS_BY_PART.md) · [open issue #2](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2).
+
+
 **A world-generation overhaul for Minecraft Java Edition 26.3 and Horizon Rust 26.3.**
 
 Thalvoryn: Expanded Worlds expands Minecraft's three original dimensions with new structures, improved terrain, biome-themed ruins, enhanced caves, floating islands, mobs, treasure and more.
