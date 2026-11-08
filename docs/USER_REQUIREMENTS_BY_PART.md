@@ -193,5 +193,32 @@ Testování až **po dokončení celého seznamu**, povinná statická kontrola 
 
 Dokumentace: [RC38 audit](RC38_MOB_ECOLOGY_LOOT_VARIATION_PRE_POST.md).
 
+## Část 9 — Vanilla struktury ve vyšších výškách (přijato 2026-11-08)
+
+Původní zadání:
+> ⚙️ Vanilla struktury
+>
+> Generování i ve větších výškách rozšířeného světa, ne pouze v původních vrstvách; zase ověření.
+
+Uživatel **provede herní test až po dokončení celého seznamu**; zde povinně jen statická kontrola před/po.
+
+### RC39 – implementováno staticky
+- [x] Před úpravou potvrzeno, že **vanilla villages a pillager outposts už přirozeně používají povrchovou výšku**, nepotřebují změnu globálního limitu Y.
+- [x] **4 vzácné nové varianty vanilla 26.3 strukturálních poolů** v názvosloví `thalvoryn:vanilla_highlands/...`:
+  - `meadow_hamlet` — plains village na `meadow`, surface-relative start, spacing92/freq0.23;
+  - `snowy_hamlet` — snowy village v `grove/snowy_slopes`, surface-relative, spacing100/freq0.22;
+  - `ridge_outpost` — vanilla pillager outpost na `stony_peaks/windswept_gravelly_hills`, surface-relative, spacing116/freq0.18;
+  - `mountain_trial_chambers` — vanilla trial-chamber pool v `jagged_peaks/frozen_peaks` **76 až 112 bloků pod aktuálním horským povrchem**, spacing128/freq0.15.
+- [x] Méně rozlehlé jigsaw sady a výjimečné zóny vůči vanilla villages/outposts/strongholds, aby se omezilo hromadění staveb.
+- [x] Existující Nether bastion range **Y90–510 → Y90–704**, beze změny původní setové četnosti, Nether stále **0–1023 bez stropu**.
+- [x] **Před/po audit + nezávislý validátor:** 2947→2956 členů, 1673→1681 JSON/meta, **všech 1177 NBT** a **všech 194 loot tabulek byte-identických**, změněné pouze existující `minecraft:bastion_remnant` a chybně zastaralé `pack.mcmeta`, jiná původní data/biomes/features/height/loot/mob rules stejné. ZIP CRC PASS.
+- [ ] Skutečný herní test generování v Horizon Nightly a kontrola svahů **až po dokončení seznamu**, bez ohledu na to, že statický test prošel.
+- [ ] **Nether bastion Y704 může být bez podkladu**: absolutní výška bez full-footprint terénní validace. Pokud se ve hře ukáže závada, vrátit rozsah do bezpečnějšího pásma nebo doplnit engine validátor.
+- [ ] **Biome není číselný výškový filtr**: nová horská osada nemá absolutní min Y zaručené, pokud existuje biome mimo typicky vysoké terény.
+- [ ] Nativní vanilla mineshafts/fortresses/strongholds používají zvláštní interní generátory, nelze je jen přepsat obecným `start_height`; původní funkční pravidla zachovaná.
+- [ ] Ostatní otevřené úkoly: jigsaw full footprint, RC37 runtime loot, Nether lava ships, portal safety, Horizon LOD, Photon.
+
+**[RC39 podrobný audit](RC39_VANILLA_STRUCTURES_HEIGHT_PRE_POST.md)**.
+
 ## Další části
 Čekají na postupné zaslání uživatelem. Neoznačovat dosud nezaslané části jako dokončené.
