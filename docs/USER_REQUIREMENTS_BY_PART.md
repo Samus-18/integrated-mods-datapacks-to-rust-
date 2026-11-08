@@ -246,5 +246,22 @@ Původní uživatelské zadání:
 
 [RC40 kompatibilita a technické hranice](RC40_HORIZON_ENGINE_COMPATIBILITY_AUDIT.md).
 
+## Závěrečná kontrola celého seznamu – RC41 FINAL CANDIDATE (2026-11-08)
+
+**Uživatel potvrdil, že část 10 byla poslední.** Poté požádal o úplnou kontrolu od začátku do konce a pokud možno finální sestavení.
+
+- [x] Všechny **části 1–10** přijaty, zaznamenány a sjednoceny do jednoho instalačního ZIPu.
+- [x] **RC41 kompletní statická regrese PASS:** ZIP CRC, **1681 JSON**, **1177 NBT**, celkem **4 592 879 blokových pozic** napříč všemi NBT, palety, pozice, strukturové/loot reference, feature order bez cyklu a dimenze (OW −64..2031, Nether0..1023, End0..511).
+- [x] Jeden čistý instalační ZIP **RC41 FINAL CANDIDATE** bez 46 zastaralých root README, které zůstaly v samostatném QA/HISTORY archivu. Nové finální CZ návody, checklist a správné označení `pack.mcmeta`.
+- [x] Všechny herní `data/*` soubory z RC40 zachovány byte-identicky kromě informačního řetězce verze u ručního `horizon/status` příkazu. **Žádná vymyšlená oprava Rust rendereru ani portálu.**
+- [ ] **Uživatelovo společné in-game testování**, na které čekal až do přijetí všech 10 částí, dosud nebylo provedeno. Proto verze = **FINAL CANDIDATE**, nikoli STABLE.
+- [ ] **Horizon loot-table runtime:** pokud loader neumí 66 vlastních tabulek, 1 380 nových loot-table odkazů může dávat prázdné truhly. Potřebná engine podpora/test.
+- [ ] **Horizon F3 custom biome IDs**, LOD, bezpečná Nether portal platforma a výkonnost vysokých světů jsou samostatné engine úkoly.
+- [ ] **Full-footprint placement** (voda/láva/svahy/velké stavby), automatické Nether lava ships a přístupnost dungeonů stále vyžadují runtime/engine práci.
+- [ ] Způsobilost některých dodaných map pro veřejné šíření/licence není doložena, proto žádný veřejný binární GitHub Release.
+
+**Technická dokumentace:** [RC41 full audit](RC41_FINAL_CANDIDATE_END_TO_END_AUDIT.md).  
+**Soukromý ZIP:** `Thalvoryn_Horizon_Rust_RC41_FINAL_CANDIDATE_NETHER1024_MC26_3.zip` (SHA256 `80257f01e11bd14620ca05324f61afc0e53f3fdf40230467f0b18451482dfeb8`).
+
 ## Další části
 Čekají na postupné zaslání uživatelem. Neoznačovat dosud nezaslané části jako dokončené.
