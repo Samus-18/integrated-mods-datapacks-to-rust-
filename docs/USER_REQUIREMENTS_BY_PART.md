@@ -149,5 +149,27 @@ Upřesnění: **Uživatel bude testovat až po dokončení celého seznamu**, ta
 
 Podrobný audit: [RC36](RC36_STRUCTURE_PLACEMENT_SAFETY_PRE_POST.md).
 
+## Část 7 — Dynamický loot (přijato 2026-11-08)
+
+Původní zpráva uživatele:
+> 💎 Loot
+>
+> Dynamický loot podle stavby, biomu, dimenze a vzácnosti; žádný loot v čistě dekorativních barelech
+
+Požadováno povinné **ověření před/po, zda se nic nerozbilo**. Testovat v samotné hře až po dokončení celého seznamu částí.
+
+### RC37 – staticky implementováno
+- [x] Kompletní sken **1 177 NBT**, **2 847 kontejnerů** (včetně 1 568 barelů), všech původních `LootTable` referencí.
+- [x] **1 175 starých pevných loot truhel** převedeno na nové 26.3 `LootTable` ID; **66 nových tematických tabulek** pro vlastní mapy a TREK v Overworldu, Netheru a Endu.
+- [x] Náhodná odměna dle typu stavby, dimenze a relativní rarity; **přímo z biome pozice** doplňková vzácná odměna přes `minecraft:location_check` s `predicate.biomes`. Pozor: rarity zatím typ/role odvozená z názvu, není přesně měřenou pravděpodobností skutečného spawnu.
+- [x] **530 opakovaných dekorativních barelů** bez předmětů, **205** uvěřitelných skladových barelů se střídmými náhodnými zásobami. Celkem **1 068 prázdných barelů bez LootTable**.
+- [x] Zachováno všech **371 původních LootTable odkazů**, všech 128 původních loot JSON, vanilla NBT, autorsky speciální předměty.
+- [x] **Před/po QA + nezávislá kontrola:** CRC ZIP, dekódování všech NBT a všech 1673 JSON/meta, 431 NBT změněných pouze v `Items`/`LootTable` tagech, **bajtově identické všechny ostatní NBT části všech 1177 šablon**, stejná worldgen data, dimenze a `pack.png`, všechny nové table refs platné. Vyvážení přibližně simulováno na 2 500 loot otevřeních pro čtyři úrovně.
+- [ ] **Horizon Nightly runtime podpora loot tabulek v world datapacku zůstává neověřená**; mod-browser docs dokonce uvádí částečnou podporu, zatímco portované modpacks mají vlastní loader. Bez runtime testu nelze označit nové truhly za funkční, proto RC37 není stabilní.
+- [ ] Heuristické rozdělení dekorativních barelů podle četnosti může chybovat; vizuální klasifikaci všech 1 568 kusů v konkrétním světě je třeba potvrdit po dokončení seznamu.
+- [ ] Plná map-to-structure efektivní četnost rarity a rozlišení každé speciální struktury může ještě chtít ruční korekce.
+
+[Technický dokument RC37](RC37_LOOT_DYNAMIC_26_3_PRE_POST.md).
+
 ## Další části
 Čekají na postupné zaslání uživatelem. Neoznačovat dosud nezaslané části jako dokončené.
