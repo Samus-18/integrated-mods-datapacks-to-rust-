@@ -6,6 +6,12 @@ Thalvoryn: Expanded Worlds expands Minecraft's three original dimensions with ne
 
 The project combines and expands **TREK** structures and **JJThunder** world generation, aiming to make exploration more rewarding without completely replacing the vanilla Minecraft experience.
 
+## Experimental Horizon Rust RC15 build (Nether 1024)
+
+An **experimental RC15 test build** was assembled for Horizon Rust 26.3, with a 1,024-block roofless Nether, terrain-relative and more frequent Sky Gardens, more Nether/End structures, a reduced chorus density, adjusted loot, 48 schematic-derived tree templates, and three builds extracted from a user-provided map. The archive has undergone **static ZIP, JSON, NBT and reference checks**, **not an in-game Horizon Rust test**. Older RC13 downloads remain the published baseline. **RC15 ZIP files have not been uploaded to GitHub:** public redistribution rights for supplied third-party builds are unverified.
+
+See [RC15 development notes](docs/RC15_Horizon_Rust_Nether1024.md) for feature details, limitations, tests, compatibility and licensing.
+
 ## Features
 
 ### 🌿 Overworld
