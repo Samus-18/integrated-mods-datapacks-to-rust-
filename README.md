@@ -22,6 +22,12 @@ A new **RC16 private test ZIP** has been built from RC15, addressing the screens
 
 An experimental **private RC17 Nether-1024 test ZIP** builds on RC16 and adds **25 bounded structures** from the previously supplied 1.11/1.12 ship/medieval and modern Buildings Collection worlds. The test archive has 25 new NBT templates and 75 new worldgen JSON files. Static ZIP, JSON, NBT palette/index and resource-reference checks passed; **Horizon in-game generation has not been tested**. This is **not a public GitHub ZIP release** because rights to redistribute the supplied third-party builds remain unverified. [RC17 import audit and caveats](docs/RC17_Horizon_Rust_Nether1024_LEGACY_MAPS_TEST.md).
 
+## Experimental Horizon Rust RC18 — additional map structures
+
+A **private RC18 Nether 1024 test ZIP** was produced from RC17. It adds **78** more bounded map structures (**61** ships, **17** modern buildings), grouped into weighted Overworld/Nether/End placement sets; **134** authored structure mob-spawn profiles; **191** additional TREK loot-container repairs; and several surface-placement tweaks. All new/changed NBT and worldgen JSON passed **static checks only**, not a Horizon in-game runtime test. **Public ZIP upload is withheld** until the third-party map redistribution rights are established. This is a development status update, not a verified public release.
+
+[RC18 feature details, checksum and unresolved engine issues](docs/RC18_Horizon_Rust_Nether1024_PRIVATE_TEST.md).
+
 ## Features
 
 ### 🌿 Overworld
