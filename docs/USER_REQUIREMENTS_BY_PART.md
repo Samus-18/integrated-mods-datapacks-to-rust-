@@ -278,5 +278,17 @@ Uživatel dodal **pět screenshotů ze všech dimenzí a celý `New World.rar`**
 
 Podrobný [RC42 audit skutečného světa](RC42_REAL_WORLD_FEEDBACK_AND_FIXED_LOOT.md). RC41 nebyla stabilní. RC42 = **testovací oprava**.
 
+## RC43 – další opravy po analýze uloženého světa (2026-11-08)
+
+- [x] Plynulé tlumení obřích vysokohorských jeskyní nad Y320, nízké jeskyně zachované.
+- [x] Více podzemních ruin, změněné Lush/Dripstone/Deep Dark climate hranice, některé vegetace i v horních jeskyních.
+- [x] Dvě 32-krokové originální povrchové spirálové cesty do podzemní síně s nezávisle ověřenou souvislostí, fyzickým podkladem a průchodem.
+- [x] Experimentální malé ohnivzdorné lava-skiff NBT umisťované jen při 26.3 kontrole **dvou vrstev souvislé lávy pod celým 13×17 půdorysem**, se vzduchem pro palubu a stěžeň, pevnou orientací. **Horizon runtime neověřen!**
+- [x] Tři originální malé End mikrohabitaty v existujících biome ID, bez změny draka.
+- [x] Kontrola před/po: **1702 JSON/meta, 1372 NBT, 5 273 603 blokových pozic**, 1367 původních NBT z RC42 byte-identických včetně lootu, výšky Nether1024/End512/Overworld2096 beze změny.
+- [ ] **Neuzavírat jako hotové**: Horizon LOD, vlastní biome ID ve F3, bezpečné skutečné Nether portály, engine level full-footprint všech obřích importovaných map, FPS/TPS a live runtime test.
+
+[Kompletní RC43 audit](RC43_TERRAIN_CAVES_LAVA_SHIPS_END_QA.md). RC43 je soukromý testovací build, nikoli potvrzená stabilní verze. Nové generování vyžaduje nové chunky / nový svět.
+
 ## Starší poznámka
 Všech deset částí bylo již doručeno. Následují opravy z uživatelských testů.
