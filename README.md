@@ -134,6 +134,14 @@ The user's request for **different loot in the next copy of the same structure**
 
 **Two independent static QA passes succeeded:** ZIP CRC and all 1,681 JSON/meta, all original **1,177 NBT** (full byte identity), and all **194 loot table files** (full byte identity); every old biome/noise/density/feature/structure-set file, the RC38 mob changes, Nether **height 1024**, End512, high Overworld, and pixel-art icon remain intact. RC38's stale pack metadata saying RC37 is fixed to RC39. **No live Horizon gameplay test has been completed**; the user will test after the entire staged requirement list is addressed. [RC39 report](docs/RC39_VANILLA_STRUCTURES_HEIGHT_PRE_POST.md) · [requirements parts 1–9](docs/USER_REQUIREMENTS_BY_PART.md) · [open issues #2](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2). Private test ZIP only, third-party map redistribution rights unverified.
 
+## RC40 Horizon Rust compatibility pass (private diagnostics, part 10)
+
+The latest **RC40** for Minecraft/Horizon **26.3** is a deliberately **non-invasive** diagnostic build, not an engine fix. Relative to RC39 **all 2,955 old files except `pack.mcmeta` are byte-identical**, including 1,177 NBT structures, 194 dynamic loot tables, all structures, terrain/worldgen, custom icon, and mob rules. Four **manual-only** `/function thalvoryn:horizon/{status,cave_biome,portal_hazards,lod_notes}` commands report expected dimension ranges, actual existing vanilla cave biome IDs, nearby lava hints and LOD advice; they never run on tick or alter the world.
+
+**Horizon height codec checks PASS**: Overworld **−64…2031** (131 sections), Nether **0…1023** (64 sections, no ceiling), End **0…511** (32 sections). The two modified terrain noise settings match their dimension types and Minecraft 26.3 format 121. An independent read-only Python ZIP/graphics-config preflight passed **6 tests**, including detecting a deliberately broken Nether height and alerting on extreme 16k LOD settings. A **reference-only** full-footprint portal-site checker passed **9 synthetic tests**, but is **not integrated into the Horizon engine**.
+
+**Still unsolved**: Horizon's custom biome registry and F3 IDs, safe Nether-portal placement, LOD mismatch/black screen, native high-End terrain noise (still 128), performance in a running Nightly and dynamic datapack loot lookup. No gameplay/FPS test has occurred. Suggested **conservative** profile: render 8–12, simulation 5–6, LOD 128–256, Far Detail Reduced; changing settings is not a renderer fix. [Detailed RC40 static and engine-limit report](docs/RC40_HORIZON_ENGINE_COMPATIBILITY_AUDIT.md) · [Staged requirements, parts 1–10](docs/USER_REQUIREMENTS_BY_PART.md) · [Unresolved issues #2](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2). Private test ZIP only pending third-party NBT redistribution rights.
+
 ## Features
 
 ### 🌿 Overworld
