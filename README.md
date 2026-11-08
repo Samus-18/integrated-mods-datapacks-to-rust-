@@ -28,6 +28,12 @@ A **private RC18 Nether 1024 test ZIP** was produced from RC17. It adds **78** m
 
 [RC18 feature details, checksum and unresolved engine issues](docs/RC18_Horizon_Rust_Nether1024_PRIVATE_TEST.md).
 
+## Experimental Horizon Rust RC19 (Nether 1024) — terrain & End corrections
+
+An **RC19 experimental private test archive** improves RC18 configuration: converts residual 2032-high Nether density coordinates to 1024-high rules, moves the unreachable floating Nether band into Y340–705, uses weighted placement of 9 existing Nether surface sites and 14 End island/ruin types, increases relevant structure frequency and reduces monotonous End pillars/chorus. Ancient-debris attempts now favor upper layers rather than lower. **Static validation only (2,755 ZIP entries, 1,574 JSON documents, 1,102 unchanged NBT structures); Horizon in-game test NOT run.** No public ZIP released because supplied third-party world assets have unverified distribution licenses.
+
+[RC19 technical changelog, checksum, tests and limitations](docs/RC19_Horizon_Rust_Nether1024_TERRAIN_END_TEST.md).
+
 ## Features
 
 ### 🌿 Overworld
