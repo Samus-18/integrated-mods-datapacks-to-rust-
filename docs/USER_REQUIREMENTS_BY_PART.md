@@ -122,5 +122,32 @@ Dodatečně potvrdil: „okej do toho“ a požadoval **kontrolu před/po, oprav
 
 Podrobný [RC35 End audit](RC35_END_OVERHAUL_PRE_POST_AUDIT.md).
 
+## Část 6 — Struktury (přijato 2026-11-08)
+
+Původní uživatelovo zadání:
+> 🏰 Struktury
+>
+> Dokončit využití dodaných map, správné umístění, větší rozmanitost, zabránit překrývání a prorůstání stromů.
+
+Upřesnění: **Uživatel bude testovat až po dokončení celého seznamu**, takže u každé části provádět automatickou kontrolu před/po, především biome, Y, rarity/spacing, collision risk a loot.
+
+### RC36 – provedeno (staticky)
+- [x] Sloučeny TREK overworld common/medium/very_common do jedné weighted strukturové mřížky; méně nadměrného překryvu, stále varianty různých kategorií.
+- [x] Deset tematických hlídek a outpostů sloučeno do jednoho společného výběru namísto deseti nezávislých mřížek.
+- [x] Z původně vypnutých importovaných map znovu povoleny **3 menší overworldové budovy** s biome filter, `WORLD_SURFACE_WG`, `beard_thin` terénní adaptací a rare setem.
+- [x] Oceánské lodě zúženy z 16 na 8 typů a mají velmi vzácný společný spawn pouze v nezamrzlých hlubokých oceánech, keel Y68 vs sea level 70.
+- [x] Rizikové `sunken_city`, `coves`, 2 ocean-trade a 2 random-height Nether overworld-leak struktury vyřazeny z natural spawn; všechny template NBT zůstávají.
+- [x] Pět skupin stromů má vyloučení pokusů o umístění v okolí hlavní TREK mřížky; nejde o plnou ochranu před všemi vanilla stromy.
+- [x] Zkontrolované tematické inventáře v 3 znovu aktivovaných budovách a 8 lodích: NBT i platné item sloty; žádná z 11 šablon nemá všechny truhly bez lootu.
+- [x] **Před/po statická kontrola:** ZIP CRC, všechny JSON, vlastní structure-set/structure/pool/NBT reference, rozestupy, exclusion DAG, 1177 nezměněných původních NBT a custom ikona, všechny rozměry světa zachované.
+- [x] **Katalog původně importovaných map:** 103 NBT; 19 aktivních v natural worldgen, 84 zachováno pro pozdější bezpečné umístění.
+- [ ] **Kompletní využití všech map NENÍ HOTOVO:** velké stavby nemají nativní kontrolu celého půdorysu; zde ponechány manual-only.
+- [ ] **Lodě jen když kapalina pod CELOU lodí:** stále chybí skutečný validátor voda/láva, 8 zbývajících lodí nejsou garantovaně na volné hladině. Nether lávové lodě zůstávají vypnuté.
+- [ ] **Úplná ochrana proti prorůstání** všech stromů a kolizím všech typů staveb vyžaduje engine-level full-footprint checks.
+- [ ] **Kompletní revize starého lootu** nebyla provedena; statický full NBT loot scan narazil na časový limit. Tato část stále čeká.
+- [ ] Herní test až po dokončení celého seznamu, jak si uživatel přeje.
+
+Podrobný audit: [RC36](RC36_STRUCTURE_PLACEMENT_SAFETY_PRE_POST.md).
+
 ## Další části
 Čekají na postupné zaslání uživatelem. Neoznačovat dosud nezaslané části jako dokončené.
