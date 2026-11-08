@@ -263,5 +263,20 @@ Původní uživatelské zadání:
 **Technická dokumentace:** [RC41 full audit](RC41_FINAL_CANDIDATE_END_TO_END_AUDIT.md).  
 **Soukromý ZIP:** `Thalvoryn_Horizon_Rust_RC41_FINAL_CANDIDATE_NETHER1024_MC26_3.zip` (SHA256 `80257f01e11bd14620ca05324f61afc0e53f3fdf40230467f0b18451482dfeb8`).
 
-## Další části
-Čekají na postupné zaslání uživatelem. Neoznačovat dosud nezaslané části jako dokončené.
+## Skutečný první herní test RC41 + opravy RC42 (2026-11-08)
+
+Uživatel dodal **pět screenshotů ze všech dimenzí a celý `New World.rar`** s prosbou o analýzu. Testovací mod v uloženém světě nemá být předmětem vyšetřování.
+
+- [x] Z uložených MCA přečteno: Overworld **9092 chunků / 41 structure starts**, Nether **4095 / 10 starts (pouze 2 vlastní)**, End **6044 / 1 vlastní**. Umístění `placed_feature` se tím nepočítá.
+- [x] **Zásadní chyba RC41 loot potvrzena:** v Overworldu 551 prázdných chests/barrels bez Items/LootTable + dalších 447 jen s LootTable; 3 s fyzickými Items. Na screenshotem zachyceném místě pod vesničanem jsou prázdné barely i vlastní loot-table-only kontejner.
+- [x] **RC42 opravuje 2818 fyzicky prázdných/tabulkových NBT kontejnerů** vložením nativních Items; 190 alternativních loot NBT v 95 aktivních poolech pro různé kopie staveb.
+- [x] **RC42 obnovuje 3 vanilla cave/canyon carvery**, které měly probability=0, zvyšuje šance povrchových/Nether/podzemních staveb a rozlišuje vanilla Lush/Dripstone cave biomy pomocí climate weirdness; End také mírně hustší.
+- [x] **Před/po a nezávislé statické testy:** ZIP CRC, 1685 JSON/meta, 1177 původních NBT (473 pouze inventáře, 704 beze změn), 190 variant s naprosto stejným non-inventory tělem, 0 chybných slotů/refs, Nether1024/OW/End rozměry a ikona byte-identické.
+- [x] **Volitelná oprava dodaného save snapshotu:** 863 uložených prázdných kontejnerů ve 20 MCA, přesně 285 upravených chunků; nezávisle přečteno 9708 chunků, 9423 byte-identických, zbylé změněny výhradně Items/LootTable tagy. **Použít jen po záloze a pokud nebylo v tomto světě pokračováno!**
+- [ ] **RC42 nebyla runtime otestovaná.** Nové změny worldgenu platí jen v nových chunkech, efektivní skutečnou hustotu se musí teprve ověřit.
+- [ ] **Stále není kompletní F3 custom biome ID, Nether portal safe search, LOD a full-footprint strukturové kolize; lávové lodě nejsou náhodně generované.**
+
+Podrobný [RC42 audit skutečného světa](RC42_REAL_WORLD_FEEDBACK_AND_FIXED_LOOT.md). RC41 nebyla stabilní. RC42 = **testovací oprava**.
+
+## Starší poznámka
+Všech deset částí bylo již doručeno. Následují opravy z uživatelských testů.
