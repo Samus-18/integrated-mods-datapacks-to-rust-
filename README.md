@@ -46,6 +46,12 @@ The newest private **RC21 TEST** ZIP repairs structure-set discovery and chosen 
 
 [RC21 details, hash and verification limitations](docs/RC21_Horizon_Rust_Nether1024_STRUCTURES_LOOT_TEST.md). Because third-party map redistribution permissions are not verified, this experimental binary **has not been uploaded publicly to GitHub Releases**.
 
+## RC22 Horizon Rust — structure spawning format repair (Nether 1024)
+
+An experimental **RC22 private TEST** archive corrects **268** pre-26.3 `spawn_overrides` `minCount/maxCount` entries across **134** structures, converting them to the `count` int-provider format required by Minecraft Java 26.3/Horizon. Four extra uniform-count fields in two additional definitions were normalized, for **136 corrected structure definitions in total**. This may resolve structures failing to decode and appear. **Static JSON/ZIP/reference checks passed, but an in-game Horizon test has NOT been performed**; Nether/End terrain and NBT geometry were not altered. Public binary release is withheld until third-party build rights are confirmed.
+
+[RC22 changelog, test results and SHA-256](docs/RC22_Horizon_Rust_Nether1024_SPAWN_FORMAT_TEST.md).
+
 ## Features
 
 ### 🌿 Overworld
