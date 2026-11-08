@@ -62,6 +62,12 @@ An experimental **RC22 private TEST** archive corrects **268** pre-26.3 `spawn_o
 
 **Latest private experimental ZIP is RC25**, built on RC24. It carries forward the safer structure placement and deduplicated Nether/End spawn sets, and adds a full static inventory scan of all **1,102 NBT templates**. An exact-geometry NBT rewrite conservatively thinned **533 overly stocked/decorative containers** and enriched **60 sparse inventories** with 80 contextual item stacks across 29 templates. Existing Minecraft loot tables, entity data, palette indices and block positions were preserved. **Static tests passed; in-game Horizon generation is NOT verified.** Full water/lava footprint validation, world-height runtime confirmation, Nether portal safety, custom F3 biomes and Photon remain open. [RC25 audit](docs/RC25_HORIZON_RUST_LOOT_AUDIT.md) and [user issue #2](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2). The test ZIP is not publicly released because map-asset redistribution rights remain unverified.
 
+## RC26 — Horizon Rust 26.3: redesigned End islands and safer placement
+
+The latest **private experimental RC26** (Nether 1024) builds on RC25. Five previously repetitive End NBT island templates have been remodelled into distinct geometries; their weighted placement is more varied and End airship fleets are much rarer. Overworld ships are restricted to deep-ocean biome starts (not a full water-footprint check), imported ground structures with unverified slopes are paused, and matching Nether camps/watches are grouped to reduce overlapping starts. Nether material accent patches were made less extreme. The original RC25 loot remains unchanged. **Static ZIP, NBT and JSON tests passed; Horizon runtime tests were NOT run.** Native portal safety, structure footprint predicates, custom F3 biome identifiers, and the Photon native port remain open in [issue #2](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2). The binary is not a public release until third-party asset redistribution rights are verified.
+
+[RC26 technical changelog and SHA-256](docs/RC26_HORIZON_RUST_ISLANDS_PLACEMENT_TEST.md).
+
 ## Features
 
 ### 🌿 Overworld
