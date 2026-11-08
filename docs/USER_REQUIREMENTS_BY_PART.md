@@ -74,5 +74,30 @@ Dodatečné požadavky:
 
 Dokumentace: [RC33 podrobný audit](RC33_CAVE_HABITATS_PRE_POST_AUDIT.md).
 
+## Část 4 — Nether a průzkum hlubin/hor (přijato 2026-11-08)
+
+Původní požadavky:
+> 🔥 Nether
+>
+> Více přírodních variant, vlastní vegetace, různé styly krajiny, lávové lodě, více struktur a lepší rozložení rud
+
+Doplněno v téže zprávě:
+> muzes do pod zemi pridat i treba podzemni vesnice a tak ale at cesta k tomu vede az nahoru ne primo smerem nahoru proste cesticka az dolu a tak muzes do podzemi pridat i vice veci at se vyplati jit i dolu to stejny i do hor nahoru nebo dolu ... samosrejme pocitam celkove i nether ... vzdy kontrolu pred/po
+
+### RC34 – staticky implementováno
+- [x] Nová podzemní osada v pláních se souvislou klikatou cestou shora dolů (71 úseků, 61 výškových bloků), čtyřmi domy, zdroji světla a třemi villager NBT entitami.
+- [x] Vzácný důvod zkoumat nejvyšší hory (emerald traces Y230..1250) a hluboké dripstone caves (minimální diamond traces Y−52..−25).
+- [x] Pět biotopově odpovídajících **override existujících** netherových biome ID (žádná nově registrovaná ID) a sedm typů netherové vegetace s omezením půdy a okolního vzduchu.
+- [x] Pět jemných noise-based materiálových stylů a upravené rozložení quartz/gold/ancient debris v Netheru Y0..1023.
+- [x] Dvě malé vzácné zahrabané netherové ruiny, bez dalších samostatných structure-set mřížek.
+- [x] Dvě nové 100% nehořlavé šablony netherových lodí (crimson a warped) jako *manuálně umisťovatelné* NBT; žádné wool/obyčejné dřevo.
+- [x] Automaticky generované rizikové netherové stavby zředěny. Nether se **NESMÍ** vrátit k 2k; RC34 zachovává 1024.
+- [x] **Před/po QA:** archiv CRC, JSON dekódování, všechny původní NBT beze změny, nové NBT validní včetně cesty a entit, cycle-free feature DAG a všechny světy zachovaly výšky.
+- [ ] **Herní ověření v Horizon Rust** — stavby nesmí být uříznuté či zavalené, osadníci musí existovat, vegetace i rudné vrstvy v nové výšce se musí skutečně vytvářet.
+- [ ] **Netherové lodě mají plout na skutečné lávě**: jejich náhodný spawn je pořád ZÁMĚRNĚ VYPNUTÝ. Požadavek není hotový bez full-footprint liquid validatoru v Horizonu.
+- [ ] Vlastní nové registrované biomy ve F3, rozšířený enginový systém struktur/kolizí, nativní Photon, LOD a safe portal arrival.
+
+[Podrobný RC34 audit](RC34_UNDERGROUND_VILLAGE_NETHER_NATURE_26_3.md).
+
 ## Další části
 Čekají na postupné zaslání uživatelem. Neoznačovat dosud nezaslané části jako dokončené.
