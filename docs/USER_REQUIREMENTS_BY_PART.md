@@ -220,5 +220,31 @@ Uživatel **provede herní test až po dokončení celého seznamu**; zde povinn
 
 **[RC39 podrobný audit](RC39_VANILLA_STRUCTURES_HEIGHT_PRE_POST.md)**.
 
+## Část 10 — Horizon Rust (přijato 2026-11-08)
+
+Původní uživatelské zadání:
+> 🎮 Horizon
+>
+> LOD, bezpečný Nether portál, vlastní biome/cave jeskyně ID ve F3, kompatibilita vysokých světů a výkon. Zase ověření a kontrola.
+
+**Uživatel bude herně testovat až po dokončení celého seznamu.** Všechny nehotové engine opravy zůstávají otevřené; nesmí být falešně označovány za hotové.
+
+### RC40 — bezpečná diagnostika + statická validace (NEZAMĚŇOVAT za opravený engine)
+- [x] Kompletní srovnání RC39/RC40: z původních 2956 ZIP souborů změněno pouze `pack.mcmeta` (RC40), přidáno pět nových diagnostických/README souborů, **všech 2955 ostatních starých souborů byte-identických**.
+- [x] Zachováno všech **1177 NBT**, **194 loot tabulek**, ikona, původní terén a biome, mobové i struktury.
+- [x] Výšky a noise codec: **Overworld −64..2031 / 131 sekcí**, **Nether 0..1023 bez stropu / 64 sekcí**, **End 0..511 / 32 sekcí**. `min_y`, `height`, `logical_height`, noise (OW/Nether) správně odpovídají MC26.3; `min_y+height<=2032`.
+- [x] Čtyři **ručně spustitelné diagnostické funkce** `/function thalvoryn:horizon/status`, `cave_biome`, `portal_hazards`, `lod_notes`. Bez `tick/load`, teleportů a změn bloků. Vrací skutečná vanilla biome ID, nikoli nové zaregistrované ID.
+- [x] Samostatná **read-only preflight diagnostika** ZIP/JSON/height/refs/LOD settings. Její **6 syntetických/regresních testů PASS** včetně zamítnutí špatného vysokého Netheru a varování u 16k LOD.
+- [x] Oddělený **referenční** portal full-footprint validátor s **9 umělými unit testy PASS**, **NENÍ ZAPOJEN** do Rust enginu ani samotného ZIP datapacku.
+- [ ] **Vlastní biome a cave ID zobrazená ve F3**: Horizon worldgen ignoruje nové biome ID z běžných datapacků, potřebuje registraci do Rust client/server a F3 rendereru.
+- [ ] **Bezpečné skutečné průchody portálem do Netheru Y0–1023**: host portal-forcer musí hledat validní pevný podklad, volný prostor a vyloučit kapalinu pod celou plochou; zatím neupraven.
+- [ ] **LOD white/black terrain**: zobrazení neobjevených struktur v synthetic far tiles, mismatch po přiblížení a černá obrazovka při extrémní vzdálenosti jsou engine/renderer problémy. Doporučený dočasný profil pro RX580: render 8–12, sim 5–6, LOD 128–256, Far Detail Reduced.
+- [ ] **Výkon/TPS/FPS/VRAM** v přímém Horizon Nightly pro vysoké svety: runtime neověřen, statické checks neprokazují FPS.
+- [ ] **End natural noise** má stále vanilla 128, i když se v Endu může stavět do 511; plné vyšší přirozené End ostrovy nejsou implementované.
+- [ ] **Custom loot tables z RC37** stále potřebují potvrdit Horizon runtime loader (194 JSON existuje, ale to neprokazuje naplněné truhly).
+- [ ] Konečný in-game test až po dokončení celé sady požadavků.
+
+[RC40 kompatibilita a technické hranice](RC40_HORIZON_ENGINE_COMPATIBILITY_AUDIT.md).
+
 ## Další části
 Čekají na postupné zaslání uživatelem. Neoznačovat dosud nezaslané části jako dokončené.
