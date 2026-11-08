@@ -72,6 +72,12 @@ The latest **private experimental RC26** (Nether 1024) builds on RC25. Five prev
 
 After the user's **RC26 in-game Overworld screenshots** ([issue #2](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2)), RC27 removes independent TREK ship-like starts, pauses seven badly anchored coastal/farm-island starts and the independent air vessel, and reduces the remaining 16 imported deep-ocean ships to one group at **spacing 144, separation 62, frequency 0.14**. All 1,102 NBT templates, Nether/End settings and Photon remain unchanged. **ZIP/JSON/resource-link tests passed; no RC27 Horizon gameplay test has been run.** The observed incorrect/missing distant LOD structures and biome appearance are **not fixed by this datapack**: Horizon's [graphics documentation](https://github.com/horizon-rust/horizon/blob/main/docs/graphics.md) explains its coarse distant generation. [RC27 findings, original screenshot coordinate manifest and test guide](docs/RC27_OCEAN_STRUCTURE_SPACING_AND_LOD_REPORT.md). The binary is a private ChatGPT test attachment, not a public GitHub Release.
 
+## RC28 (Horizon Rust 26.3) — JJThunder full-height codec repair
+
+**Latest private test build: RC28 Nether 1024.** The RC27 data still used obsolete pre-26.3 dimension-type keys in **Overworld and Nether**, even though the numerical heights and the JJThunder density range were correct. RC28 moves these two dimension types to the Minecraft 26.3 **environment `attributes` schema**, retaining **Overworld Y −64…2031** (height 2096) and **roofless Nether Y 0…1023** (height 1024). This is a plausible fix for the observed vanilla world-height fallback, but **no in-game Horizon validation has been run**. All terrain noise, structures, biomes, loot, and all **1,102 NBT** files remain identical to RC27. [Detailed RC28 audit and SHA-256](docs/RC28_JJThunder_2032_Height_26_3_Codec_Fix.md) · [open user issues](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/issues/2).
+
+Original JJThunder To The Max documents terrain from Y −64 to 2032; its [Modrinth page](https://modrinth.com/datapack/jjthunder-to-the-max) lists **All Rights Reserved**. Our private modified ZIP is **not publicly uploaded** because supplied third-party map assets also require verified permission.
+
 ## Features
 
 ### 🌿 Overworld
