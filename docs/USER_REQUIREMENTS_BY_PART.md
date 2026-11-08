@@ -49,5 +49,30 @@ Požadavek na kontrolu:
 
 Technický audit: [RC32](RC32_TREES_AND_NATURE_STATIC_TEST.md).
 
+## Část 3 — Jeskyně (přijato 2026-11-08)
+
+Původní požadavek:
+> 🕳️ Jeskyně
+>
+> Vlastní jeskynní biomy, unikátní rostliny, bloky, mobové a podzemní struktury
+
+Dodatečné požadavky:
+> samozrejme zase kontrolu pred a po jak vzdy a hlavne vse umisti spravne a i na dbore mista at se tam hodi priklad lode ktery se hodi do netheru a jsou z toho onivzdorneho dreva tak je dej do lavu jako ze plujou pres lavu chapes ne no proste premyslej jako developer a hrac a hlavne logiku/predstavivost
+
+### RC33 – co je skutečně implementováno v testovacím ZIPu
+- [x] **3 podzemní habitaty** v *existujících* biomes: Lush Moss Grotto, Dripstone Calcite Ossuary, Deep Dark Sculk Archive
+- [x] 4 přízemní vegetační feature s ověřením vzduchu/půdy a podzemní výšky
+- [x] 3 nativní dekorativní minerální akcenty s omezeným nahrazováním stone/deepslate
+- [x] 3 nové malé původní podzemní NBT ruiny a 2 vzácně umisťované TREK místnosti
+- [x] Vypnutí dvou přehnaně hustých TREK jigsaw monster-room setů (`spacing=1`)
+- [x] Opatrně změněné **původní native mob typy**: vzácné cave spider / silverfish v Dripstone Caves, původní axolotl v Lush, Deep Dark bez přirozených mobů
+- [x] **Kontrola před i po:** CRC ZIP, JSON, odkazy, 3 nové NBT, zachování 1 166 původních NBT, feature DAG bez cyklu a výšky všech dimenzí beze změny
+- [ ] Herní kontrola míst: **nepotvrzené**, zda se ruiny skutečně objeví v otevřených jeskyních, místo aby byly zahrabané; doladit podle logu/snímků
+- [ ] **Opravdová nová biome ID**, vlastní bloky a nové druhy mobů: potřebují nativní podporu Horizon/mod, nikoli jen JSON
+- [ ] **Nether lava boats**: nehořlavé lodě mají být opravdu na povrchu *souvislé lávy*, ne na pevnině / v lese / ve vzduchu; v RC33 jsou stále vypnuté, protože zatím chybí kontrola kapaliny pod celým trupem a bezpečného terénu; žádný false-positive fix
+- [ ] Kontrola celého půdorysu, sousedních struktur a vegetace pro ostatní velké stavby zůstává otevřená
+
+Dokumentace: [RC33 podrobný audit](RC33_CAVE_HABITATS_PRE_POST_AUDIT.md).
+
 ## Další části
 Čekají na postupné zaslání uživatelem. Neoznačovat dosud nezaslané části jako dokončené.
