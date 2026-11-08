@@ -34,6 +34,12 @@ An **RC19 experimental private test archive** improves RC18 configuration: conve
 
 [RC19 technical changelog, checksum, tests and limitations](docs/RC19_Horizon_Rust_Nether1024_TERRAIN_END_TEST.md).
 
+## RC20 Horizon Rust — Nether 1024 / End terrain-and-structure experiment
+
+The latest **private experimental test ZIP** is RC20, built from RC19. It reorders the Nether bedrock-floor material rule, tunes Nether density-noise variation and increases End island/ruin and vanilla End-city placement attempts. **All 1,102 prior NBT templates remain unchanged**; the attempted small-inventory scan did not result in any NBT loot changes. ZIP CRC and 1,574 JSON/metadata records passed static verification. **Not tested in-game**; results and spawn rates may differ in Horizon Rust. Third-party map asset redistribution rights have not been established, so **the ZIP has not been published to GitHub Releases**.
+
+[RC20 change log, SHA-256 and test limitations](docs/RC20_Horizon_Rust_Nether1024_TERRAIN_END_TEST.md).
+
 ## Features
 
 ### 🌿 Overworld
