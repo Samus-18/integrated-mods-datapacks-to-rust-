@@ -1,0 +1,59 @@
+{
+  "source": "Thalvoryn-RUST-Nether1024-V67-INTEGRATION-TEST-UNRELEASED.zip",
+  "status": "STATIC ONLY",
+  "errors": [],
+  "warnings": [],
+  "counts": {
+    "all_entries": 15506,
+    "json_and_mcmeta": 6148,
+    "sets": 140,
+    "definitions": 549,
+    "pools": 1439,
+    "active_structures": 540,
+    "unreferenced_structures": 16,
+    "template_missing": 0,
+    "start_pool_missing": 0,
+    "missing_set_definitions": 0,
+    "biomes_overworld": 57,
+    "biomes_the_nether": 8,
+    "biomes_the_end": 24,
+    "end_noise_height": 512,
+    "generated_nbt": 15
+  },
+  "samples": {
+    "missing_templates": [],
+    "missing_start_pools": [],
+    "missing_defs": [],
+    "unknown_pool_element_type": [
+      {
+        "pool": "data/stellarity/worldgen/template_pool/desert_ruin.json",
+        "element_type": "legacy_single_pool_element"
+      },
+      {
+        "pool": "data/stellarity/worldgen/template_pool/desert_ruin.json",
+        "element_type": "legacy_single_pool_element"
+      },
+      {
+        "pool": "data/stellarity/worldgen/template_pool/desert_ruin.json",
+        "element_type": "legacy_single_pool_element"
+      },
+      {
+        "pool": "data/stellarity/worldgen/template_pool/desert_ruin.json",
+        "element_type": "legacy_single_pool_element"
+      },
+      {
+        "pool": "data/stellarity/worldgen/template_pool/desert_ruin.json",
+        "element_type": "legacy_single_pool_element"
+      },
+      {
+        "pool": "data/stellarity/worldgen/template_pool/desert_ruin.json",
+        "element_type": "legacy_single_pool_element"
+      },
+      {
+        "pool": "data/stellarity/worldgen/template_pool/desert_ruin.json",
+        "element_type": "legacy_single_pool_element"
+      }
+    ],
+    "fallback_missing": []
+  }
+}
