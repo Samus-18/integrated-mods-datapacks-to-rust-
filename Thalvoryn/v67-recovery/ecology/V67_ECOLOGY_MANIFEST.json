@@ -1,0 +1,1125 @@
+{
+  "status": "STATIC_ONLY_PRIVATE_GAME_TEST_REQUIRED",
+  "group_parameters": {
+    "ow_small": {
+      "dimension": "overworld",
+      "spacing_chunks": 26,
+      "separation_chunks": 11,
+      "frequency": 0.77,
+      "exclusion": null
+    },
+    "ow_settlements": {
+      "dimension": "overworld",
+      "spacing_chunks": 39,
+      "separation_chunks": 16,
+      "frequency": 0.62,
+      "exclusion": [
+        "minecraft:villages",
+        10
+      ]
+    },
+    "ow_rare": {
+      "dimension": "overworld",
+      "spacing_chunks": 66,
+      "separation_chunks": 25,
+      "frequency": 0.48,
+      "exclusion": [
+        "thalvoryn:ecology/ow_settlements",
+        12
+      ]
+    },
+    "ow_epic": {
+      "dimension": "overworld",
+      "spacing_chunks": 112,
+      "separation_chunks": 44,
+      "frequency": 0.34,
+      "exclusion": [
+        "thalvoryn:ecology/ow_rare",
+        16
+      ]
+    },
+    "ow_ocean": {
+      "dimension": "overworld",
+      "spacing_chunks": 54,
+      "separation_chunks": 22,
+      "frequency": 0.57,
+      "exclusion": [
+        "minecraft:shipwrecks",
+        8
+      ]
+    },
+    "ow_sky_islands": {
+      "dimension": "overworld",
+      "spacing_chunks": 44,
+      "separation_chunks": 19,
+      "frequency": 0.64,
+      "exclusion": null
+    },
+    "ow_airship": {
+      "dimension": "overworld",
+      "spacing_chunks": 119,
+      "separation_chunks": 49,
+      "frequency": 0.32,
+      "exclusion": [
+        "thalvoryn:ecology/ow_sky_islands",
+        16
+      ]
+    },
+    "ow_spawners": {
+      "dimension": "overworld",
+      "spacing_chunks": 21,
+      "separation_chunks": 9,
+      "frequency": 0.34,
+      "exclusion": [
+        "thalvoryn:ecology/ow_dungeons",
+        7
+      ]
+    },
+    "ow_dungeons": {
+      "dimension": "overworld",
+      "spacing_chunks": 48,
+      "separation_chunks": 19,
+      "frequency": 0.52,
+      "exclusion": [
+        "thalvoryn:ecology/ow_underground_epic",
+        14
+      ]
+    },
+    "ow_underground_epic": {
+      "dimension": "overworld",
+      "spacing_chunks": 99,
+      "separation_chunks": 38,
+      "frequency": 0.36,
+      "exclusion": null
+    },
+    "ow_cave_entrances": {
+      "dimension": "overworld",
+      "spacing_chunks": 35,
+      "separation_chunks": 13,
+      "frequency": 0.6,
+      "exclusion": [
+        "thalvoryn:ecology/ow_underground_epic",
+        10
+      ]
+    },
+    "nether_minor": {
+      "dimension": "nether",
+      "spacing_chunks": 30,
+      "separation_chunks": 12,
+      "frequency": 0.7,
+      "exclusion": [
+        "minecraft:nether_complexes",
+        8
+      ]
+    },
+    "nether_ruins": {
+      "dimension": "nether",
+      "spacing_chunks": 44,
+      "separation_chunks": 19,
+      "frequency": 0.63,
+      "exclusion": [
+        "thalvoryn:ecology/nether_major",
+        12
+      ]
+    },
+    "nether_major": {
+      "dimension": "nether",
+      "spacing_chunks": 86,
+      "separation_chunks": 34,
+      "frequency": 0.39,
+      "exclusion": [
+        "minecraft:nether_complexes",
+        14
+      ]
+    },
+    "nether_underground": {
+      "dimension": "nether",
+      "spacing_chunks": 60,
+      "separation_chunks": 23,
+      "frequency": 0.45,
+      "exclusion": [
+        "thalvoryn:ecology/nether_major",
+        14
+      ]
+    },
+    "end_islands": {
+      "dimension": "end",
+      "spacing_chunks": 33,
+      "separation_chunks": 13,
+      "frequency": 0.65,
+      "exclusion": null
+    },
+    "end_minor": {
+      "dimension": "end",
+      "spacing_chunks": 48,
+      "separation_chunks": 20,
+      "frequency": 0.58,
+      "exclusion": [
+        "minecraft:end_cities",
+        12
+      ]
+    },
+    "end_major": {
+      "dimension": "end",
+      "spacing_chunks": 105,
+      "separation_chunks": 43,
+      "frequency": 0.37,
+      "exclusion": [
+        "minecraft:end_cities",
+        16
+      ]
+    }
+  },
+  "excluded_nonvanilla_ships": [
+    {
+      "structure": "explorify:end_shipwreck",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "nova_structures:end_lighthouse",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "nova_structures:end_ship",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "stellarity:shipwreck/dunes",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "stellarity:shipwreck/normal",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "structures:end_ship",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/handmade/sky_caravan",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_03",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_09",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_12",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_15",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_21",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_27",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_30",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_33",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_35",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_36",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_39",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_42",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_45",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_48",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_51",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_54",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_57",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_60",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_63",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_66",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_69",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:end/imported/ships_72",
+      "dim": "end",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/handmade/blackstone_frigate",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_02",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_05",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_07",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_08",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_14",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_17",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_18",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_20",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_23",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_26",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_29",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_32",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_38",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_41",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_44",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_47",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_50",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_53",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_56",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_59",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_62",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_65",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_68",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    },
+    {
+      "structure": "thalvoryn:nether/imported/ships_71",
+      "dim": "nether",
+      "reason": "Inappropriate maritime/ship theme excluded from Nether/End"
+    }
+  ],
+  "preserved_special_ring_structures": [
+    "nova_structures:bunker",
+    "trek:overworld/medium/desert_outpost",
+    "trek:overworld/medium/jungle_outpost",
+    "trek:village/cherry",
+    "trek:village/desert",
+    "trek:village/plains",
+    "trek:village/savanna",
+    "trek:village/snowy",
+    "trek:village/swamp_vanilla",
+    "trek:village/taiga"
+  ],
+  "category_structures": {
+    "ow_rare": [
+      "explorify:badlands_pyramid",
+      "explorify:desert_shrine",
+      "explorify:watchtower/plains",
+      "explorify:watchtower/savanna",
+      "explorify:watchtower/taiga",
+      "nova_structures:badlands_miner_outpost",
+      "nova_structures:firewatch_tower_birch",
+      "nova_structures:firewatch_tower_cherry",
+      "nova_structures:firewatch_tower_dappled",
+      "nova_structures:firewatch_tower_dark_oak",
+      "nova_structures:firewatch_tower_forest",
+      "nova_structures:firewatch_tower_jungle",
+      "nova_structures:firewatch_tower_mangrove",
+      "nova_structures:firewatch_tower_pale",
+      "nova_structures:firewatch_tower_savanna",
+      "nova_structures:firewatch_tower_swamp",
+      "nova_structures:firewatch_tower_taiga",
+      "nova_structures:remnant_lone_shrine_sentinel",
+      "nova_structures:remnant_shrine_research_station",
+      "nova_structures:remnant_shrine_sentinel_mass_grave",
+      "nova_structures:shrine_biome_tier_1",
+      "nova_structures:shrine_biome_tier_2",
+      "nova_structures:shrine_biome_tier_3",
+      "nova_structures:shrine_biome_tier_4",
+      "nova_structures:shrine_biome_tier_5",
+      "nova_structures:shrine_combat_tier_1",
+      "nova_structures:shrine_combat_tier_2",
+      "nova_structures:shrine_combat_tier_3",
+      "nova_structures:shrine_combat_tier_4",
+      "nova_structures:shrine_combat_tier_5",
+      "nova_structures:shrine_combat_tier_6",
+      "nova_structures:shrine_tower",
+      "nova_structures:stray_fort",
+      "structures:mini_tower",
+      "thalvoryn:overworld/forgotten_outpost",
+      "thalvoryn:overworld/handmade/stone_outpost",
+      "thalvoryn:vanilla_highlands/ridge_outpost",
+      "trek:overworld/medium/birch_fort",
+      "trek:overworld/medium/fort",
+      "trek:overworld/medium/ice_fort",
+      "trek:overworld/medium/mangrove_watchtower",
+      "trek:overworld/medium/small_pyramide",
+      "trek:overworld/medium/square_tower",
+      "trek:overworld/medium/tower",
+      "trek:overworld/medium/tower_of_ice",
+      "trek:overworld/medium/witch_tower",
+      "trek:overworld/rare/cottage_island",
+      "trek:overworld/rare/elven_tree",
+      "trek:overworld/rare/maya",
+      "trek:overworld/rare/mushroom_island",
+      "trek:overworld/rare/portal_sword",
+      "trek:overworld/rare/pyramide_of_anubis",
+      "trek:overworld/rare/sleepy_island",
+      "trek:overworld/rare/sunken_city",
+      "trek:overworld/rare/tower_island",
+      "trek:overworld/rare/villager_fortress",
+      "trek:overworld/rare/villager_island",
+      "trek:overworld/rare/wooden_manor"
+    ],
+    "ow_small": [
+      "explorify:black_spiral",
+      "explorify:guide_post_cold",
+      "explorify:guide_post_warm",
+      "explorify:mausoleum",
+      "explorify:ruins",
+      "explorify:supply_cache/birch",
+      "explorify:supply_cache/dark",
+      "explorify:supply_cache/desert",
+      "explorify:supply_cache/forest",
+      "explorify:supply_cache/jungle",
+      "explorify:supply_cache/mangrove",
+      "explorify:supply_cache/taiga",
+      "nova_structures:dappled_townhall",
+      "nova_structures:desert_ruins",
+      "nova_structures:illager_barracks",
+      "nova_structures:illager_hideout",
+      "nova_structures:jungle_ruins",
+      "nova_structures:piglin_donjon",
+      "nova_structures:piglin_outstation",
+      "nova_structures:remnant_bee_keeper",
+      "nova_structures:remnant_big_remnant",
+      "nova_structures:remnant_big_remnant_2",
+      "nova_structures:remnant_big_remnant_3",
+      "nova_structures:remnant_birch_graveyard",
+      "nova_structures:remnant_bridge_remnant",
+      "nova_structures:remnant_bundle_tent",
+      "nova_structures:remnant_clifftree",
+      "nova_structures:remnant_creeper_homestead",
+      "nova_structures:remnant_desert_remnant",
+      "nova_structures:remnant_forest_smith",
+      "nova_structures:remnant_frog_ranch",
+      "nova_structures:remnant_graveyard",
+      "nova_structures:remnant_lava_chicken",
+      "nova_structures:remnant_medium_remnant",
+      "nova_structures:remnant_medium_remnant_2",
+      "nova_structures:remnant_mud_brick_constructor",
+      "nova_structures:remnant_ominous_shop",
+      "nova_structures:remnant_ruin_smith",
+      "nova_structures:remnant_sawmill",
+      "nova_structures:remnant_school_remnant",
+      "nova_structures:remnant_woodland_hud",
+      "nova_structures:remnant_youth_spring",
+      "nova_structures:remnant_zombie_horse_ranch",
+      "nova_structures:stray_outlook",
+      "nova_structures:toxic_lair",
+      "nova_structures:well_birch",
+      "nova_structures:well_cherry",
+      "nova_structures:well_dappled",
+      "nova_structures:well_dark_oak",
+      "nova_structures:well_desert",
+      "nova_structures:well_jungle",
+      "nova_structures:well_mangrove",
+      "nova_structures:well_oak",
+      "nova_structures:well_pale",
+      "nova_structures:well_savanna",
+      "nova_structures:well_snowy",
+      "nova_structures:well_spruce",
+      "nova_structures:well_swamp",
+      "nova_structures:wild_ruin",
+      "nova_structures:witch_villa",
+      "structures:log_of_pile",
+      "structures:ruin2",
+      "structures:ruin3",
+      "structures:ruined_council",
+      "structures:swing",
+      "structures:swing2",
+      "structures:swing_acacia",
+      "structures:swing_birch",
+      "structures:swing_cherry",
+      "structures:swing_dark",
+      "structures:swing_jungle",
+      "structures:swing_taiga",
+      "structures:tent",
+      "structuresplus:council_of_the_trapped_ruins",
+      "structuresplus:iron_golem_statue",
+      "structuresplus:random_blocks",
+      "structuresplus:ruin",
+      "thalvoryn:autumn/grove_birch",
+      "thalvoryn:autumn/grove_darkwood",
+      "thalvoryn:autumn/grove_hills",
+      "thalvoryn:autumn/grove_plains",
+      "thalvoryn:autumn/grove_savanna",
+      "thalvoryn:overworld/highland_watch",
+      "thalvoryn:overworld/imported/buildings_01",
+      "thalvoryn:overworld/imported/buildings_02",
+      "thalvoryn:overworld/imported/buildings_03",
+      "thalvoryn:overworld/imported/buildings_08",
+      "thalvoryn:overworld/imported/buildings_09",
+      "thalvoryn:overworld/imported/buildings_12",
+      "thalvoryn:overworld/imported/buildings_14",
+      "thalvoryn:overworld/imported/buildings_17",
+      "thalvoryn:overworld/imported/buildings_20",
+      "thalvoryn:overworld/imported/buildings_23",
+      "thalvoryn:overworld/imported/buildings_26",
+      "thalvoryn:overworld/imported/buildings_29",
+      "thalvoryn:overworld/imported/medieval_01",
+      "thalvoryn:overworld/variant/arid_watch",
+      "thalvoryn:overworld/variant/cold_watch",
+      "thalvoryn:overworld/variant/grasslands_watch",
+      "thalvoryn:overworld/variant/jungle_watch",
+      "thalvoryn:overworld/variant/wetlands_watch",
+      "thalvoryn:overworld/variant/woodland_watch",
+      "trek:overworld/common/cooking_pork",
+      "trek:overworld/common/elven_pillars",
+      "trek:overworld/common/frozen_remains",
+      "trek:overworld/common/ruins",
+      "trek:overworld/common/small_desert_ruins",
+      "trek:overworld/common/small_swamp_ruins",
+      "trek:overworld/common/smoldering_altar",
+      "trek:overworld/common/strange_stone",
+      "trek:overworld/common/termite_hill",
+      "trek:overworld/common/two_woods",
+      "trek:overworld/common/well",
+      "trek:overworld/common/well_pillager_small",
+      "trek:overworld/very_common/plains",
+      "trek:overworld/very_common/rocks"
+    ],
+    "ow_settlements": [
+      "explorify:campsite",
+      "explorify:dark_forest_settlement",
+      "explorify:farmstead",
+      "explorify:mangrove_hut",
+      "explorify:tavern",
+      "nova_structures:dappled_witch_hut",
+      "nova_structures:hamlet",
+      "nova_structures:illager_camp",
+      "nova_structures:illager_manor",
+      "nova_structures:illager_treehouse",
+      "nova_structures:mangrove_witch_hut",
+      "nova_structures:pale_residence",
+      "nova_structures:piglin_camp",
+      "nova_structures:piglin_camp_collony",
+      "nova_structures:remnant_bunny_base",
+      "nova_structures:remnant_classic_village",
+      "nova_structures:remnant_miner_hut",
+      "nova_structures:remnant_ruin_farmer",
+      "nova_structures:remnant_tavern_classic",
+      "nova_structures:tavern_acacia",
+      "nova_structures:tavern_birch",
+      "nova_structures:tavern_cherry",
+      "nova_structures:tavern_dappled",
+      "nova_structures:tavern_dark_oak",
+      "nova_structures:tavern_desert",
+      "nova_structures:tavern_jungle",
+      "nova_structures:tavern_mangrove",
+      "nova_structures:tavern_oak",
+      "nova_structures:tavern_pale",
+      "nova_structures:tavern_snowy",
+      "nova_structures:tavern_spruce",
+      "nova_structures:tavern_swamp",
+      "nova_structures:village_birch",
+      "nova_structures:village_dappled",
+      "nova_structures:village_jungle",
+      "nova_structures:village_swamp",
+      "structures:house",
+      "structures:house2",
+      "structures:mangrove_house",
+      "structures:medium_house",
+      "structuresplus:acacia_house",
+      "structuresplus:baby_villager_statue",
+      "structuresplus:camp",
+      "structuresplus:villager_statue",
+      "thalvoryn:vanilla_highlands/meadow_hamlet",
+      "thalvoryn:vanilla_highlands/snowy_hamlet",
+      "trek:overworld/common/mushroom_house",
+      "trek:overworld/medium/all_abandoned",
+      "trek:overworld/medium/base_1",
+      "trek:overworld/medium/base_2",
+      "trek:overworld/medium/base_pillager",
+      "trek:overworld/medium/beehive_house",
+      "trek:overworld/medium/bone_dragon",
+      "trek:overworld/medium/camp_1",
+      "trek:overworld/medium/camp_2",
+      "trek:overworld/medium/camp_3",
+      "trek:overworld/medium/camp_4",
+      "trek:overworld/medium/church",
+      "trek:overworld/medium/claw_pillager",
+      "trek:overworld/medium/claw_spike",
+      "trek:overworld/medium/cold_hideout",
+      "trek:overworld/medium/desert_ranch",
+      "trek:overworld/medium/destroyed_house",
+      "trek:overworld/medium/dirt_hut",
+      "trek:overworld/medium/enchanter",
+      "trek:overworld/medium/explorer_cabin",
+      "trek:overworld/medium/farm",
+      "trek:overworld/medium/farm_pillager",
+      "trek:overworld/medium/frozen_tree",
+      "trek:overworld/medium/graveyard",
+      "trek:overworld/medium/haunted_house",
+      "trek:overworld/medium/hobbit_hole",
+      "trek:overworld/medium/igloo_village",
+      "trek:overworld/medium/jungle_treehouse",
+      "trek:overworld/medium/lush_ice",
+      "trek:overworld/medium/maison",
+      "trek:overworld/medium/oasis",
+      "trek:overworld/medium/offshore_platform_pillager",
+      "trek:overworld/medium/orbital",
+      "trek:overworld/medium/pillager_old_camp",
+      "trek:overworld/medium/pillager_weapons",
+      "trek:overworld/medium/plains_cottage",
+      "trek:overworld/medium/railroad",
+      "trek:overworld/medium/ritual",
+      "trek:overworld/medium/ruine_bateaux",
+      "trek:overworld/medium/ruine_cabane",
+      "trek:overworld/medium/ruine_tour",
+      "trek:overworld/medium/snow_cottage",
+      "trek:overworld/medium/snowman",
+      "trek:overworld/medium/sorcerers_house",
+      "trek:overworld/medium/spruce_camp",
+      "trek:overworld/medium/spruce_cottage",
+      "trek:overworld/medium/star_spike",
+      "trek:overworld/medium/stelzen",
+      "trek:overworld/medium/stonehedge",
+      "trek:overworld/medium/strange_house",
+      "trek:overworld/medium/street_vendor_pillager",
+      "trek:overworld/medium/street_vendor_stall",
+      "trek:overworld/medium/three_finger_ice",
+      "trek:overworld/medium/tour",
+      "trek:overworld/medium/tour_desert",
+      "trek:overworld/medium/underwater_sword",
+      "trek:overworld/medium/wandering_trader_dark_oak",
+      "trek:overworld/medium/wandering_trader_oak",
+      "trek:overworld/medium/wandering_trader_spruce",
+      "trek:overworld/medium/water_reservoir_pillager",
+      "trek:overworld/medium/well_pillager_medium",
+      "trek:overworld/medium/wild_stone",
+      "trek:village/mushroom"
+    ],
+    "nether_underground": [
+      "hellish_trials:nether_trial"
+    ],
+    "ow_dungeons": [
+      "nova_structures:bogged_camp",
+      "nova_structures:catacomb",
+      "nova_structures:cave_chamber",
+      "nova_structures:cave_chamber_archeology_ruins",
+      "nova_structures:cave_chamber_colony",
+      "nova_structures:cave_chamber_dungeon_colony",
+      "nova_structures:cave_hut",
+      "nova_structures:creeping_crypt",
+      "nova_structures:deepslate_camp",
+      "nova_structures:parched_camp",
+      "nova_structures:small_creeping_crypt",
+      "nova_structures:small_undead_crypt",
+      "nova_structures:stray_camp",
+      "nova_structures:surface_dungeon_default",
+      "nova_structures:surface_dungeon_desert",
+      "nova_structures:surface_dungeon_snowy",
+      "nova_structures:surface_dungeon_swamp",
+      "nova_structures:surface_trial_dungeon_default",
+      "nova_structures:surface_trial_dungeon_desert",
+      "nova_structures:surface_trial_dungeon_snowy",
+      "nova_structures:surface_trial_dungeon_swamp",
+      "nova_structures:trial_dungeon",
+      "nova_structures:undead_crypt",
+      "nova_structures:underground_house",
+      "structures:dungeon",
+      "thalvoryn:overworld/variant/buried_vault"
+    ],
+    "ow_ocean": [
+      "nova_structures:conduit_ruin",
+      "nova_structures:small_conduit_ruin_cold",
+      "nova_structures:small_conduit_ruin_warm",
+      "thalvoryn:overworld/imported/ships_01",
+      "thalvoryn:overworld/imported/ships_04",
+      "thalvoryn:overworld/imported/ships_06",
+      "thalvoryn:overworld/imported/ships_10",
+      "thalvoryn:overworld/imported/ships_11",
+      "thalvoryn:overworld/imported/ships_13",
+      "thalvoryn:overworld/imported/ships_16",
+      "thalvoryn:overworld/imported/ships_19",
+      "thalvoryn:overworld/imported/ships_22",
+      "thalvoryn:overworld/imported/ships_24",
+      "thalvoryn:overworld/imported/ships_25",
+      "thalvoryn:overworld/imported/ships_28",
+      "thalvoryn:overworld/imported/ships_31",
+      "thalvoryn:overworld/imported/ships_34",
+      "thalvoryn:overworld/imported/ships_37",
+      "thalvoryn:overworld/imported/ships_40",
+      "thalvoryn:overworld/imported/ships_43",
+      "thalvoryn:overworld/imported/ships_46",
+      "thalvoryn:overworld/imported/ships_49",
+      "thalvoryn:overworld/imported/ships_52",
+      "thalvoryn:overworld/imported/ships_55",
+      "thalvoryn:overworld/imported/ships_58",
+      "thalvoryn:overworld/imported/ships_61",
+      "thalvoryn:overworld/imported/ships_64",
+      "thalvoryn:overworld/imported/ships_67",
+      "thalvoryn:overworld/imported/ships_70",
+      "thalvoryn:overworld/imported/ships_73",
+      "trek:overworld/medium/birch_trade",
+      "trek:overworld/medium/cold_red_trade",
+      "trek:overworld/medium/dark_oak_trade",
+      "trek:overworld/medium/jungle_trade",
+      "trek:overworld/medium/ship_pillager",
+      "trek:overworld/medium/small_red_trade"
+    ],
+    "end_major": [
+      "nova_structures:end_castle",
+      "stellarity:chapel_of_light",
+      "stellarity:old_stronghold",
+      "thalvoryn:end/sky_sanctuary",
+      "thunderfusion:end/starlight_observatory",
+      "thunderfusion:end/void_citadel",
+      "trek:end/medium/end_city"
+    ],
+    "ow_epic": [
+      "nova_structures:lone_citadel",
+      "nova_structures:remnant_taiga_castle",
+      "nova_structures:ruin_town",
+      "nova_structures:trident_trial_monument",
+      "structures:castle_war",
+      "structures:pillager_castle",
+      "trek:overworld/rare/abandoned_castle_pillager",
+      "trek:overworld/rare/castle",
+      "trek:overworld/rare/pillager_mansion",
+      "trek:overworld/rare/villager_castle",
+      "trek:overworld/very_rare/coves",
+      "trek:overworld/very_rare/farm_island",
+      "trek:overworld/very_rare/floating_farm_large"
+    ],
+    "nether_minor": [
+      "nova_structures:nether_keep",
+      "nova_structures:nether_port",
+      "nova_structures:nether_skeleton_tower_crimson",
+      "nova_structures:nether_skeleton_tower_soul",
+      "nova_structures:nether_skeleton_tower_warped",
+      "nova_structures:sealing_halls",
+      "thalvoryn:nether/imported/buildings_04",
+      "thalvoryn:nether/imported/buildings_06",
+      "thalvoryn:nether/imported/buildings_10",
+      "thalvoryn:nether/imported/buildings_15",
+      "thalvoryn:nether/imported/buildings_18",
+      "thalvoryn:nether/imported/buildings_21",
+      "thalvoryn:nether/imported/buildings_24",
+      "thalvoryn:nether/imported/buildings_27",
+      "thalvoryn:nether/sites/warped_garden",
+      "trek:nether/medium/overworld_leak_1",
+      "trek:nether/medium/overworld_leak_2"
+    ],
+    "nether_ruins": [
+      "nova_structures:nether_skeleton_camp_crimson",
+      "nova_structures:nether_skeleton_camp_soul",
+      "nova_structures:nether_skeleton_camp_warped",
+      "thalvoryn:nether/basalt_waystation",
+      "thalvoryn:nether/highland_ruins",
+      "thalvoryn:nether/sites/basalt_outpost",
+      "thalvoryn:nether/sites/crimson_camp",
+      "thalvoryn:nether/sites/soul_waystation",
+      "thalvoryn:nether/variant/basalt_watch",
+      "thalvoryn:nether/variant/crimson_watch",
+      "thalvoryn:nether/variant/soul_watch",
+      "thalvoryn:nether/warped_watch",
+      "trek:nether/common/nether_pillar"
+    ],
+    "nether_major": [
+      "nova_structures:nether_skeleton_camp_fort",
+      "nova_structures:nether_skeleton_tower_fort",
+      "structures:nether_arena",
+      "thalvoryn:nether/cinder_viaduct",
+      "thalvoryn:nether/skybridge_ruin"
+    ],
+    "end_minor": [
+      "stellarity:campsite",
+      "stellarity:desert_ruin",
+      "stellarity:fishing_hut",
+      "stellarity:village",
+      "thalvoryn:end/crystal_grove",
+      "thalvoryn:end/echo_shrine",
+      "thalvoryn:end/handmade/forgotten_platform",
+      "thalvoryn:end/imported/buildings_05",
+      "thalvoryn:end/imported/buildings_07",
+      "thalvoryn:end/imported/buildings_11",
+      "thalvoryn:end/imported/buildings_13",
+      "thalvoryn:end/imported/buildings_16",
+      "thalvoryn:end/imported/buildings_19",
+      "thalvoryn:end/imported/buildings_22",
+      "thalvoryn:end/imported/buildings_25",
+      "thalvoryn:end/imported/buildings_31",
+      "thalvoryn:end/rc35/barren_watch",
+      "thalvoryn:end/rc35/crystal_shelter",
+      "thalvoryn:end/rc35/midland_waystation",
+      "thalvoryn:end/variant/barren_obelisks",
+      "thalvoryn:end/variant/midland_grove",
+      "thunderfusion:end/echoes_shrine",
+      "thunderfusion:end/glass_archive",
+      "thunderfusion:end/obsidian_remnant"
+    ],
+    "end_islands": [
+      "stellarity:floating_treasure",
+      "stellarity:fossil",
+      "stellarity:obsidian_spike",
+      "stellarity:return_gateway",
+      "thalvoryn:end/archipelago/asymmetric_1",
+      "thalvoryn:end/archipelago/asymmetric_2",
+      "thalvoryn:end/archipelago/asymmetric_3",
+      "thalvoryn:end/archipelago/asymmetric_4",
+      "thalvoryn:end/archipelago/asymmetric_5",
+      "thalvoryn:end/archipelago/island_1",
+      "thalvoryn:end/archipelago/island_2",
+      "thalvoryn:end/archipelago/island_3",
+      "thalvoryn:end/archipelago/island_4",
+      "thalvoryn:end/archipelago/island_5",
+      "thalvoryn:end/archipelago/island_6",
+      "thalvoryn:end/v67_void_rock_01",
+      "thalvoryn:end/v67_void_rock_02",
+      "thalvoryn:end/v67_void_rock_03",
+      "thalvoryn:end/variant/small_island_cache"
+    ],
+    "ow_airship": [
+      "thalvoryn:overworld/handmade/air_vessel"
+    ],
+    "ow_sky_islands": [
+      "thalvoryn:sky/amber_ridge",
+      "thalvoryn:sky/crescent_crag",
+      "thalvoryn:sky/sky_garden",
+      "thalvoryn:sky/twin_isles",
+      "thalvoryn:sky/v67_sky_isle_01",
+      "thalvoryn:sky/v67_sky_isle_02",
+      "thalvoryn:sky/v67_sky_isle_03",
+      "thalvoryn:sky/v67_sky_isle_04",
+      "thalvoryn:sky/v67_sky_isle_05",
+      "thalvoryn:sky/v67_sky_isle_06",
+      "thalvoryn:sky/verdant_terrace"
+    ],
+    "ow_underground_epic": [
+      "thalvoryn:underground/spiral_hamlet",
+      "thalvoryn:vanilla_highlands/mountain_trial_chambers",
+      "trek:overworld/medium/buried_village",
+      "underground_villages:underground_village"
+    ],
+    "ow_cave_entrances": [
+      "thalvoryn:underground/v67_cave_tunnel_01",
+      "thalvoryn:underground/v67_cave_tunnel_02",
+      "thalvoryn:underground/v67_cave_tunnel_03",
+      "thalvoryn:underground/v67_cave_tunnel_04",
+      "thalvoryn:underground/v67_cave_tunnel_05",
+      "thalvoryn:underground/v67_cave_tunnel_06"
+    ],
+    "ow_spawners": [
+      "trek:monster_room/lower/deep_dark",
+      "trek:monster_room/lower/default",
+      "trek:monster_room/lower/dripstone",
+      "trek:monster_room/lower/lush",
+      "trek:monster_room/upper/default",
+      "trek:monster_room/upper/dripstone",
+      "trek:monster_room/upper/lush",
+      "trek:monster_room/upper/oak"
+    ]
+  },
+  "inputs": {
+    "('JAVA', 1024)": "/mnt/data/Thalvoryn_V67_work/Thalvoryn-JAVA-Nether1024-V67-INTEGRATION-TEST-UNRELEASED.zip",
+    "('JAVA', 2032)": "/mnt/data/Thalvoryn_V67_work/Thalvoryn-JAVA-Nether2032-V67-INTEGRATION-TEST-UNRELEASED.zip",
+    "('RUST', 1024)": "/mnt/data/Thalvoryn_V67_work/Thalvoryn-RUST-Nether1024-V67-INTEGRATION-TEST-UNRELEASED.zip",
+    "('RUST', 2032)": "/mnt/data/Thalvoryn_V67_work/Thalvoryn-RUST-Nether2032-V67-INTEGRATION-TEST-UNRELEASED.zip"
+  },
+  "variants": {
+    "JAVA_1024": {
+      "path": "/mnt/data/Thalvoryn_V67_work/V67_ECOLOGY_PRIVATE_TEST/Thalvoryn-JAVA-Nether1024-V67-ECOLOGY-TEST-UNRELEASED.zip",
+      "sha256": "7b2ecf59776ff56019913d2693fc223fe17263c4fc17ce1270cbd4171b29ca10",
+      "size_bytes": 34705953,
+      "structure_sets": 25,
+      "unique_nonvanilla_active": 484,
+      "category_counts": {
+        "ow_rare": 58,
+        "ow_small": 116,
+        "ow_settlements": 109,
+        "nether_underground": 1,
+        "ow_dungeons": 26,
+        "ow_ocean": 36,
+        "end_major": 7,
+        "ow_epic": 13,
+        "nether_minor": 17,
+        "nether_ruins": 13,
+        "nether_major": 5,
+        "end_minor": 24,
+        "end_islands": 19,
+        "ow_airship": 1,
+        "ow_sky_islands": 11,
+        "ow_underground_epic": 4,
+        "ow_cave_entrances": 6,
+        "ow_spawners": 8
+      },
+      "removed_legacy_sets": 133,
+      "preserved_structure_sets": [
+        "minecraft:ancient_cities",
+        "minecraft:end_cities",
+        "minecraft:mineshafts",
+        "minecraft:pillager_outposts",
+        "minecraft:strongholds",
+        "minecraft:villages",
+        "nova_structures:strongholds_bunker"
+      ]
+    },
+    "JAVA_2032": {
+      "path": "/mnt/data/Thalvoryn_V67_work/V67_ECOLOGY_PRIVATE_TEST/Thalvoryn-JAVA-Nether2032-V67-ECOLOGY-TEST-UNRELEASED.zip",
+      "sha256": "f587dd8f55f81305e8d3019324b4e9b2d7a3ae80fe94b147ac4e5a01e9d61957",
+      "size_bytes": 34705984,
+      "structure_sets": 25,
+      "unique_nonvanilla_active": 484,
+      "category_counts": {
+        "ow_rare": 58,
+        "ow_small": 116,
+        "ow_settlements": 109,
+        "nether_underground": 1,
+        "ow_dungeons": 26,
+        "ow_ocean": 36,
+        "end_major": 7,
+        "ow_epic": 13,
+        "nether_minor": 17,
+        "nether_ruins": 13,
+        "nether_major": 5,
+        "end_minor": 24,
+        "end_islands": 19,
+        "ow_airship": 1,
+        "ow_sky_islands": 11,
+        "ow_underground_epic": 4,
+        "ow_cave_entrances": 6,
+        "ow_spawners": 8
+      },
+      "removed_legacy_sets": 133,
+      "preserved_structure_sets": [
+        "minecraft:ancient_cities",
+        "minecraft:end_cities",
+        "minecraft:mineshafts",
+        "minecraft:pillager_outposts",
+        "minecraft:strongholds",
+        "minecraft:villages",
+        "nova_structures:strongholds_bunker"
+      ]
+    },
+    "RUST_1024": {
+      "path": "/mnt/data/Thalvoryn_V67_work/V67_ECOLOGY_PRIVATE_TEST/Thalvoryn-RUST-Nether1024-V67-ECOLOGY-TEST-UNRELEASED.zip",
+      "sha256": "c9ea73cbfcf481ad7bc4b916e417819e4ec1734e58d052e13b0dbd6fe5127fce",
+      "size_bytes": 34712362,
+      "structure_sets": 25,
+      "unique_nonvanilla_active": 484,
+      "category_counts": {
+        "ow_rare": 58,
+        "ow_small": 116,
+        "ow_settlements": 109,
+        "nether_underground": 1,
+        "ow_dungeons": 26,
+        "ow_ocean": 36,
+        "end_major": 7,
+        "ow_epic": 13,
+        "nether_minor": 17,
+        "nether_ruins": 13,
+        "nether_major": 5,
+        "end_minor": 24,
+        "end_islands": 19,
+        "ow_airship": 1,
+        "ow_sky_islands": 11,
+        "ow_underground_epic": 4,
+        "ow_cave_entrances": 6,
+        "ow_spawners": 8
+      },
+      "removed_legacy_sets": 133,
+      "preserved_structure_sets": [
+        "minecraft:ancient_cities",
+        "minecraft:end_cities",
+        "minecraft:mineshafts",
+        "minecraft:pillager_outposts",
+        "minecraft:strongholds",
+        "minecraft:villages",
+        "nova_structures:strongholds_bunker"
+      ]
+    },
+    "RUST_2032": {
+      "path": "/mnt/data/Thalvoryn_V67_work/V67_ECOLOGY_PRIVATE_TEST/Thalvoryn-RUST-Nether2032-V67-ECOLOGY-TEST-UNRELEASED.zip",
+      "sha256": "606990aa750b9e15ad66198dd8a436d6ddcf8dd19ed7c9e86fc12cf19252e4ce",
+      "size_bytes": 34712438,
+      "structure_sets": 25,
+      "unique_nonvanilla_active": 484,
+      "category_counts": {
+        "ow_rare": 58,
+        "ow_small": 116,
+        "ow_settlements": 109,
+        "nether_underground": 1,
+        "ow_dungeons": 26,
+        "ow_ocean": 36,
+        "end_major": 7,
+        "ow_epic": 13,
+        "nether_minor": 17,
+        "nether_ruins": 13,
+        "nether_major": 5,
+        "end_minor": 24,
+        "end_islands": 19,
+        "ow_airship": 1,
+        "ow_sky_islands": 11,
+        "ow_underground_epic": 4,
+        "ow_cave_entrances": 6,
+        "ow_spawners": 8
+      },
+      "removed_legacy_sets": 133,
+      "preserved_structure_sets": [
+        "minecraft:ancient_cities",
+        "minecraft:end_cities",
+        "minecraft:mineshafts",
+        "minecraft:pillager_outposts",
+        "minecraft:strongholds",
+        "minecraft:villages",
+        "nova_structures:strongholds_bunker"
+      ]
+    }
+  }
+}
