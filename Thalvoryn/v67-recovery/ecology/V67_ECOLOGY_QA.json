@@ -1,0 +1,67 @@
+{
+  "status": "4/4 STATIC PASS - gameplay not tested",
+  "variants": {
+    "JAVA_1024": {
+      "zip": "/mnt/data/Thalvoryn_V67_work/V67_ECOLOGY_PRIVATE_TEST/Thalvoryn-JAVA-Nether1024-V67-ECOLOGY-TEST-UNRELEASED.zip",
+      "entries": 15391,
+      "json_mcmeta": 6033,
+      "nbt": 7300,
+      "sets": 25,
+      "ecology_sets": 18,
+      "structure_definitions": 549,
+      "nonvanilla_active_unique": 484,
+      "excluded_nonvanilla_ships": 54,
+      "templates_in_pools_missing": 0,
+      "native_horizon_checks": 0,
+      "crc": "PASS",
+      "game_test": "NOT RUN"
+    },
+    "JAVA_2032": {
+      "zip": "/mnt/data/Thalvoryn_V67_work/V67_ECOLOGY_PRIVATE_TEST/Thalvoryn-JAVA-Nether2032-V67-ECOLOGY-TEST-UNRELEASED.zip",
+      "entries": 15391,
+      "json_mcmeta": 6033,
+      "nbt": 7300,
+      "sets": 25,
+      "ecology_sets": 18,
+      "structure_definitions": 549,
+      "nonvanilla_active_unique": 484,
+      "excluded_nonvanilla_ships": 54,
+      "templates_in_pools_missing": 0,
+      "native_horizon_checks": 0,
+      "crc": "PASS",
+      "game_test": "NOT RUN"
+    },
+    "RUST_1024": {
+      "zip": "/mnt/data/Thalvoryn_V67_work/V67_ECOLOGY_PRIVATE_TEST/Thalvoryn-RUST-Nether1024-V67-ECOLOGY-TEST-UNRELEASED.zip",
+      "entries": 15391,
+      "json_mcmeta": 6033,
+      "nbt": 7300,
+      "sets": 25,
+      "ecology_sets": 18,
+      "structure_definitions": 549,
+      "nonvanilla_active_unique": 484,
+      "excluded_nonvanilla_ships": 54,
+      "templates_in_pools_missing": 0,
+      "native_horizon_checks": 142,
+      "crc": "PASS",
+      "game_test": "NOT RUN"
+    },
+    "RUST_2032": {
+      "zip": "/mnt/data/Thalvoryn_V67_work/V67_ECOLOGY_PRIVATE_TEST/Thalvoryn-RUST-Nether2032-V67-ECOLOGY-TEST-UNRELEASED.zip",
+      "entries": 15391,
+      "json_mcmeta": 6033,
+      "nbt": 7300,
+      "sets": 25,
+      "ecology_sets": 18,
+      "structure_definitions": 549,
+      "nonvanilla_active_unique": 484,
+      "excluded_nonvanilla_ships": 54,
+      "templates_in_pools_missing": 0,
+      "native_horizon_checks": 142,
+      "crc": "PASS",
+      "game_test": "NOT RUN"
+    }
+  },
+  "nbt_sha256_common": "13a068759ff4671bab57e111d7350f724df34b8d90720d2f64a1949929f82bbd",
+  "source_licenses": "Third-party redistribution unverified; private user testing only"
+}
