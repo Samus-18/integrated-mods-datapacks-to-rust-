@@ -1,0 +1,41 @@
+{
+  "dimension_active": {
+    "overworld": 391,
+    "end": 40,
+    "nether": 41
+  },
+  "structure_reference_errors": [],
+  "vanilla_reference_warnings": [
+    [
+      "vanilla_registry",
+      "minecraft:end_city"
+    ],
+    [
+      "vanilla_registry",
+      "minecraft:stronghold"
+    ],
+    [
+      "vanilla_registry",
+      "minecraft:village_plains"
+    ],
+    [
+      "vanilla_registry",
+      "minecraft:village_desert"
+    ],
+    [
+      "vanilla_registry",
+      "minecraft:village_savanna"
+    ],
+    [
+      "vanilla_registry",
+      "minecraft:village_snowy"
+    ],
+    [
+      "vanilla_registry",
+      "minecraft:village_taiga"
+    ]
+  ],
+  "loot_table_reference_count": 31829,
+  "loot_table_unique": 283,
+  "missing_own_loot_refs": []
+}
