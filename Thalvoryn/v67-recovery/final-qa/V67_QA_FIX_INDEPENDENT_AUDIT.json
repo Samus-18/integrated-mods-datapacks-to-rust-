@@ -1,0 +1,87 @@
+{
+  "status": "STATIC_QA_ONLY_NOT_GAMEPLAY_VALIDATED",
+  "variants": {
+    "JAVA_1024": {
+      "zip": "Thalvoryn-JAVA-Nether1024-V67-QA-FIX-TEST-UNRELEASED.zip",
+      "bytes": 34712764,
+      "sha256": "ea7d5e7c541d7a72998cb09b3ca29731b99f25f4bb41f105707c9042bfb3ecbc",
+      "files": 15405,
+      "json_meta": 6047,
+      "nbt": 7300,
+      "structures": 549,
+      "owned_nonvanilla": 480,
+      "sets": 25,
+      "active_biomes": {
+        "overworld": 57,
+        "the_nether": 8,
+        "the_end": 24
+      },
+      "changes_against_ecology": 112,
+      "nbt_bit_identical_to_ecology": true,
+      "legacy_loot_schema_errors": 0
+    },
+    "JAVA_2032": {
+      "zip": "Thalvoryn-JAVA-Nether2032-V67-QA-FIX-TEST-UNRELEASED.zip",
+      "bytes": 34712795,
+      "sha256": "bf617089804e21b21587b57e1d86d126c19ec3bc4fb55b4deb926266e112d448",
+      "files": 15405,
+      "json_meta": 6047,
+      "nbt": 7300,
+      "structures": 549,
+      "owned_nonvanilla": 480,
+      "sets": 25,
+      "active_biomes": {
+        "overworld": 57,
+        "the_nether": 8,
+        "the_end": 24
+      },
+      "changes_against_ecology": 112,
+      "nbt_bit_identical_to_ecology": true,
+      "legacy_loot_schema_errors": 0
+    },
+    "RUST_1024": {
+      "zip": "Thalvoryn-RUST-Nether1024-V67-QA-FIX-TEST-UNRELEASED.zip",
+      "bytes": 34719410,
+      "sha256": "bd66e8bc390993135dedca18db31d8ec666c5757915db18f60e1f687ce1b22cb",
+      "files": 15405,
+      "json_meta": 6047,
+      "nbt": 7300,
+      "structures": 549,
+      "owned_nonvanilla": 480,
+      "sets": 25,
+      "active_biomes": {
+        "overworld": 57,
+        "the_nether": 8,
+        "the_end": 24
+      },
+      "changes_against_ecology": 112,
+      "nbt_bit_identical_to_ecology": true,
+      "legacy_loot_schema_errors": 0
+    },
+    "RUST_2032": {
+      "zip": "Thalvoryn-RUST-Nether2032-V67-QA-FIX-TEST-UNRELEASED.zip",
+      "bytes": 34719489,
+      "sha256": "82894e7b9e0aa78b59bb3020a50c47e4c05e1fcbc39517308841e87550f5b637",
+      "files": 15405,
+      "json_meta": 6047,
+      "nbt": 7300,
+      "structures": 549,
+      "owned_nonvanilla": 480,
+      "sets": 25,
+      "active_biomes": {
+        "overworld": 57,
+        "the_nether": 8,
+        "the_end": 24
+      },
+      "changes_against_ecology": 112,
+      "nbt_bit_identical_to_ecology": true,
+      "legacy_loot_schema_errors": 0
+    }
+  },
+  "cross_variant": {
+    "all_same_member_paths": true,
+    "same_nbt_inventory": 7101
+  },
+  "errors": [],
+  "warnings": []
+}
