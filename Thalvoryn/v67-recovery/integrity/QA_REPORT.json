@@ -1,0 +1,87 @@
+{
+  "status": "PASS_STATIC_ONLY_NOT_GAME_TESTED",
+  "variants": {
+    "JAVA_1024": {
+      "platform": "JAVA",
+      "height": 1024,
+      "entries": 11323,
+      "nbt": 6835,
+      "pool_count": 1393,
+      "structure_defs": 536,
+      "structure_sets": 24,
+      "unique_active": 479,
+      "fallback_cycles": 0,
+      "errors": [],
+      "warnings": [],
+      "nbt_content_hash": "b8964fedcb564db875922e6d26e5fa988e6e0102068a573cc517346c9daf26ab",
+      "density_overworld_hash": "b8b75a638177fa34f2f4b56aaabe7f46c8f8557e57fb7540324a1f3062f65fc1",
+      "zip_sha256": "12ee706895e7b4ad2dfd1d577ebdda6fdd1e211d58799c06a6ee8fa607cc8a4b"
+    },
+    "JAVA_2032": {
+      "platform": "JAVA",
+      "height": 2032,
+      "entries": 11323,
+      "nbt": 6835,
+      "pool_count": 1393,
+      "structure_defs": 536,
+      "structure_sets": 24,
+      "unique_active": 479,
+      "fallback_cycles": 0,
+      "errors": [],
+      "warnings": [],
+      "nbt_content_hash": "b8964fedcb564db875922e6d26e5fa988e6e0102068a573cc517346c9daf26ab",
+      "density_overworld_hash": "b8b75a638177fa34f2f4b56aaabe7f46c8f8557e57fb7540324a1f3062f65fc1",
+      "zip_sha256": "4187789932f05037ebdd8a11a0bc41b7e2829f71bda6d51df935e87836ba3b04"
+    },
+    "RUST_1024": {
+      "platform": "RUST",
+      "height": 1024,
+      "entries": 11323,
+      "nbt": 6835,
+      "pool_count": 1393,
+      "structure_defs": 536,
+      "structure_sets": 24,
+      "unique_active": 479,
+      "fallback_cycles": 0,
+      "errors": [],
+      "warnings": [],
+      "nbt_content_hash": "b8964fedcb564db875922e6d26e5fa988e6e0102068a573cc517346c9daf26ab",
+      "density_overworld_hash": "b8b75a638177fa34f2f4b56aaabe7f46c8f8557e57fb7540324a1f3062f65fc1",
+      "zip_sha256": "7992856ca445b9ca58c04810cfd5e3d7d95201329da4db26385aa6bab9f9f5f2"
+    },
+    "RUST_2032": {
+      "platform": "RUST",
+      "height": 2032,
+      "entries": 11323,
+      "nbt": 6835,
+      "pool_count": 1393,
+      "structure_defs": 536,
+      "structure_sets": 24,
+      "unique_active": 479,
+      "fallback_cycles": 0,
+      "errors": [],
+      "warnings": [],
+      "nbt_content_hash": "b8964fedcb564db875922e6d26e5fa988e6e0102068a573cc517346c9daf26ab",
+      "density_overworld_hash": "b8b75a638177fa34f2f4b56aaabe7f46c8f8557e57fb7540324a1f3062f65fc1",
+      "zip_sha256": "65f3d06f844986a16bddd7fecfb319439458d7724a093a0f8751e58db5b496d4"
+    }
+  },
+  "nbt_identical_4_variants": true,
+  "overworld_density_identical_4_variants_and_sources": true,
+  "validated": [
+    "ZIP CRC and JSON",
+    "fallback cycles",
+    "missing active root pool and structure refs",
+    "variation/height integrity",
+    "Stellarity namespace absent",
+    "preserved NBT and Overworld density"
+  ],
+  "not_verified": [
+    "Minecraft 26.3 in-game launch",
+    "Horizon 2ebf00a runtime compatibility",
+    "real-world jigsaw adjacency/collision",
+    "actual loot-open behavior",
+    "performance/TPS and portal transitions",
+    "procedural caves connected to tunnels"
+  ]
+}
