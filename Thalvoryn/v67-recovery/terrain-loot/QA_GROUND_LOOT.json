@@ -1,0 +1,68 @@
+{
+  "status": "STATIC PASS ONLY – NO RUNTIME TEST",
+  "checks": [
+    "4/4 ZIP CRC, original member inventory preserved",
+    "4/4 JSON parse and Nether heights",
+    "all 6835 NBT templates identical between outputs",
+    "415 fixed loot seeds removed per variant",
+    "ocean ship deep-ocean biome and waterline settings",
+    "original Overworld, End and Nether noise/dimension files preserved",
+    "original Stellarity absence retained",
+    "Java/Rust differences confined to supported Horizon checks",
+    "six existing cave tunnel NBT retained and frequency modestly increased"
+  ],
+  "variants": {
+    "JAVA_1024": {
+      "zip": "Thalvoryn-JAVA-Nether1024-V67-GROUND-LOOT-TEST.zip",
+      "sha256": "d3079dea7b9fd98795244d10206339e2d05b4a08ccbfd491ffb261fb5f9f85a8",
+      "bytes": 30990219,
+      "members": 11323,
+      "nbt": 6,
+      "ship_definitions_corrected": 27,
+      "modified_files": 254,
+      "no_fixed_loot_seed": true,
+      "nbt_content_digest": "4bbc5133aa8744b148fb802fd3150f3486a6da819d63fdbf90f33613ef60c7b1",
+      "loot_remap_generic_remaining": 37
+    },
+    "JAVA_2032": {
+      "zip": "Thalvoryn-JAVA-Nether2032-V67-GROUND-LOOT-TEST.zip",
+      "sha256": "0c928ec4dec0d9e90a043c73e8e1507d02b35bc0ae315d92eb818eed48a1e71b",
+      "bytes": 30990250,
+      "members": 11323,
+      "nbt": 6,
+      "ship_definitions_corrected": 27,
+      "modified_files": 254,
+      "no_fixed_loot_seed": true,
+      "nbt_content_digest": "4bbc5133aa8744b148fb802fd3150f3486a6da819d63fdbf90f33613ef60c7b1",
+      "loot_remap_generic_remaining": 37
+    },
+    "RUST_1024": {
+      "zip": "Thalvoryn-RUST-Nether1024-V67-GROUND-LOOT-TEST.zip",
+      "sha256": "ac5f6ad248c6f5ec001eb49d560cd051e91ba83756045040f4d014bab7ab051e",
+      "bytes": 31002557,
+      "members": 11323,
+      "nbt": 6,
+      "ship_definitions_corrected": 27,
+      "modified_files": 264,
+      "no_fixed_loot_seed": true,
+      "nbt_content_digest": "4bbc5133aa8744b148fb802fd3150f3486a6da819d63fdbf90f33613ef60c7b1",
+      "loot_remap_generic_remaining": 37
+    },
+    "RUST_2032": {
+      "zip": "Thalvoryn-RUST-Nether2032-V67-GROUND-LOOT-TEST.zip",
+      "sha256": "349c60fe981b88ab3b9c5d9ff2e5becf988da56b2e128a655c778851e5394c67",
+      "bytes": 31002635,
+      "members": 11323,
+      "nbt": 6,
+      "ship_definitions_corrected": 27,
+      "modified_files": 264,
+      "no_fixed_loot_seed": true,
+      "nbt_content_digest": "4bbc5133aa8744b148fb802fd3150f3486a6da819d63fdbf90f33613ef60c7b1",
+      "loot_remap_generic_remaining": 37
+    }
+  },
+  "platform_differences": {
+    "1024": 295,
+    "2032": 295
+  }
+}
