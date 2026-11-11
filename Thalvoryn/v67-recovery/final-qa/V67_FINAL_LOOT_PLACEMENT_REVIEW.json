@@ -1,0 +1,178 @@
+{
+  "status": "STATIC_ONLY; GAMEPLAY, CHEST OPENING, LAVA/SLOPE, PORTALS, CAVE CONNECTION, AND TERRAIN BLENDING NOT VERIFIED",
+  "active_nonvanilla_definitions": 480,
+  "structure_sets_total": 25,
+  "loots_total": 1234,
+  "loot_internal_refs": 820,
+  "missing_custom_loot_refs": [],
+  "loot_dependency_cycles": [],
+  "active_start_pools_unresolved": [],
+  "disabled_known_broken_external_starts": [
+    "nova_structures:illager_manor",
+    "nova_structures:nether_keep",
+    "nova_structures:village_jungle",
+    "nova_structures:village_swamp"
+  ],
+  "no_projection_or_adaptation_jigsaws": 64,
+  "no_projection_or_adaptation_by_group": {
+    "ow_spawners": 4,
+    "ow_ocean": 28,
+    "ow_epic": 1,
+    "end_minor": 1,
+    "nether_underground": 3,
+    "end_islands": 15,
+    "ow_dungeons": 9,
+    "ow_small": 1,
+    "end_major": 2
+  },
+  "interpretation": "Many of these are intentionally free-floating sky/end islands, ocean ships at sea height, or underground dungeons. A worldgen game test, not just static JSON, is required for proof of terrain blending.",
+  "some_no_projection_examples": [
+    {
+      "id": "trek:monster_room/lower/deep_dark",
+      "group": "thalvoryn:ecology/ow_spawners",
+      "height": {
+        "above_bottom": 30
+      }
+    },
+    {
+      "id": "trek:monster_room/lower/default",
+      "group": "thalvoryn:ecology/ow_spawners",
+      "height": {
+        "above_bottom": 30
+      }
+    },
+    {
+      "id": "trek:monster_room/lower/dripstone",
+      "group": "thalvoryn:ecology/ow_spawners",
+      "height": {
+        "above_bottom": 30
+      }
+    },
+    {
+      "id": "trek:monster_room/lower/lush",
+      "group": "thalvoryn:ecology/ow_spawners",
+      "height": {
+        "above_bottom": 30
+      }
+    },
+    {
+      "id": "nova_structures:trident_trial_monument",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 41
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_01",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_04",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_06",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_10",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_11",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_13",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_16",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_19",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_22",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_24",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_25",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_28",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_31",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_34",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_37",
+      "group": "thalvoryn:ecology/ow_ocean",
+      "height": {
+        "absolute": 62
+      }
+    }
+  ],
+  "known_limitations": [
+    "6 descending tunnels lead to own authored cavities, not guaranteed naturally generated caves",
+    "69 chests with explicit Items [] retained as original empty inventories (not auto-filled)",
+    "64 jigsaw placements lack both heightmap projection and adaptation; most are intentional but their environment fit is unproven",
+    "End pirate ship subpool entries removed; End Castle/NBT runtime placement not tested",
+    "No original JJThunder terrain restoration in this QA pass; Overworld density resources unchanged from ECOLOGY"
+  ]
+}
