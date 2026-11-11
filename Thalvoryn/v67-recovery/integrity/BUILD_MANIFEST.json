@@ -1,0 +1,335 @@
+{
+  "test_build": true,
+  "release_status": "STATIC PASS REQUIRED; NOT RUNTIME-VERIFIED",
+  "source": "V67 ISOLATED NO STELLARITY",
+  "patches": [
+    {
+      "platform": "JAVA",
+      "height": 1024,
+      "fallback_cycles_in_source": 167,
+      "fallback_edges_rewired": 167,
+      "pool_aliases_added": [
+        {
+          "id": "nova_structures:hamlet/jockey",
+          "source": "nova_structures:piglin_camp/jockey",
+          "description": "nether jockey",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/fake_caves",
+          "source": "nova_structures:nether_skeleton_camp/fake_caves_fort",
+          "description": "neutral fortress cave",
+          "elements": 7
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/fake_caves_only_cave",
+          "source": "nova_structures:nether_skeleton_camp/fake_caves_only_cave_fort",
+          "description": "neutral fortress cave",
+          "elements": 4
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/small_defence",
+          "source": "nova_structures:nether_skeleton_camp/small_defence_fort",
+          "description": "neutral fortress defense",
+          "elements": 2
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/tower_solo",
+          "source": "nova_structures:nether_skeleton_camp/tower_solo_fort",
+          "description": "neutral fortress tower",
+          "elements": 3
+        },
+        {
+          "id": "nova_structures:pale_residence/decor_inside",
+          "source": "nova_structures:pale_residence/pale_residence_shelf_deco_room",
+          "description": "pale interior decoration",
+          "elements": 12
+        },
+        {
+          "id": "nova_structures:piglin_camp/ore",
+          "source": [
+            "nova_structures:piglin_camp/ore_gold",
+            "nova_structures:piglin_camp/ore_quartz"
+          ],
+          "description": "ore variety",
+          "elements": 4
+        },
+        {
+          "id": "nova_structures:shrine/combat/room_content",
+          "source": null,
+          "description": "optional dungeon room decoration, no compatible junction pieces",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:stray_fort_walls",
+          "source": null,
+          "description": "incompatible walls missing; retain jigsaw final stone block",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:witch_villa/bookshelf",
+          "source": null,
+          "description": "optional bookshelf, retain existing final bookshelf block",
+          "elements": 1
+        }
+      ],
+      "other_changes": [
+        "end_city_spacing_60_frequency_0.52",
+        "end_castle_ground_relative_highlands",
+        "ow_spawner_spacing_30_frequency_0.27"
+      ],
+      "json_changed_or_added": 181,
+      "source_zip": "Thalvoryn-JAVA-Nether1024-V67-ISOLATED-NO-STELLARITY-TEST.zip",
+      "result_zip": "Thalvoryn-JAVA-Nether1024-V67-INTEGRITY-REPAIR-TEST.zip",
+      "bytes": 31023553,
+      "sha256": "12ee706895e7b4ad2dfd1d577ebdda6fdd1e211d58799c06a6ee8fa607cc8a4b",
+      "elapsed_s": 2.16
+    },
+    {
+      "platform": "JAVA",
+      "height": 2032,
+      "fallback_cycles_in_source": 167,
+      "fallback_edges_rewired": 167,
+      "pool_aliases_added": [
+        {
+          "id": "nova_structures:hamlet/jockey",
+          "source": "nova_structures:piglin_camp/jockey",
+          "description": "nether jockey",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/fake_caves",
+          "source": "nova_structures:nether_skeleton_camp/fake_caves_fort",
+          "description": "neutral fortress cave",
+          "elements": 7
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/fake_caves_only_cave",
+          "source": "nova_structures:nether_skeleton_camp/fake_caves_only_cave_fort",
+          "description": "neutral fortress cave",
+          "elements": 4
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/small_defence",
+          "source": "nova_structures:nether_skeleton_camp/small_defence_fort",
+          "description": "neutral fortress defense",
+          "elements": 2
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/tower_solo",
+          "source": "nova_structures:nether_skeleton_camp/tower_solo_fort",
+          "description": "neutral fortress tower",
+          "elements": 3
+        },
+        {
+          "id": "nova_structures:pale_residence/decor_inside",
+          "source": "nova_structures:pale_residence/pale_residence_shelf_deco_room",
+          "description": "pale interior decoration",
+          "elements": 12
+        },
+        {
+          "id": "nova_structures:piglin_camp/ore",
+          "source": [
+            "nova_structures:piglin_camp/ore_gold",
+            "nova_structures:piglin_camp/ore_quartz"
+          ],
+          "description": "ore variety",
+          "elements": 4
+        },
+        {
+          "id": "nova_structures:shrine/combat/room_content",
+          "source": null,
+          "description": "optional dungeon room decoration, no compatible junction pieces",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:stray_fort_walls",
+          "source": null,
+          "description": "incompatible walls missing; retain jigsaw final stone block",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:witch_villa/bookshelf",
+          "source": null,
+          "description": "optional bookshelf, retain existing final bookshelf block",
+          "elements": 1
+        }
+      ],
+      "other_changes": [
+        "end_city_spacing_60_frequency_0.52",
+        "end_castle_ground_relative_highlands",
+        "ow_spawner_spacing_30_frequency_0.27"
+      ],
+      "json_changed_or_added": 181,
+      "source_zip": "Thalvoryn-JAVA-Nether2032-V67-ISOLATED-NO-STELLARITY-TEST.zip",
+      "result_zip": "Thalvoryn-JAVA-Nether2032-V67-INTEGRITY-REPAIR-TEST.zip",
+      "bytes": 31023584,
+      "sha256": "4187789932f05037ebdd8a11a0bc41b7e2829f71bda6d51df935e87836ba3b04",
+      "elapsed_s": 2.02
+    },
+    {
+      "platform": "RUST",
+      "height": 1024,
+      "fallback_cycles_in_source": 167,
+      "fallback_edges_rewired": 167,
+      "pool_aliases_added": [
+        {
+          "id": "nova_structures:hamlet/jockey",
+          "source": "nova_structures:piglin_camp/jockey",
+          "description": "nether jockey",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/fake_caves",
+          "source": "nova_structures:nether_skeleton_camp/fake_caves_fort",
+          "description": "neutral fortress cave",
+          "elements": 7
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/fake_caves_only_cave",
+          "source": "nova_structures:nether_skeleton_camp/fake_caves_only_cave_fort",
+          "description": "neutral fortress cave",
+          "elements": 4
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/small_defence",
+          "source": "nova_structures:nether_skeleton_camp/small_defence_fort",
+          "description": "neutral fortress defense",
+          "elements": 2
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/tower_solo",
+          "source": "nova_structures:nether_skeleton_camp/tower_solo_fort",
+          "description": "neutral fortress tower",
+          "elements": 3
+        },
+        {
+          "id": "nova_structures:pale_residence/decor_inside",
+          "source": "nova_structures:pale_residence/pale_residence_shelf_deco_room",
+          "description": "pale interior decoration",
+          "elements": 12
+        },
+        {
+          "id": "nova_structures:piglin_camp/ore",
+          "source": [
+            "nova_structures:piglin_camp/ore_gold",
+            "nova_structures:piglin_camp/ore_quartz"
+          ],
+          "description": "ore variety",
+          "elements": 4
+        },
+        {
+          "id": "nova_structures:shrine/combat/room_content",
+          "source": null,
+          "description": "optional dungeon room decoration, no compatible junction pieces",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:stray_fort_walls",
+          "source": null,
+          "description": "incompatible walls missing; retain jigsaw final stone block",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:witch_villa/bookshelf",
+          "source": null,
+          "description": "optional bookshelf, retain existing final bookshelf block",
+          "elements": 1
+        }
+      ],
+      "other_changes": [
+        "end_city_spacing_60_frequency_0.52",
+        "end_castle_ground_relative_highlands",
+        "ow_spawner_spacing_30_frequency_0.27"
+      ],
+      "json_changed_or_added": 181,
+      "source_zip": "Thalvoryn-RUST-Nether1024-V67-ISOLATED-NO-STELLARITY-TEST.zip",
+      "result_zip": "Thalvoryn-RUST-Nether1024-V67-INTEGRITY-REPAIR-TEST.zip",
+      "bytes": 31032347,
+      "sha256": "7992856ca445b9ca58c04810cfd5e3d7d95201329da4db26385aa6bab9f9f5f2",
+      "elapsed_s": 2.06
+    },
+    {
+      "platform": "RUST",
+      "height": 2032,
+      "fallback_cycles_in_source": 167,
+      "fallback_edges_rewired": 167,
+      "pool_aliases_added": [
+        {
+          "id": "nova_structures:hamlet/jockey",
+          "source": "nova_structures:piglin_camp/jockey",
+          "description": "nether jockey",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/fake_caves",
+          "source": "nova_structures:nether_skeleton_camp/fake_caves_fort",
+          "description": "neutral fortress cave",
+          "elements": 7
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/fake_caves_only_cave",
+          "source": "nova_structures:nether_skeleton_camp/fake_caves_only_cave_fort",
+          "description": "neutral fortress cave",
+          "elements": 4
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/small_defence",
+          "source": "nova_structures:nether_skeleton_camp/small_defence_fort",
+          "description": "neutral fortress defense",
+          "elements": 2
+        },
+        {
+          "id": "nova_structures:nether_skeleton_camp/tower_solo",
+          "source": "nova_structures:nether_skeleton_camp/tower_solo_fort",
+          "description": "neutral fortress tower",
+          "elements": 3
+        },
+        {
+          "id": "nova_structures:pale_residence/decor_inside",
+          "source": "nova_structures:pale_residence/pale_residence_shelf_deco_room",
+          "description": "pale interior decoration",
+          "elements": 12
+        },
+        {
+          "id": "nova_structures:piglin_camp/ore",
+          "source": [
+            "nova_structures:piglin_camp/ore_gold",
+            "nova_structures:piglin_camp/ore_quartz"
+          ],
+          "description": "ore variety",
+          "elements": 4
+        },
+        {
+          "id": "nova_structures:shrine/combat/room_content",
+          "source": null,
+          "description": "optional dungeon room decoration, no compatible junction pieces",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:stray_fort_walls",
+          "source": null,
+          "description": "incompatible walls missing; retain jigsaw final stone block",
+          "elements": 1
+        },
+        {
+          "id": "nova_structures:witch_villa/bookshelf",
+          "source": null,
+          "description": "optional bookshelf, retain existing final bookshelf block",
+          "elements": 1
+        }
+      ],
+      "other_changes": [
+        "end_city_spacing_60_frequency_0.52",
+        "end_castle_ground_relative_highlands",
+        "ow_spawner_spacing_30_frequency_0.27"
+      ],
+      "json_changed_or_added": 181,
+      "source_zip": "Thalvoryn-RUST-Nether2032-V67-ISOLATED-NO-STELLARITY-TEST.zip",
+      "result_zip": "Thalvoryn-RUST-Nether2032-V67-INTEGRITY-REPAIR-TEST.zip",
+      "bytes": 31032425,
+      "sha256": "65f3d06f844986a16bddd7fecfb319439458d7724a093a0f8751e58db5b496d4",
+      "elapsed_s": 2.05
+    }
+  ]
+}
