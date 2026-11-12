@@ -1,0 +1,862 @@
+{
+  "kind": "STATIC TEST ONLY",
+  "not_tested": [
+    "Minecraft game runtime",
+    "Horizon TPS/FPS",
+    "Natural cave adjacency",
+    "real terrain generation in seed"
+  ],
+  "release": "V71",
+  "variants": [
+    {
+      "changes": {
+        "cave_geometry": [
+          {
+            "added_air": 752,
+            "ends": [
+              [
+                30,
+                20,
+                82
+              ],
+              [
+                78,
+                18,
+                91
+              ]
+            ],
+            "final_blocks": 43005,
+            "original_blocks": 42253,
+            "solid_to_air": 49,
+            "variant": 1
+          },
+          {
+            "added_air": 470,
+            "ends": [
+              [
+                30,
+                20,
+                84
+              ],
+              [
+                78,
+                18,
+                90
+              ]
+            ],
+            "final_blocks": 56127,
+            "original_blocks": 55657,
+            "solid_to_air": 71,
+            "variant": 2
+          },
+          {
+            "added_air": 711,
+            "ends": [
+              [
+                30,
+                18,
+                85
+              ],
+              [
+                78,
+                19,
+                90
+              ]
+            ],
+            "final_blocks": 53760,
+            "original_blocks": 53049,
+            "solid_to_air": 42,
+            "variant": 3
+          },
+          {
+            "added_air": 593,
+            "ends": [
+              [
+                30,
+                18,
+                86
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 51083,
+            "original_blocks": 50490,
+            "solid_to_air": 49,
+            "variant": 4
+          },
+          {
+            "added_air": 661,
+            "ends": [
+              [
+                30,
+                18,
+                87
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 50136,
+            "original_blocks": 49475,
+            "solid_to_air": 59,
+            "variant": 5
+          },
+          {
+            "added_air": 485,
+            "ends": [
+              [
+                30,
+                20,
+                87
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 57760,
+            "original_blocks": 57275,
+            "solid_to_air": 54,
+            "variant": 6
+          }
+        ],
+        "end_guards": [
+          "thunderfusion:end/starlight_observatory",
+          "thunderfusion:end/void_citadel"
+        ],
+        "ground_anchor": [
+          "nova_structures:witch_villa"
+        ],
+        "nether_guards": [
+          "nova_structures:nether_port",
+          "nova_structures:nether_skeleton_camp_fort",
+          "nova_structures:nether_skeleton_tower_fort",
+          "structures:nether_arena",
+          "thalvoryn:nether/cinder_viaduct",
+          "thalvoryn:nether/skybridge_ruin"
+        ],
+        "nether_height": [
+          {
+            "from": {
+              "absolute": 32
+            },
+            "id": "explorify:black_spiral",
+            "to": {
+              "max_inclusive": {
+                "absolute": 864
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 10
+            },
+            "id": "hellish_trials:nether_trial",
+            "to": {
+              "max_inclusive": {
+                "absolute": 864
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 32
+            },
+            "id": "nova_structures:piglin_donjon",
+            "to": {
+              "max_inclusive": {
+                "absolute": 864
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 34
+            },
+            "id": "nova_structures:sealing_halls",
+            "to": {
+              "max_inclusive": {
+                "absolute": 864
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "slope_guards": [
+          "nova_structures:bogged_camp",
+          "nova_structures:parched_camp",
+          "nova_structures:remnant_lone_shrine_sentinel",
+          "nova_structures:remnant_shrine_research_station",
+          "nova_structures:remnant_shrine_sentinel_mass_grave",
+          "nova_structures:small_creeping_crypt",
+          "nova_structures:stray_camp",
+          "nova_structures:surface_dungeon_default",
+          "nova_structures:surface_dungeon_desert",
+          "nova_structures:surface_dungeon_snowy",
+          "nova_structures:surface_dungeon_swamp",
+          "nova_structures:surface_trial_dungeon_default",
+          "nova_structures:surface_trial_dungeon_desert",
+          "nova_structures:surface_trial_dungeon_snowy",
+          "nova_structures:surface_trial_dungeon_swamp",
+          "structures:dungeon",
+          "structuresplus:camp",
+          "trek:overworld/medium/bone_dragon",
+          "trek:overworld/medium/claw_spike",
+          "trek:overworld/medium/frozen_tree",
+          "trek:overworld/medium/lush_ice",
+          "trek:overworld/medium/railroad",
+          "trek:overworld/medium/snowman",
+          "trek:overworld/medium/star_spike",
+          "trek:overworld/medium/stelzen",
+          "trek:overworld/medium/three_finger_ice",
+          "trek:overworld/medium/water_reservoir_pillager",
+          "trek:overworld/rare/elven_tree",
+          "trek:overworld/rare/portal_sword",
+          "trek:overworld/rare/sunken_city"
+        ]
+      },
+      "height": 1024,
+      "platform": "RUST",
+      "sha256": "feecaec9664792984f31c95df43ed544164369330a9499dea2d0c78f138a00f1",
+      "target": "/mnt/data/v71_work/release/Thalvoryn-RUST-Nether1024-V71-STATIC-TEST.zip"
+    },
+    {
+      "changes": {
+        "cave_geometry": [
+          {
+            "added_air": 752,
+            "ends": [
+              [
+                30,
+                20,
+                82
+              ],
+              [
+                78,
+                18,
+                91
+              ]
+            ],
+            "final_blocks": 43005,
+            "original_blocks": 42253,
+            "solid_to_air": 49,
+            "variant": 1
+          },
+          {
+            "added_air": 470,
+            "ends": [
+              [
+                30,
+                20,
+                84
+              ],
+              [
+                78,
+                18,
+                90
+              ]
+            ],
+            "final_blocks": 56127,
+            "original_blocks": 55657,
+            "solid_to_air": 71,
+            "variant": 2
+          },
+          {
+            "added_air": 711,
+            "ends": [
+              [
+                30,
+                18,
+                85
+              ],
+              [
+                78,
+                19,
+                90
+              ]
+            ],
+            "final_blocks": 53760,
+            "original_blocks": 53049,
+            "solid_to_air": 42,
+            "variant": 3
+          },
+          {
+            "added_air": 593,
+            "ends": [
+              [
+                30,
+                18,
+                86
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 51083,
+            "original_blocks": 50490,
+            "solid_to_air": 49,
+            "variant": 4
+          },
+          {
+            "added_air": 661,
+            "ends": [
+              [
+                30,
+                18,
+                87
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 50136,
+            "original_blocks": 49475,
+            "solid_to_air": 59,
+            "variant": 5
+          },
+          {
+            "added_air": 485,
+            "ends": [
+              [
+                30,
+                20,
+                87
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 57760,
+            "original_blocks": 57275,
+            "solid_to_air": 54,
+            "variant": 6
+          }
+        ],
+        "end_guards": [
+          "thunderfusion:end/starlight_observatory",
+          "thunderfusion:end/void_citadel"
+        ],
+        "ground_anchor": [
+          "nova_structures:witch_villa"
+        ],
+        "nether_guards": [
+          "nova_structures:nether_port",
+          "nova_structures:nether_skeleton_camp_fort",
+          "nova_structures:nether_skeleton_tower_fort",
+          "structures:nether_arena",
+          "thalvoryn:nether/cinder_viaduct",
+          "thalvoryn:nether/skybridge_ruin"
+        ],
+        "nether_height": [
+          {
+            "from": {
+              "absolute": 32
+            },
+            "id": "explorify:black_spiral",
+            "to": {
+              "max_inclusive": {
+                "absolute": 1872
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 10
+            },
+            "id": "hellish_trials:nether_trial",
+            "to": {
+              "max_inclusive": {
+                "absolute": 1872
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 32
+            },
+            "id": "nova_structures:piglin_donjon",
+            "to": {
+              "max_inclusive": {
+                "absolute": 1872
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 34
+            },
+            "id": "nova_structures:sealing_halls",
+            "to": {
+              "max_inclusive": {
+                "absolute": 1872
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "slope_guards": [
+          "nova_structures:bogged_camp",
+          "nova_structures:parched_camp",
+          "nova_structures:remnant_lone_shrine_sentinel",
+          "nova_structures:remnant_shrine_research_station",
+          "nova_structures:remnant_shrine_sentinel_mass_grave",
+          "nova_structures:small_creeping_crypt",
+          "nova_structures:stray_camp",
+          "nova_structures:surface_dungeon_default",
+          "nova_structures:surface_dungeon_desert",
+          "nova_structures:surface_dungeon_snowy",
+          "nova_structures:surface_dungeon_swamp",
+          "nova_structures:surface_trial_dungeon_default",
+          "nova_structures:surface_trial_dungeon_desert",
+          "nova_structures:surface_trial_dungeon_snowy",
+          "nova_structures:surface_trial_dungeon_swamp",
+          "structures:dungeon",
+          "structuresplus:camp",
+          "trek:overworld/medium/bone_dragon",
+          "trek:overworld/medium/claw_spike",
+          "trek:overworld/medium/frozen_tree",
+          "trek:overworld/medium/lush_ice",
+          "trek:overworld/medium/railroad",
+          "trek:overworld/medium/snowman",
+          "trek:overworld/medium/star_spike",
+          "trek:overworld/medium/stelzen",
+          "trek:overworld/medium/three_finger_ice",
+          "trek:overworld/medium/water_reservoir_pillager",
+          "trek:overworld/rare/elven_tree",
+          "trek:overworld/rare/portal_sword",
+          "trek:overworld/rare/sunken_city"
+        ]
+      },
+      "height": 2032,
+      "platform": "RUST",
+      "sha256": "f49edc555edbbb054762c7af806b7ce1290872f798414b8555a1779bc78efd9b",
+      "target": "/mnt/data/v71_work/release/Thalvoryn-RUST-Nether2032-V71-STATIC-TEST.zip"
+    },
+    {
+      "changes": {
+        "cave_geometry": [
+          {
+            "added_air": 752,
+            "ends": [
+              [
+                30,
+                20,
+                82
+              ],
+              [
+                78,
+                18,
+                91
+              ]
+            ],
+            "final_blocks": 43005,
+            "original_blocks": 42253,
+            "solid_to_air": 49,
+            "variant": 1
+          },
+          {
+            "added_air": 470,
+            "ends": [
+              [
+                30,
+                20,
+                84
+              ],
+              [
+                78,
+                18,
+                90
+              ]
+            ],
+            "final_blocks": 56127,
+            "original_blocks": 55657,
+            "solid_to_air": 71,
+            "variant": 2
+          },
+          {
+            "added_air": 711,
+            "ends": [
+              [
+                30,
+                18,
+                85
+              ],
+              [
+                78,
+                19,
+                90
+              ]
+            ],
+            "final_blocks": 53760,
+            "original_blocks": 53049,
+            "solid_to_air": 42,
+            "variant": 3
+          },
+          {
+            "added_air": 593,
+            "ends": [
+              [
+                30,
+                18,
+                86
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 51083,
+            "original_blocks": 50490,
+            "solid_to_air": 49,
+            "variant": 4
+          },
+          {
+            "added_air": 661,
+            "ends": [
+              [
+                30,
+                18,
+                87
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 50136,
+            "original_blocks": 49475,
+            "solid_to_air": 59,
+            "variant": 5
+          },
+          {
+            "added_air": 485,
+            "ends": [
+              [
+                30,
+                20,
+                87
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 57760,
+            "original_blocks": 57275,
+            "solid_to_air": 54,
+            "variant": 6
+          }
+        ],
+        "end_guards": [],
+        "ground_anchor": [
+          "nova_structures:witch_villa"
+        ],
+        "nether_guards": [],
+        "nether_height": [
+          {
+            "from": {
+              "absolute": 32
+            },
+            "id": "explorify:black_spiral",
+            "to": {
+              "max_inclusive": {
+                "absolute": 864
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 10
+            },
+            "id": "hellish_trials:nether_trial",
+            "to": {
+              "max_inclusive": {
+                "absolute": 864
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 32
+            },
+            "id": "nova_structures:piglin_donjon",
+            "to": {
+              "max_inclusive": {
+                "absolute": 864
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 34
+            },
+            "id": "nova_structures:sealing_halls",
+            "to": {
+              "max_inclusive": {
+                "absolute": 864
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "slope_guards": []
+      },
+      "height": 1024,
+      "platform": "JAVA",
+      "sha256": "72da5c1d63870c28f2b57911eb8dfece25ac1262a6202fd05cb990f1dafd3c81",
+      "target": "/mnt/data/v71_work/release/Thalvoryn-JAVA-Nether1024-V71-STATIC-TEST.zip"
+    },
+    {
+      "changes": {
+        "cave_geometry": [
+          {
+            "added_air": 752,
+            "ends": [
+              [
+                30,
+                20,
+                82
+              ],
+              [
+                78,
+                18,
+                91
+              ]
+            ],
+            "final_blocks": 43005,
+            "original_blocks": 42253,
+            "solid_to_air": 49,
+            "variant": 1
+          },
+          {
+            "added_air": 470,
+            "ends": [
+              [
+                30,
+                20,
+                84
+              ],
+              [
+                78,
+                18,
+                90
+              ]
+            ],
+            "final_blocks": 56127,
+            "original_blocks": 55657,
+            "solid_to_air": 71,
+            "variant": 2
+          },
+          {
+            "added_air": 711,
+            "ends": [
+              [
+                30,
+                18,
+                85
+              ],
+              [
+                78,
+                19,
+                90
+              ]
+            ],
+            "final_blocks": 53760,
+            "original_blocks": 53049,
+            "solid_to_air": 42,
+            "variant": 3
+          },
+          {
+            "added_air": 593,
+            "ends": [
+              [
+                30,
+                18,
+                86
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 51083,
+            "original_blocks": 50490,
+            "solid_to_air": 49,
+            "variant": 4
+          },
+          {
+            "added_air": 661,
+            "ends": [
+              [
+                30,
+                18,
+                87
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 50136,
+            "original_blocks": 49475,
+            "solid_to_air": 59,
+            "variant": 5
+          },
+          {
+            "added_air": 485,
+            "ends": [
+              [
+                30,
+                20,
+                87
+              ],
+              [
+                78,
+                20,
+                89
+              ]
+            ],
+            "final_blocks": 57760,
+            "original_blocks": 57275,
+            "solid_to_air": 54,
+            "variant": 6
+          }
+        ],
+        "end_guards": [],
+        "ground_anchor": [
+          "nova_structures:witch_villa"
+        ],
+        "nether_guards": [],
+        "nether_height": [
+          {
+            "from": {
+              "absolute": 32
+            },
+            "id": "explorify:black_spiral",
+            "to": {
+              "max_inclusive": {
+                "absolute": 1872
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 10
+            },
+            "id": "hellish_trials:nether_trial",
+            "to": {
+              "max_inclusive": {
+                "absolute": 1872
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 32
+            },
+            "id": "nova_structures:piglin_donjon",
+            "to": {
+              "max_inclusive": {
+                "absolute": 1872
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          },
+          {
+            "from": {
+              "absolute": 34
+            },
+            "id": "nova_structures:sealing_halls",
+            "to": {
+              "max_inclusive": {
+                "absolute": 1872
+              },
+              "min_inclusive": {
+                "absolute": 28
+              },
+              "type": "minecraft:uniform"
+            }
+          }
+        ],
+        "slope_guards": []
+      },
+      "height": 2032,
+      "platform": "JAVA",
+      "sha256": "bd1fd2f69c41d45e9c0eb1d3b4492087ddbbbb06ef4ca36a1f4dd3d5806f047d",
+      "target": "/mnt/data/v71_work/release/Thalvoryn-JAVA-Nether2032-V71-STATIC-TEST.zip"
+    }
+  ]
+}
