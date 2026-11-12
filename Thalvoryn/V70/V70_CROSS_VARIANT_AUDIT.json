@@ -1,0 +1,194 @@
+{
+  "status": "PASS_STATIC_ONLY_NOT_GAME_TESTED",
+  "nbt_variant_sha256": "c5556432b3e073542eac0e0dc9ea0cae059e11e650049a84dc8a53165b09c13c",
+  "variants": {
+    "Thalvoryn-JAVA-Nether1024-V70-PRIVATE-TEST.zip": {
+      "nbt_sha": "c5556432b3e073542eac0e0dc9ea0cae059e11e650049a84dc8a53165b09c13c",
+      "count": 6835,
+      "size": 31011313
+    },
+    "Thalvoryn-JAVA-Nether2032-V70-PRIVATE-TEST.zip": {
+      "nbt_sha": "c5556432b3e073542eac0e0dc9ea0cae059e11e650049a84dc8a53165b09c13c",
+      "count": 6835,
+      "size": 31011358
+    },
+    "Thalvoryn-RUST-Nether1024-V70-PRIVATE-TEST.zip": {
+      "nbt_sha": "c5556432b3e073542eac0e0dc9ea0cae059e11e650049a84dc8a53165b09c13c",
+      "count": 6835,
+      "size": 31023685
+    },
+    "Thalvoryn-RUST-Nether2032-V70-PRIVATE-TEST.zip": {
+      "nbt_sha": "c5556432b3e073542eac0e0dc9ea0cae059e11e650049a84dc8a53165b09c13c",
+      "count": 6835,
+      "size": 31023764
+    }
+  },
+  "boat_footprint_checks": [
+    {
+      "id": "thalvoryn:overworld/imported/ships_01",
+      "length_width_max": 98,
+      "biome_radius": 8
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_04",
+      "length_width_max": 89,
+      "biome_radius": 7
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_06",
+      "length_width_max": 94,
+      "biome_radius": 7
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_10",
+      "length_width_max": 81,
+      "biome_radius": 7
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_11",
+      "length_width_max": 74,
+      "biome_radius": 6
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_13",
+      "length_width_max": 74,
+      "biome_radius": 6
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_16",
+      "length_width_max": 74,
+      "biome_radius": 6
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_19",
+      "length_width_max": 75,
+      "biome_radius": 6
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_22",
+      "length_width_max": 67,
+      "biome_radius": 6
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_24",
+      "length_width_max": 66,
+      "biome_radius": 6
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_25",
+      "length_width_max": 54,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_28",
+      "length_width_max": 55,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_31",
+      "length_width_max": 55,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_34",
+      "length_width_max": 53,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_37",
+      "length_width_max": 47,
+      "biome_radius": 4
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_40",
+      "length_width_max": 52,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_43",
+      "length_width_max": 52,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_46",
+      "length_width_max": 52,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_49",
+      "length_width_max": 77,
+      "biome_radius": 6
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_52",
+      "length_width_max": 50,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_55",
+      "length_width_max": 52,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_58",
+      "length_width_max": 46,
+      "biome_radius": 4
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_61",
+      "length_width_max": 48,
+      "biome_radius": 4
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_64",
+      "length_width_max": 64,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_67",
+      "length_width_max": 54,
+      "biome_radius": 5
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_70",
+      "length_width_max": 46,
+      "biome_radius": 4
+    },
+    {
+      "id": "thalvoryn:overworld/imported/ships_73",
+      "length_width_max": 53,
+      "biome_radius": 5
+    },
+    {
+      "id": "trek:overworld/medium/birch_trade",
+      "length_width_max": 80,
+      "biome_radius": 6
+    },
+    {
+      "id": "trek:overworld/medium/cold_red_trade",
+      "length_width_max": 41,
+      "biome_radius": 4
+    },
+    {
+      "id": "trek:overworld/medium/dark_oak_trade",
+      "length_width_max": 41,
+      "biome_radius": 4
+    },
+    {
+      "id": "trek:overworld/medium/jungle_trade",
+      "length_width_max": 20,
+      "biome_radius": 3
+    },
+    {
+      "id": "trek:overworld/medium/ship_pillager",
+      "length_width_max": 21,
+      "biome_radius": 3
+    },
+    {
+      "id": "trek:overworld/medium/small_red_trade",
+      "length_width_max": 21,
+      "biome_radius": 3
+    }
+  ],
+  "warning": "Biome radius is center/nearby-biome screening; it does not prove entire hull is over water or any Java runtime result."
+}
