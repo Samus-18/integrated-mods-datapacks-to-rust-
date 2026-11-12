@@ -1,0 +1,515 @@
+{
+  "based_on": "V68 private candidate",
+  "changes_by_variant": {
+    "JAVA_1024": {
+      "bytes": 31010337,
+      "changes": [
+        {
+          "path": "data/nova_structures/worldgen/structure/end_castle.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/sealing_halls.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/stray_fort.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/toxic_lair.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/cinder_viaduct.json",
+          "reason": "terrain beard to soften exposed bridge footing"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/skybridge_ruin.json",
+          "reason": "terrain beard to soften exposed bridge footing"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/common/nether_pillar.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/medium/overworld_leak_1.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/medium/overworld_leak_2.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340"
+        },
+        {
+          "path": "pack.mcmeta",
+          "reason": "update V69 packaging description"
+        },
+        {
+          "path": "data/thalvoryn/function/version.mcfunction",
+          "reason": "V69 version command"
+        },
+        {
+          "path": "data/thalvoryn/function/check.mcfunction",
+          "reason": "V69 check command"
+        },
+        {
+          "path": "data/thalvoryn/function/help.mcfunction",
+          "reason": "V69 help label"
+        },
+        {
+          "path": "data/thalvoryn/function/horizon/status.mcfunction",
+          "reason": "V69 status label"
+        },
+        {
+          "path": "V69_CHANGELOG_CZ.txt",
+          "reason": "V69 changelog"
+        }
+      ],
+      "counts": {
+        "end_surface_rust_checks": 0,
+        "mob_entries_tuned": 14,
+        "mob_structures_tuned": 4,
+        "nether_bridge_terrain": 2,
+        "nether_surface_rust_checks": 0,
+        "trek_nether_surface": 3
+      },
+      "file": "Thalvoryn-JAVA-Nether1024-V69-PRIVATE-TEST.zip",
+      "sha256": "9181131d59db0bd993612c25dc02b8337e4cb27e852f49c3c5d73272bdf5a5aa"
+    },
+    "JAVA_2032": {
+      "bytes": 31010383,
+      "changes": [
+        {
+          "path": "data/nova_structures/worldgen/structure/end_castle.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/sealing_halls.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/stray_fort.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/toxic_lair.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/cinder_viaduct.json",
+          "reason": "terrain beard to soften exposed bridge footing"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/skybridge_ruin.json",
+          "reason": "terrain beard to soften exposed bridge footing"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/common/nether_pillar.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/medium/overworld_leak_1.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/medium/overworld_leak_2.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340"
+        },
+        {
+          "path": "pack.mcmeta",
+          "reason": "update V69 packaging description"
+        },
+        {
+          "path": "data/thalvoryn/function/version.mcfunction",
+          "reason": "V69 version command"
+        },
+        {
+          "path": "data/thalvoryn/function/check.mcfunction",
+          "reason": "V69 check command"
+        },
+        {
+          "path": "data/thalvoryn/function/help.mcfunction",
+          "reason": "V69 help label"
+        },
+        {
+          "path": "data/thalvoryn/function/horizon/status.mcfunction",
+          "reason": "V69 status label"
+        },
+        {
+          "path": "V69_CHANGELOG_CZ.txt",
+          "reason": "V69 changelog"
+        }
+      ],
+      "counts": {
+        "end_surface_rust_checks": 0,
+        "mob_entries_tuned": 14,
+        "mob_structures_tuned": 4,
+        "nether_bridge_terrain": 2,
+        "nether_surface_rust_checks": 0,
+        "trek_nether_surface": 3
+      },
+      "file": "Thalvoryn-JAVA-Nether2032-V69-PRIVATE-TEST.zip",
+      "sha256": "007657830339a80a9ae6c0841cfecdac10c0a9b9f75060a38651e4df6b212cd1"
+    },
+    "RUST_1024": {
+      "bytes": 31022453,
+      "changes": [
+        {
+          "path": "data/nova_structures/worldgen/structure/end_castle.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/sealing_halls.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/stray_fort.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/toxic_lair.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_05.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_07.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_11.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_13.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_16.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_19.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_22.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_25.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_31.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/cinder_viaduct.json",
+          "reason": "terrain beard to soften exposed bridge footing"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_04.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_06.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_10.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_15.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_18.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_21.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_24.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_27.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/sites/basalt_outpost.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/sites/crimson_camp.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/sites/soul_waystation.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/sites/warped_garden.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/skybridge_ruin.json",
+          "reason": "terrain beard to soften exposed bridge footing"
+        },
+        {
+          "path": "data/thunderfusion/worldgen/structure/end/echoes_shrine.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thunderfusion/worldgen/structure/end/glass_archive.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thunderfusion/worldgen/structure/end/obsidian_remnant.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thunderfusion/worldgen/structure/end/starlight_observatory.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thunderfusion/worldgen/structure/end/void_citadel.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/common/nether_pillar.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340; Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/medium/overworld_leak_1.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340; Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/medium/overworld_leak_2.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340; Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "pack.mcmeta",
+          "reason": "update V69 packaging description"
+        },
+        {
+          "path": "data/thalvoryn/function/version.mcfunction",
+          "reason": "V69 version command"
+        },
+        {
+          "path": "data/thalvoryn/function/check.mcfunction",
+          "reason": "V69 check command"
+        },
+        {
+          "path": "data/thalvoryn/function/help.mcfunction",
+          "reason": "V69 help label"
+        },
+        {
+          "path": "data/thalvoryn/function/horizon/status.mcfunction",
+          "reason": "V69 status label"
+        },
+        {
+          "path": "V69_CHANGELOG_CZ.txt",
+          "reason": "V69 changelog"
+        }
+      ],
+      "counts": {
+        "end_surface_rust_checks": 14,
+        "mob_entries_tuned": 14,
+        "mob_structures_tuned": 4,
+        "nether_bridge_terrain": 2,
+        "nether_surface_rust_checks": 15,
+        "trek_nether_surface": 3
+      },
+      "file": "Thalvoryn-RUST-Nether1024-V69-PRIVATE-TEST.zip",
+      "sha256": "b74b8cc4acc9f828c0605db91eab311474b565551d6cbe891b3b5b3d8480732d"
+    },
+    "RUST_2032": {
+      "bytes": 31022531,
+      "changes": [
+        {
+          "path": "data/nova_structures/worldgen/structure/end_castle.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/sealing_halls.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/stray_fort.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/nova_structures/worldgen/structure/toxic_lair.json",
+          "reason": "cap excessive structure-spawn weights/group maxima"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_05.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_07.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_11.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_13.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_16.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_19.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_22.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_25.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/end/imported/buildings_31.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/cinder_viaduct.json",
+          "reason": "terrain beard to soften exposed bridge footing"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_04.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_06.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_10.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_15.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_18.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_21.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_24.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/imported/buildings_27.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/sites/basalt_outpost.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/sites/crimson_camp.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/sites/soul_waystation.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/sites/warped_garden.json",
+          "reason": "Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/thalvoryn/worldgen/structure/nether/skybridge_ruin.json",
+          "reason": "terrain beard to soften exposed bridge footing"
+        },
+        {
+          "path": "data/thunderfusion/worldgen/structure/end/echoes_shrine.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thunderfusion/worldgen/structure/end/glass_archive.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thunderfusion/worldgen/structure/end/obsidian_remnant.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thunderfusion/worldgen/structure/end/starlight_observatory.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/thunderfusion/worldgen/structure/end/void_citadel.json",
+          "reason": "Horizon-only End-island grounding check"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/common/nether_pillar.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340; Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/medium/overworld_leak_1.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340; Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "data/trek/worldgen/structure/nether/medium/overworld_leak_2.json",
+          "reason": "project to real Nether surface instead of absolute Y64..340; Horizon-only slope/liquid/height checks for ground structure"
+        },
+        {
+          "path": "pack.mcmeta",
+          "reason": "update V69 packaging description"
+        },
+        {
+          "path": "data/thalvoryn/function/version.mcfunction",
+          "reason": "V69 version command"
+        },
+        {
+          "path": "data/thalvoryn/function/check.mcfunction",
+          "reason": "V69 check command"
+        },
+        {
+          "path": "data/thalvoryn/function/help.mcfunction",
+          "reason": "V69 help label"
+        },
+        {
+          "path": "data/thalvoryn/function/horizon/status.mcfunction",
+          "reason": "V69 status label"
+        },
+        {
+          "path": "V69_CHANGELOG_CZ.txt",
+          "reason": "V69 changelog"
+        }
+      ],
+      "counts": {
+        "end_surface_rust_checks": 14,
+        "mob_entries_tuned": 14,
+        "mob_structures_tuned": 4,
+        "nether_bridge_terrain": 2,
+        "nether_surface_rust_checks": 15,
+        "trek_nether_surface": 3
+      },
+      "file": "Thalvoryn-RUST-Nether2032-V69-PRIVATE-TEST.zip",
+      "sha256": "f828f478b4e6f6ac896a01f5fd034ec4a299e63d02e697d554fc3e1823bdbb05"
+    }
+  },
+  "test_status": "STATIC ONLY: game not run",
+  "version": "V69"
+}
