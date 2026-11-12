@@ -1,0 +1,86 @@
+{
+  "status": "PASS_STATIC_ONLY_USER_SAVE_ANALYZED",
+  "world_evidence": {
+    "chunks_overworld": 27643,
+    "chunks_nether": 2917,
+    "chunks_end": 2664,
+    "chests_fixed_bone_nugget_cave_patterns": 9493,
+    "pattern_examples": [
+      {
+        "items": [
+          "minecraft:amethyst_shard",
+          "minecraft:bone",
+          "minecraft:iron_nugget",
+          "minecraft:torch"
+        ],
+        "count": 4753
+      },
+      {
+        "items": [
+          "minecraft:bone",
+          "minecraft:copper_ingot",
+          "minecraft:iron_nugget",
+          "minecraft:torch"
+        ],
+        "count": 4740
+      }
+    ],
+    "observed_end_structures": 0,
+    "static_error_warning": "World has previous chunks; older generated structures do not update automatically. Static QA does not guarantee FPS, TPS, portals, collision-free jigsaw placement or natural cave connections."
+  },
+  "variants": [
+    {
+      "platform": "RUST",
+      "nether_height": 1024,
+      "entries": 11323,
+      "changed_files": 17,
+      "fixed_template_containers_converted": 10,
+      "file_sha256": "3e918b93e1fcddc966bf65c0f78ea44bd82a79b8916459a0adbc626b388d55b2",
+      "zip_crc": "PASS",
+      "data_format": 121,
+      "game_runtime": "NOT TESTED"
+    },
+    {
+      "platform": "RUST",
+      "nether_height": 2032,
+      "entries": 11323,
+      "changed_files": 17,
+      "fixed_template_containers_converted": 10,
+      "file_sha256": "43ddd32e5c3b079d71e24ad3cc8f1e94c61b9aed341858f3f3d24adfe4287299",
+      "zip_crc": "PASS",
+      "data_format": 121,
+      "game_runtime": "NOT TESTED"
+    },
+    {
+      "platform": "JAVA",
+      "nether_height": 1024,
+      "entries": 11323,
+      "changed_files": 17,
+      "fixed_template_containers_converted": 10,
+      "file_sha256": "2ccf2508484ade930f1be327d3da0ae2634aea2cb57f595a6802524603425c6e",
+      "zip_crc": "PASS",
+      "data_format": 121,
+      "game_runtime": "NOT TESTED"
+    },
+    {
+      "platform": "JAVA",
+      "nether_height": 2032,
+      "entries": 11323,
+      "changed_files": 17,
+      "fixed_template_containers_converted": 10,
+      "file_sha256": "1f6317b195d93eef2d114fc7c8851837ce8d9bac930afa162eadf413345bb4e7",
+      "zip_crc": "PASS",
+      "data_format": 121,
+      "game_runtime": "NOT TESTED"
+    }
+  ],
+  "same_changed_paths_all_four": true,
+  "nbt_identical_across_variants": true,
+  "world_generation_runtime": "NOT TESTED",
+  "cautions": [
+    "Existing chunks unaffected by datapack change",
+    "Natural cave connection not guaranteed by structure template",
+    "Nether fortress special generator remains vanilla",
+    "World save itself not modified"
+  ]
+}
