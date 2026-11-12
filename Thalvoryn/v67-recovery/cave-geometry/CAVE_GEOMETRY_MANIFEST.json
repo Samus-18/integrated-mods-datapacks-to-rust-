@@ -1,0 +1,280 @@
+{
+  "status": "STATIC ONLY NOT GAME TESTED",
+  "geometry": {
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_01.nbt": {
+      "size": [
+        79,
+        93,
+        114
+      ],
+      "blocks": 42253,
+      "air_blocks": 36107,
+      "cavern_radius": [
+        23,
+        13,
+        26
+      ],
+      "entry_center": [
+        38,
+        86,
+        2
+      ],
+      "tunnel_end": [
+        41,
+        23,
+        75
+      ],
+      "cavern_center": [
+        40,
+        20,
+        80
+      ]
+    },
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_02.nbt": {
+      "size": [
+        79,
+        93,
+        114
+      ],
+      "blocks": 55657,
+      "air_blocks": 47260,
+      "cavern_radius": [
+        26,
+        16,
+        25
+      ],
+      "entry_center": [
+        35,
+        86,
+        2
+      ],
+      "tunnel_end": [
+        37,
+        22,
+        75
+      ],
+      "cavern_center": [
+        41,
+        20,
+        84
+      ]
+    },
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_03.nbt": {
+      "size": [
+        79,
+        93,
+        114
+      ],
+      "blocks": 53049,
+      "air_blocks": 45234,
+      "cavern_radius": [
+        24,
+        15,
+        28
+      ],
+      "entry_center": [
+        43,
+        86,
+        2
+      ],
+      "tunnel_end": [
+        36,
+        22,
+        75
+      ],
+      "cavern_center": [
+        37,
+        20,
+        82
+      ]
+    },
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_04.nbt": {
+      "size": [
+        79,
+        93,
+        114
+      ],
+      "blocks": 50490,
+      "air_blocks": 43102,
+      "cavern_radius": [
+        27,
+        14,
+        25
+      ],
+      "entry_center": [
+        37,
+        86,
+        2
+      ],
+      "tunnel_end": [
+        22,
+        22,
+        75
+      ],
+      "cavern_center": [
+        42,
+        20,
+        81
+      ]
+    },
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_05.nbt": {
+      "size": [
+        79,
+        93,
+        114
+      ],
+      "blocks": 49475,
+      "air_blocks": 42356,
+      "cavern_radius": [
+        25,
+        14,
+        27
+      ],
+      "entry_center": [
+        40,
+        86,
+        2
+      ],
+      "tunnel_end": [
+        39,
+        23,
+        75
+      ],
+      "cavern_center": [
+        39,
+        20,
+        85
+      ]
+    },
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_06.nbt": {
+      "size": [
+        79,
+        93,
+        114
+      ],
+      "blocks": 57275,
+      "air_blocks": 48730,
+      "cavern_radius": [
+        26,
+        17,
+        24
+      ],
+      "entry_center": [
+        34,
+        86,
+        2
+      ],
+      "tunnel_end": [
+        45,
+        24,
+        75
+      ],
+      "cavern_center": [
+        37,
+        20,
+        83
+      ]
+    }
+  },
+  "audit": {
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_01.nbt": {
+      "air": 36107,
+      "reachable_air": 36046,
+      "connected_cave_air": 27484,
+      "bbox": [
+        79,
+        93,
+        114
+      ]
+    },
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_02.nbt": {
+      "air": 47260,
+      "reachable_air": 47197,
+      "connected_cave_air": 33364,
+      "bbox": [
+        79,
+        93,
+        114
+      ]
+    },
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_03.nbt": {
+      "air": 45234,
+      "reachable_air": 45176,
+      "connected_cave_air": 31656,
+      "bbox": [
+        79,
+        93,
+        114
+      ]
+    },
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_04.nbt": {
+      "air": 43102,
+      "reachable_air": 43040,
+      "connected_cave_air": 32879,
+      "bbox": [
+        79,
+        93,
+        114
+      ]
+    },
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_05.nbt": {
+      "air": 42356,
+      "reachable_air": 42295,
+      "connected_cave_air": 30668,
+      "bbox": [
+        79,
+        93,
+        114
+      ]
+    },
+    "data/thalvoryn/structure/underground/v67_cave_tunnel_06.nbt": {
+      "air": 48730,
+      "reachable_air": 48667,
+      "connected_cave_air": 33794,
+      "bbox": [
+        79,
+        93,
+        114
+      ]
+    }
+  },
+  "modified_structure_definitions": [
+    "data/thalvoryn/worldgen/structure/underground/v67_cave_tunnel_01.json",
+    "data/thalvoryn/worldgen/structure/underground/v67_cave_tunnel_02.json",
+    "data/thalvoryn/worldgen/structure/underground/v67_cave_tunnel_03.json",
+    "data/thalvoryn/worldgen/structure/underground/v67_cave_tunnel_04.json",
+    "data/thalvoryn/worldgen/structure/underground/v67_cave_tunnel_05.json",
+    "data/thalvoryn/worldgen/structure/underground/v67_cave_tunnel_06.json"
+  ],
+  "start_height_offset": -85,
+  "variants": [
+    {
+      "platform": "RUST",
+      "height": 1024,
+      "filename": "Thalvoryn-RUST-Nether1024-V67-CAVE-GEOMETRY-TEST.zip",
+      "bytes": 31066588,
+      "sha256": "9dda788e33349f7d31ccab9c6a4b2c6ef2f26350af5fcd170d901c0a1beef146"
+    },
+    {
+      "platform": "RUST",
+      "height": 2032,
+      "filename": "Thalvoryn-RUST-Nether2032-V67-CAVE-GEOMETRY-TEST.zip",
+      "bytes": 31066669,
+      "sha256": "4ee107718b6c8cf9811d40080625b617f5a32266ea6584469811fa21232d83da"
+    },
+    {
+      "platform": "JAVA",
+      "height": 1024,
+      "filename": "Thalvoryn-JAVA-Nether1024-V67-CAVE-GEOMETRY-TEST.zip",
+      "bytes": 31054301,
+      "sha256": "0dd6346f64f4570b29bd05d549d568bd4261ee4a55efba26bd8d8a189f4f15ac"
+    },
+    {
+      "platform": "JAVA",
+      "height": 2032,
+      "filename": "Thalvoryn-JAVA-Nether2032-V67-CAVE-GEOMETRY-TEST.zip",
+      "bytes": 31054332,
+      "sha256": "9e94040abbe4c04994990a9de1c165f244c561122e5206721d3772cbd996b76b"
+    }
+  ]
+}
