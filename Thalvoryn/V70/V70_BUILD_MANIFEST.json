@@ -1,0 +1,573 @@
+{
+  "status": "STATIC_DATA_BUILD_ONLY_NOT_GAME_VERIFIED",
+  "variants": [
+    {
+      "boat_checks": [
+        {
+          "id": "thalvoryn:overworld/imported/ships_01",
+          "max_footprint": 98,
+          "radius_from": 2,
+          "radius_to": 8
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_04",
+          "max_footprint": 89,
+          "radius_from": 2,
+          "radius_to": 7
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_06",
+          "max_footprint": 94,
+          "radius_from": 2,
+          "radius_to": 7
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_10",
+          "max_footprint": 81,
+          "radius_from": 2,
+          "radius_to": 7
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_11",
+          "max_footprint": 74,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_13",
+          "max_footprint": 74,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_16",
+          "max_footprint": 74,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_19",
+          "max_footprint": 75,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_22",
+          "max_footprint": 67,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_24",
+          "max_footprint": 66,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_25",
+          "max_footprint": 54,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_28",
+          "max_footprint": 55,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_31",
+          "max_footprint": 55,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_34",
+          "max_footprint": 53,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_37",
+          "max_footprint": 47,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_40",
+          "max_footprint": 52,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_43",
+          "max_footprint": 52,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_46",
+          "max_footprint": 52,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_49",
+          "max_footprint": 77,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_52",
+          "max_footprint": 50,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_55",
+          "max_footprint": 52,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_58",
+          "max_footprint": 46,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_61",
+          "max_footprint": 48,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_64",
+          "max_footprint": 64,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_67",
+          "max_footprint": 54,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_70",
+          "max_footprint": 46,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_73",
+          "max_footprint": 53,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "trek:overworld/medium/birch_trade",
+          "max_footprint": 80,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "trek:overworld/medium/cold_red_trade",
+          "max_footprint": 41,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "trek:overworld/medium/dark_oak_trade",
+          "max_footprint": 41,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "trek:overworld/medium/jungle_trade",
+          "max_footprint": 20,
+          "radius_from": 2,
+          "radius_to": 3
+        },
+        {
+          "id": "trek:overworld/medium/ship_pillager",
+          "max_footprint": 21,
+          "radius_from": 2,
+          "radius_to": 3
+        },
+        {
+          "id": "trek:overworld/medium/small_red_trade",
+          "max_footprint": 21,
+          "radius_from": 2,
+          "radius_to": 3
+        }
+      ],
+      "height": 1024,
+      "land_checks": [
+        "nova_structures:illager_camp",
+        "nova_structures:remnant_bunny_base",
+        "trek:overworld/medium/claw_pillager",
+        "trek:overworld/medium/oasis",
+        "trek:overworld/medium/small_pyramide",
+        "trek:overworld/medium/wild_stone"
+      ],
+      "path": "/mnt/data/v68_work/v70_release_candidate/Thalvoryn-RUST-Nether1024-V70-PRIVATE-TEST.zip",
+      "platform": "RUST",
+      "sha256": "39606f7347c5615ff000fd535c1fb9008faf94fd6379b85b7f181aef1781b3c4",
+      "src": "/mnt/data/v68_work/v69_release_candidate/Thalvoryn-RUST-Nether1024-V69-PRIVATE-TEST.zip",
+      "surface_dungeons": [
+        "nova_structures:bogged_camp",
+        "nova_structures:creeping_crypt",
+        "nova_structures:parched_camp",
+        "nova_structures:small_creeping_crypt",
+        "nova_structures:small_undead_crypt",
+        "nova_structures:stray_camp",
+        "nova_structures:surface_dungeon_default",
+        "nova_structures:surface_dungeon_desert",
+        "nova_structures:surface_dungeon_snowy",
+        "nova_structures:surface_dungeon_swamp",
+        "nova_structures:surface_trial_dungeon_default",
+        "nova_structures:surface_trial_dungeon_desert",
+        "nova_structures:surface_trial_dungeon_snowy",
+        "nova_structures:surface_trial_dungeon_swamp",
+        "structures:dungeon"
+      ],
+      "underground_dungeons": [
+        "nova_structures:catacomb",
+        "nova_structures:cave_chamber",
+        "nova_structures:cave_chamber_archeology_ruins",
+        "nova_structures:cave_chamber_colony",
+        "nova_structures:cave_chamber_dungeon_colony",
+        "nova_structures:cave_hut",
+        "nova_structures:deepslate_camp",
+        "nova_structures:trial_dungeon",
+        "nova_structures:undead_crypt",
+        "nova_structures:underground_house",
+        "thalvoryn:overworld/variant/buried_vault"
+      ]
+    },
+    {
+      "boat_checks": [
+        {
+          "id": "thalvoryn:overworld/imported/ships_01",
+          "max_footprint": 98,
+          "radius_from": 2,
+          "radius_to": 8
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_04",
+          "max_footprint": 89,
+          "radius_from": 2,
+          "radius_to": 7
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_06",
+          "max_footprint": 94,
+          "radius_from": 2,
+          "radius_to": 7
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_10",
+          "max_footprint": 81,
+          "radius_from": 2,
+          "radius_to": 7
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_11",
+          "max_footprint": 74,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_13",
+          "max_footprint": 74,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_16",
+          "max_footprint": 74,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_19",
+          "max_footprint": 75,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_22",
+          "max_footprint": 67,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_24",
+          "max_footprint": 66,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_25",
+          "max_footprint": 54,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_28",
+          "max_footprint": 55,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_31",
+          "max_footprint": 55,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_34",
+          "max_footprint": 53,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_37",
+          "max_footprint": 47,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_40",
+          "max_footprint": 52,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_43",
+          "max_footprint": 52,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_46",
+          "max_footprint": 52,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_49",
+          "max_footprint": 77,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_52",
+          "max_footprint": 50,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_55",
+          "max_footprint": 52,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_58",
+          "max_footprint": 46,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_61",
+          "max_footprint": 48,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_64",
+          "max_footprint": 64,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_67",
+          "max_footprint": 54,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_70",
+          "max_footprint": 46,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "thalvoryn:overworld/imported/ships_73",
+          "max_footprint": 53,
+          "radius_from": 2,
+          "radius_to": 5
+        },
+        {
+          "id": "trek:overworld/medium/birch_trade",
+          "max_footprint": 80,
+          "radius_from": 2,
+          "radius_to": 6
+        },
+        {
+          "id": "trek:overworld/medium/cold_red_trade",
+          "max_footprint": 41,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "trek:overworld/medium/dark_oak_trade",
+          "max_footprint": 41,
+          "radius_from": 2,
+          "radius_to": 4
+        },
+        {
+          "id": "trek:overworld/medium/jungle_trade",
+          "max_footprint": 20,
+          "radius_from": 2,
+          "radius_to": 3
+        },
+        {
+          "id": "trek:overworld/medium/ship_pillager",
+          "max_footprint": 21,
+          "radius_from": 2,
+          "radius_to": 3
+        },
+        {
+          "id": "trek:overworld/medium/small_red_trade",
+          "max_footprint": 21,
+          "radius_from": 2,
+          "radius_to": 3
+        }
+      ],
+      "height": 2032,
+      "land_checks": [
+        "nova_structures:illager_camp",
+        "nova_structures:remnant_bunny_base",
+        "trek:overworld/medium/claw_pillager",
+        "trek:overworld/medium/oasis",
+        "trek:overworld/medium/small_pyramide",
+        "trek:overworld/medium/wild_stone"
+      ],
+      "path": "/mnt/data/v68_work/v70_release_candidate/Thalvoryn-RUST-Nether2032-V70-PRIVATE-TEST.zip",
+      "platform": "RUST",
+      "sha256": "732f313636a0c98e26e0f688885a62a7acfe42dce56b00fb51a0c4aa9d3dd190",
+      "src": "/mnt/data/v68_work/v69_release_candidate/Thalvoryn-RUST-Nether2032-V69-PRIVATE-TEST.zip",
+      "surface_dungeons": [
+        "nova_structures:bogged_camp",
+        "nova_structures:creeping_crypt",
+        "nova_structures:parched_camp",
+        "nova_structures:small_creeping_crypt",
+        "nova_structures:small_undead_crypt",
+        "nova_structures:stray_camp",
+        "nova_structures:surface_dungeon_default",
+        "nova_structures:surface_dungeon_desert",
+        "nova_structures:surface_dungeon_snowy",
+        "nova_structures:surface_dungeon_swamp",
+        "nova_structures:surface_trial_dungeon_default",
+        "nova_structures:surface_trial_dungeon_desert",
+        "nova_structures:surface_trial_dungeon_snowy",
+        "nova_structures:surface_trial_dungeon_swamp",
+        "structures:dungeon"
+      ],
+      "underground_dungeons": [
+        "nova_structures:catacomb",
+        "nova_structures:cave_chamber",
+        "nova_structures:cave_chamber_archeology_ruins",
+        "nova_structures:cave_chamber_colony",
+        "nova_structures:cave_chamber_dungeon_colony",
+        "nova_structures:cave_hut",
+        "nova_structures:deepslate_camp",
+        "nova_structures:trial_dungeon",
+        "nova_structures:undead_crypt",
+        "nova_structures:underground_house",
+        "thalvoryn:overworld/variant/buried_vault"
+      ]
+    },
+    {
+      "boat_checks": [],
+      "height": 1024,
+      "land_checks": [],
+      "path": "/mnt/data/v68_work/v70_release_candidate/Thalvoryn-JAVA-Nether1024-V70-PRIVATE-TEST.zip",
+      "platform": "JAVA",
+      "sha256": "00f8cc969e1b1f5c61b9ce4360747194b9e1a66e1bc159a9d9f6b33951282968",
+      "src": "/mnt/data/v68_work/v69_release_candidate/Thalvoryn-JAVA-Nether1024-V69-PRIVATE-TEST.zip",
+      "surface_dungeons": [
+        "nova_structures:bogged_camp",
+        "nova_structures:creeping_crypt",
+        "nova_structures:parched_camp",
+        "nova_structures:small_creeping_crypt",
+        "nova_structures:small_undead_crypt",
+        "nova_structures:stray_camp",
+        "nova_structures:surface_dungeon_default",
+        "nova_structures:surface_dungeon_desert",
+        "nova_structures:surface_dungeon_snowy",
+        "nova_structures:surface_dungeon_swamp",
+        "nova_structures:surface_trial_dungeon_default",
+        "nova_structures:surface_trial_dungeon_desert",
+        "nova_structures:surface_trial_dungeon_snowy",
+        "nova_structures:surface_trial_dungeon_swamp",
+        "structures:dungeon"
+      ],
+      "underground_dungeons": [
+        "nova_structures:catacomb",
+        "nova_structures:cave_chamber",
+        "nova_structures:cave_chamber_archeology_ruins",
+        "nova_structures:cave_chamber_colony",
+        "nova_structures:cave_chamber_dungeon_colony",
+        "nova_structures:cave_hut",
+        "nova_structures:deepslate_camp",
+        "nova_structures:trial_dungeon",
+        "nova_structures:undead_crypt",
+        "nova_structures:underground_house",
+        "thalvoryn:overworld/variant/buried_vault"
+      ]
+    },
+    {
+      "boat_checks": [],
+      "height": 2032,
+      "land_checks": [],
+      "path": "/mnt/data/v68_work/v70_release_candidate/Thalvoryn-JAVA-Nether2032-V70-PRIVATE-TEST.zip",
+      "platform": "JAVA",
+      "sha256": "a0905a79b3c4ffd478b410b225fa768a7f3b4fd9c5c2dd23c61f5673d5505111",
+      "src": "/mnt/data/v68_work/v69_release_candidate/Thalvoryn-JAVA-Nether2032-V69-PRIVATE-TEST.zip",
+      "surface_dungeons": [
+        "nova_structures:bogged_camp",
+        "nova_structures:creeping_crypt",
+        "nova_structures:parched_camp",
+        "nova_structures:small_creeping_crypt",
+        "nova_structures:small_undead_crypt",
+        "nova_structures:stray_camp",
+        "nova_structures:surface_dungeon_default",
+        "nova_structures:surface_dungeon_desert",
+        "nova_structures:surface_dungeon_snowy",
+        "nova_structures:surface_dungeon_swamp",
+        "nova_structures:surface_trial_dungeon_default",
+        "nova_structures:surface_trial_dungeon_desert",
+        "nova_structures:surface_trial_dungeon_snowy",
+        "nova_structures:surface_trial_dungeon_swamp",
+        "structures:dungeon"
+      ],
+      "underground_dungeons": [
+        "nova_structures:catacomb",
+        "nova_structures:cave_chamber",
+        "nova_structures:cave_chamber_archeology_ruins",
+        "nova_structures:cave_chamber_colony",
+        "nova_structures:cave_chamber_dungeon_colony",
+        "nova_structures:cave_hut",
+        "nova_structures:deepslate_camp",
+        "nova_structures:trial_dungeon",
+        "nova_structures:undead_crypt",
+        "nova_structures:underground_house",
+        "thalvoryn:overworld/variant/buried_vault"
+      ]
+    }
+  ]
+}
