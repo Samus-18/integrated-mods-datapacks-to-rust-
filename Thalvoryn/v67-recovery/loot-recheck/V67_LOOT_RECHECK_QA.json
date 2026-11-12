@@ -1,0 +1,53 @@
+{
+  "status": "PASS STATIC ONLY; NO GAMEPLAY TEST",
+  "variants": [
+    {
+      "platform": "RUST",
+      "height": 1024,
+      "entries": 11323,
+      "nbt_changes": 502,
+      "static_zip_crc": "PASS",
+      "sha256": "276254d6dceb5ef22417642267de64c7b526813ac9393618230a49fa8ec98b1d",
+      "output_bytes": 30877025
+    },
+    {
+      "platform": "RUST",
+      "height": 2032,
+      "entries": 11323,
+      "nbt_changes": 502,
+      "static_zip_crc": "PASS",
+      "sha256": "3fdce45802b69d76def0d705efcbc0cb8d4903682ef221b1b614a60a9deaafb2",
+      "output_bytes": 30877105
+    },
+    {
+      "platform": "JAVA",
+      "height": 1024,
+      "entries": 11323,
+      "nbt_changes": 502,
+      "static_zip_crc": "PASS",
+      "sha256": "26ee933d2472cccb1d7ddb4ed3eb7c339d18278ea1f20c93812af10c733fce17",
+      "output_bytes": 30864627
+    },
+    {
+      "platform": "JAVA",
+      "height": 2032,
+      "entries": 11323,
+      "nbt_changes": 502,
+      "static_zip_crc": "PASS",
+      "sha256": "6bb9e5fd0f7ee78d2efb4a2638139d0b8388b35d9bf9d7a662150836692174c4",
+      "output_bytes": 30864658
+    }
+  ],
+  "modified_templates": 502,
+  "containers_randomized": 2668,
+  "verified_no_geometry_or_other_nbt_field_changes": true,
+  "modified_nbt_identical_across_all_variants": true,
+  "unmodified_pack_resources_byte_identical_to_previous_build": true,
+  "worldgen_and_generation_frequency_unchanged": true,
+  "limits": [
+    "No in-game launch, chunk generation, TPS or LOD validation",
+    "Original prior chunks unchanged",
+    "LootTable randomness actual engine behavior not measured",
+    "Fixed inventories in vanilla minecraft namespace intentionally preserved"
+  ]
+}
