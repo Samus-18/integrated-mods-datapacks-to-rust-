@@ -1,0 +1,79 @@
+{
+  "checks": [
+    "all ZIP CRC and JSON",
+    "exact diff V69=>V70",
+    "all NBT and loot unchanged",
+    "two dungeon groups properly partitioned",
+    "no duplicate active definitions",
+    "Rust ship biome checks and selected land checks",
+    "version strings and absence of Stellarity",
+    "all placements valid"
+  ],
+  "status": "PASS_STATIC_ONLY_NOT_GAME_TESTED",
+  "variants": {
+    "JAVA_1024": {
+      "active_unique": 478,
+      "added": [
+        "V70_CHANGELOG_CZ.txt",
+        "data/thalvoryn/worldgen/structure_set/ecology/ow_surface_dungeons.json"
+      ],
+      "changed": 6,
+      "deep_dungeon_ids": 11,
+      "files": 11234,
+      "nbt_count": 6835,
+      "rust_land_checks": 0,
+      "rust_ocean_checks": 0,
+      "structure_sets": 25,
+      "surface_dungeon_ids": 15,
+      "zip_sha256": "00f8cc969e1b1f5c61b9ce4360747194b9e1a66e1bc159a9d9f6b33951282968"
+    },
+    "JAVA_2032": {
+      "active_unique": 478,
+      "added": [
+        "V70_CHANGELOG_CZ.txt",
+        "data/thalvoryn/worldgen/structure_set/ecology/ow_surface_dungeons.json"
+      ],
+      "changed": 6,
+      "deep_dungeon_ids": 11,
+      "files": 11234,
+      "nbt_count": 6835,
+      "rust_land_checks": 0,
+      "rust_ocean_checks": 0,
+      "structure_sets": 25,
+      "surface_dungeon_ids": 15,
+      "zip_sha256": "a0905a79b3c4ffd478b410b225fa768a7f3b4fd9c5c2dd23c61f5673d5505111"
+    },
+    "RUST_1024": {
+      "active_unique": 478,
+      "added": [
+        "V70_CHANGELOG_CZ.txt",
+        "data/thalvoryn/worldgen/structure_set/ecology/ow_surface_dungeons.json"
+      ],
+      "changed": 45,
+      "deep_dungeon_ids": 11,
+      "files": 11234,
+      "nbt_count": 6835,
+      "rust_land_checks": 6,
+      "rust_ocean_checks": 33,
+      "structure_sets": 25,
+      "surface_dungeon_ids": 15,
+      "zip_sha256": "39606f7347c5615ff000fd535c1fb9008faf94fd6379b85b7f181aef1781b3c4"
+    },
+    "RUST_2032": {
+      "active_unique": 478,
+      "added": [
+        "V70_CHANGELOG_CZ.txt",
+        "data/thalvoryn/worldgen/structure_set/ecology/ow_surface_dungeons.json"
+      ],
+      "changed": 45,
+      "deep_dungeon_ids": 11,
+      "files": 11234,
+      "nbt_count": 6835,
+      "rust_land_checks": 6,
+      "rust_ocean_checks": 33,
+      "structure_sets": 25,
+      "surface_dungeon_ids": 15,
+      "zip_sha256": "732f313636a0c98e26e0f688885a62a7acfe42dce56b00fb51a0c4aa9d3dd190"
+    }
+  }
+}
