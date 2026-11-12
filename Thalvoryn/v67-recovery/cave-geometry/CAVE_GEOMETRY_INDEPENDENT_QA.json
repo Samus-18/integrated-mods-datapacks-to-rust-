@@ -1,0 +1,50 @@
+{
+  "status": "PASS_STATIC_ONLY_NOT_GAME_TESTED",
+  "variants": [
+    {
+      "filename": "Thalvoryn-RUST-Nether1024-V67-CAVE-GEOMETRY-TEST.zip",
+      "sha256": "9dda788e33349f7d31ccab9c6a4b2c6ef2f26350af5fcd170d901c0a1beef146",
+      "members": 11323,
+      "modified": 13,
+      "templates_unchanged_except_six": true,
+      "intact_noise_biome_loot_files": 1212,
+      "size_bytes": 31066588
+    },
+    {
+      "filename": "Thalvoryn-RUST-Nether2032-V67-CAVE-GEOMETRY-TEST.zip",
+      "sha256": "4ee107718b6c8cf9811d40080625b617f5a32266ea6584469811fa21232d83da",
+      "members": 11323,
+      "modified": 13,
+      "templates_unchanged_except_six": true,
+      "intact_noise_biome_loot_files": 1212,
+      "size_bytes": 31066669
+    },
+    {
+      "filename": "Thalvoryn-JAVA-Nether1024-V67-CAVE-GEOMETRY-TEST.zip",
+      "sha256": "0dd6346f64f4570b29bd05d549d568bd4261ee4a55efba26bd8d8a189f4f15ac",
+      "members": 11323,
+      "modified": 13,
+      "templates_unchanged_except_six": true,
+      "intact_noise_biome_loot_files": 1212,
+      "size_bytes": 31054301
+    },
+    {
+      "filename": "Thalvoryn-JAVA-Nether2032-V67-CAVE-GEOMETRY-TEST.zip",
+      "sha256": "9e94040abbe4c04994990a9de1c165f244c561122e5206721d3772cbd996b76b",
+      "members": 11323,
+      "modified": 13,
+      "templates_unchanged_except_six": true,
+      "intact_noise_biome_loot_files": 1212,
+      "size_bytes": 31054332
+    }
+  ],
+  "cave_entrance_template_hashes": [
+    "5167af79987510c9180860eb6768bf62c7f28c97fb1733fad6c8e77de44db415",
+    "03a37605c9eb4527904d190d01c28d1fe4b4845e00c9eacd4ed3f00023f43f1e",
+    "4ca3bf0385468e1fe6755764bd4f68b111368941b8e588ca512a1e5f909ad617",
+    "5ce9c3724eb7f46f9bbea4bb6021a51c12d2541dc6f1db5e96d2d4fe1472580c",
+    "75303a6e7a47ddd1433c6b02e8ebb049c28a0d1af7a6b89dad80ab412e464ac3",
+    "bd1632664f505c62dc6e7116aeacd00643355c84b547b83dc96ed912b1a8a36b"
+  ],
+  "known_limitation": "The created cave rooms connect to their hand-authored tunnels, not guaranteed natural procedural caves; no runtime profiling."
+}
