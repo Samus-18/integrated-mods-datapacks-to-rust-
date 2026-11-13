@@ -1,0 +1,26 @@
+{
+  "version": "V75",
+  "status": "PASS_STATIC_ONLY",
+  "builds": [
+    "RUST-1024",
+    "RUST-2032",
+    "JAVA-1024",
+    "JAVA-2032"
+  ],
+  "pack_format": 121,
+  "zip_files_per_variant": 11240,
+  "changed_entries": {
+    "RUST": 11,
+    "JAVA": 5
+  },
+  "biome_feature_files_checked": 246,
+  "structure_sets_checked": 25,
+  "feature_order_cycles": 0,
+  "structure_exclusion_cycles": 0,
+  "nbt_decompressed": 6835,
+  "nbt_fully_parsed_small": 5901,
+  "nbt_large_scanned": 934,
+  "negative_qa_tests": 4,
+  "game_runtime_tested": false,
+  "fpstps_measured": false
+}
