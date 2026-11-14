@@ -6,7 +6,7 @@
 - **Zdroj testu:** https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/blob/main/tools/thalvoryn/ci/minecraft_smoke.py
 - **Co automaticky dělá:** stáhne oficiální server Minecraft **Java 26.3**, nastaví Javu 25, vezme veřejný release balíček, vytvoří nový svět, vyvolá generování Overworld/Nether/End a uloží serverový log a JSON report.
 - **Spouštění:** po změně testovacího skriptu/workflow, vydání nové GitHub Release nebo ručně v kartě Actions.
-- **Současný veřejný testovaný balíček:** **RC13**, release tag `datapack`. Soukromé V76 ZIPy nejsou v GitHub Release a **nejsou tímto testem otestované**.
+- **Současný veřejný testovaný balíček:** **RC13 – Java Nether 256**, release tag `datapack` (testovací základ, nikoli současné V76 s Netherem 1024/2032). Soukromé V76 ZIPy nejsou v GitHub Release a **nejsou tímto testem otestované**.
 - **Omezení:** neprovádí vizuální kontrolu, renderer Horizonu ani LOD; krátký serverový smoke test také neprokáže, že je každá struktura ve světě správně umístěná.
 
 ## Výsledky
