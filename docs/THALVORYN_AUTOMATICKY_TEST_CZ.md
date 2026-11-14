@@ -15,3 +15,7 @@ V GitHub Actions klikni na běh **Thalvoryn Minecraft 26.3 worldgen smoke**. Po 
 Neumísťuj soukromé světy ani cizí strukturové ZIPy automaticky do veřejného repozitáře, dokud nejsou ověřené licence a případná citlivá data.
 
 Všechny skripty používají standardní Python a oficiální Minecraft server, není třeba lokální aplikace.
+
+## První skutečný úspěšný běh (14. 11. 2026)
+
+[GitHub Actions run #43593292293](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/43593292293) — **SUCCESS / PASS**. Oficiální Minecraft Java 26.3 server načetl veřejný RC13 Java Nether256 a vygeneroval Overworld (**6 regionů**), Nether (**4 regiony**) a End (**4 regiony**). Statické kontroly serverového logu nenašly chybu. První selhaný běh byl způsoben tím, že testovací skript kontroloval staré region cesty z Minecraftu před 26.1; po opravě nového umístění `world/dimensions/minecraft/{overworld,the_nether,the_end}/region` prošel. **Netestuje V76 ani LOD klienta Horizonu.**
