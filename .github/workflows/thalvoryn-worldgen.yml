@@ -1,0 +1,50 @@
+name: Thalvoryn Minecraft 26.3 worldgen smoke
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Published GitHub Release tag containing a Java datapack ZIP/bundle
+        required: true
+        default: datapack
+        type: string
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/thalvoryn-worldgen.yml
+      - tools/thalvoryn/ci/minecraft_smoke.py
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+jobs:
+  java-worldgen:
+    name: Real Java 26.3 server (published release baseline)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout test harness
+        uses: actions/checkout@v4
+      - name: Set up Java 25
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Verify Java
+        run: java --version
+      - name: Generate a new world in all three dimensions
+        env:
+          PACK_TAG: ${{ inputs.tag || 'datapack' }}
+        run: python3 tools/thalvoryn/ci/minecraft_smoke.py --tag "$PACK_TAG"
+      - name: Save test report and server log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: thalvoryn-minecraft-26-3-server-results
+          path: |
+            .ci-minecraft/test-report.json
+            .ci-minecraft/server.log
+            .ci-minecraft/world/level.dat
+          if-no-files-found: warn
+          retention-days: 14
