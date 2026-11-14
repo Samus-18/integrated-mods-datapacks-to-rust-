@@ -35,7 +35,7 @@ jobs:
         run: java --version
       - name: Generate a new world in all three dimensions
         env:
-          PACK_TAG: ${{ inputs.tag || 'datapack' }}
+          PACK_TAG: ${{ github.event.release.tag_name || inputs.tag || 'datapack' }}
         run: python3 tools/thalvoryn/ci/minecraft_smoke.py --tag "$PACK_TAG"
       - name: Save test report and server log
         if: always()
