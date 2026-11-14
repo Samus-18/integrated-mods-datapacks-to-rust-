@@ -129,7 +129,7 @@ def run_server(server_jar: Path) -> dict:
     (server_root / "eula.txt").write_text("eula=true\n", encoding="utf-8")
     (server_root / "server.properties").write_text(
         "level-name=world\n"
-        "level-seed=949384145176754871\n"
+        "level-seed=123456789\n"
         "level-type=minecraft:normal\n"
         "online-mode=false\n"
         "server-ip=127.0.0.1\n"
@@ -201,10 +201,12 @@ def run_server(server_jar: Path) -> dict:
                 process.wait(timeout=20)
         reader_done.wait(timeout=10)
 
+    # Minecraft 26.1+ stores every dimension under world/dimensions.
+    # The older world/region, world/DIM-1 and world/DIM1 paths no longer apply.
     dimensions = {
-        "overworld": server_root / "world" / "region",
-        "nether": server_root / "world" / "DIM-1" / "region",
-        "end": server_root / "world" / "DIM1" / "region",
+        "overworld": server_root / "world" / "dimensions" / "minecraft" / "overworld" / "region",
+        "nether": server_root / "world" / "dimensions" / "minecraft" / "the_nether" / "region",
+        "end": server_root / "world" / "dimensions" / "minecraft" / "the_end" / "region",
     }
     region_counts = {
         name: len([f for f in location.glob("*.mca") if f.stat().st_size > 8192])
