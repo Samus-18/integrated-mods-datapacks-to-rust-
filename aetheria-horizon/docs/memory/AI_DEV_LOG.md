@@ -18,3 +18,9 @@
 5. Cinematic ultimates with local-only camera slow effects; performance and in-game validation against Horizon 26.3.
 
 **No claim of playable mod, passed in-game tests, 200 working spells or 100k particle guarantee.**
+
+## M0 validation result — GitHub Actions
+- Run: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44394835431
+- Workflow: Aetheria Rust core / job core-tests, commit `5bfea4367debd2416e1a13c6d2f38c747e2c7ef0`.
+- `cargo test --all-targets`: **19 passed, 0 failed**, GitHub Actions conclusion **success**.
+- This establishes only portable Rust core compilation/unit testing. No Horizon engine, shader compiler, native packaging, or in-game GPU tests have passed.
