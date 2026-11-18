@@ -32,3 +32,9 @@
 - Added charged cast timing (hold/release) and channeled mana drain with protection against double-charging on the same tick.
 - Corrected the first prototype spell's `cast_type` to Instant (10 entries), matching their actual behavior.
 - Unit tests written; test result pending GitHub Actions.
+
+## M1 validation — GitHub Actions
+- Run: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44395652564
+- Commit `a1a10be5b35848d5378495b14c42060885a1f5ea`
+- `cargo test --all-targets`: **28 tests passed, 0 failed**; workflow completed successfully.
+- Does not include Horizon native SDK build, Naga WGSL check, GPU rendering, real world/save or gameplay integration.
