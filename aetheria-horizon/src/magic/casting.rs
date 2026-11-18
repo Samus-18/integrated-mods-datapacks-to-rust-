@@ -93,8 +93,8 @@ pub fn cast(p:&mut PlayerMagic,id:u16,tick:u64,charge:f32)->Result<CastResult,Ca
     assert_eq!(p.mana,90.0);
  }
  #[test]fn incomplete_spells_do_not_spend_mana(){
-    let mut p=PlayerMagic::new(0);p.unlock(2);
-    assert_eq!(cast(&mut p,2,100,0.0),Err(CastError::NotYetImplemented));
+    let mut p=PlayerMagic::new(0);p.unlock(3);
+    assert_eq!(cast(&mut p,3,100,0.0),Err(CastError::NotYetImplemented));
     assert_eq!(p.mana,100.0);
  }
  #[test]fn class_and_resource_checks(){
