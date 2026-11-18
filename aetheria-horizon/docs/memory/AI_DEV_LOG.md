@@ -46,4 +46,5 @@
 - Added Rust tests for 20 unique action variants, safe invalid inputs, temporal request and VFX stage boundaries.
 - Confirmed from official Horizon modding book: native mods are `.hmod` code archives compiled by pinned launcher SDK; source-mixin `.hnmod` workflow is separate. Do not claim compatibility based on Orbital Laser's fork-specific SDK.
 - Rechecked all four attached videos by direct frame samples. Replaced reference notes with observed timings and fantasy-only adaptations.
-- Validation for this milestone: **CI pending**. The prior 28 passing tests belong to M1 only.
+- M2 CI run: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44397904415, source commit `2016ec34013ed97970e1e3ef1984be441b25163d`: **33 tests passed, 0 failed** via `cargo test --all-targets`.
+- First M2 CI run failed because an older test expected spell 2 to be unimplemented. This was correct to update after enabling Cinder Fan; fixed test now targets spell 3. No other tests failed. These are core tests, **not** a playable mod verification.

@@ -11,4 +11,4 @@ Owner license decision: **TBD**. No TikTok audio/models or other copyrighted ass
 ## Verified tests
 M1 GitHub Actions run [44395652564](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44395652564): `cargo test --all-targets` → **28 passed, 0 failed**. This does not validate native Horizon packaging, WGSL, FPS, multiplayer or in-game effects.
 
-**M2:** 20 unique standalone spell-action intents and per-spell four-phase VFX timelines. Rendering and native Horizon package integration are **not** done. CI validation for M2 is tracked in the development log.
+**M2:** 20 unique standalone spell-action intents and per-spell four-phase VFX timelines. Rendering and native Horizon package integration are **not** done. M2 core CI: **33 tests passed, 0 failed** ([Actions run 44397904415](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44397904415)). No native build or in-game verification.
