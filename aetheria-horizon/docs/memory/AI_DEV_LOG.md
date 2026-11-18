@@ -1,13 +1,20 @@
 # AI_DEV_LOG
 
-## M0 — 2026-11-18
-- Inspected 4 user-supplied MP4s; documented their visual motifs.
-- Verified official Horizon repos and writable GitHub destination.
-- **API correction:** official Horizon documentation describes a native `.hmod` with a pinned SDK and `mod_api::Hooks`. `horizon-native-mod-template` is a different source-mixin template that documents `.hnmod`; `orbital-laser` currently depends on a custom SDK branch. Do not assume those rendering functions exist in upstream.
-- Registry: 200 individually described fantasy spells, 10 class-first engine-independent action prototypes; 190 still design-only.
-- Initial Rust gameplay core, simple save codec, mesh and camera design, standalone WGSL prototypes.
-- Pinned target metadata (unvalidated): Horizon 43a7e395836c0ab6c8538862e31ede8fccf494ba; mixins e59da9094f0c2fdda6c627fe9eff22dec6a906f0.
-- **Not performed:** local cargo build (toolchain unavailable in chat sandbox), GPU pipeline validation, Horizon in-game testing, server networking, original sound/model asset production, complete spell behavior and 20 cinematics.
+## M0 / 2026-11-18 — Baseline architecture and code
+- Reviewed 4 user MP4 uploads for VFX motifs. Extracted notes in docs/VIDEO_REFERENCE_ANALYSIS.md.
+- Compared current Horizon docs, the mixin native template and orbital-laser's fork-specific SDK. Avoided invented Hooks render signatures.
+- Stored 200 unique fantasy spell design entries (10 classes × 14 standard + 4 awakening + 2 ultimate); 190 remain designs only.
+- Added standalone Rust `PlayerMagic` mana, regen, unlocks, cooldowns; a v1 round-trip save codec; a deterministic casting engine with 10 distinct `SpellAction` intents (first spell per class); and defensive validation tests.
+- Added `EngineBridge` trait stub for server-authoritative Horizon integration, two procedural 3D mesh generators, particle draw budget and camera cue model.
+- Added simplified spell wheel, HUD, constellation coordinates, audio cue descriptions, and four **standalone WGSL experiments** (runes, beam, refraction, liquid HUD).
+- GitHub Actions workflow for `cargo test --all-targets`. Local toolchain unavailable; **do not claim tests passed until CI proves it**.
+- The drafted `horizon-mod.toml` pins upstream Horizon `43a7e395836c0ab6c8538862e31ede8fccf494ba`, mixins `e59da9094f0c2fdda6c627fe9eff22dec6a906f0` as reference metadata ONLY; no SDK bridge or final mod packaging.
 
-## Next
-Integrate exact pinned SDK/Hook API; run cargo tests in GitHub CI; wire first spell to server and GPU render safely; expand spell-by-spell.
+## Required next work
+1. Verify CI test result and fix failures.
+2. Generate exact SDK for the target build and implement the real `#[mod_api::horizon_mod]` entry point, world save and networking.
+3. Validate WGSL in Naga and bind supported render targets/matrices; add real lighting/VFX, meshes and audio assets.
+4. Implement all remaining spell behaviors (no palette swaps), craftable books, inscription table, UI and skill tree.
+5. Cinematic ultimates with local-only camera slow effects; performance and in-game validation against Horizon 26.3.
+
+**No claim of playable mod, passed in-game tests, 200 working spells or 100k particle guarantee.**

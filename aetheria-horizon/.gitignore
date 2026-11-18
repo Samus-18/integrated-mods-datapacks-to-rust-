@@ -1,0 +1,4 @@
+/target/
+/.horizon/
+*.hmod
+*.log
