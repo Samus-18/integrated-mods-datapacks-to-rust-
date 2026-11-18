@@ -24,3 +24,11 @@
 - Workflow: Aetheria Rust core / job core-tests, commit `5bfea4367debd2416e1a13c6d2f38c747e2c7ef0`.
 - `cargo test --all-targets`: **19 passed, 0 failed**, GitHub Actions conclusion **success**.
 - This establishes only portable Rust core compilation/unit testing. No Horizon engine, shader compiler, native packaging, or in-game GPU tests have passed.
+
+## M1 / 2026-11-18 — RPG systems phase
+- Added class-validated 4–8 slot `Spellbook`, duplicate prevention and selectable spells.
+- Added `InscriptionTable` with safe tier upgrades I–V using scroll/crystal material budgets (engine integration pending).
+- Added four target-specific elemental reactions, including Wet + Lightning → Conductive Surge, with expiration and consumption.
+- Added charged cast timing (hold/release) and channeled mana drain with protection against double-charging on the same tick.
+- Corrected the first prototype spell's `cast_type` to Instant (10 entries), matching their actual behavior.
+- Unit tests written; test result pending GitHub Actions.
