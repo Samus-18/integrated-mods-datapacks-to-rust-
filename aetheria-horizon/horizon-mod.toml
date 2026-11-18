@@ -1,0 +1,15 @@
+# TARGET METADATA DRAFT, NOT A VALIDATED INSTALLABLE PACKAGE.
+# Native binding and SDK dependencies must be generated/verified before packaging.
+id = "aetheria"
+name = "Aetheria Horizon"
+version = "0.1.0"
+description = "Fantasy magic RPG core - native integration pending"
+authors = ["Samus-18"]
+api = "0.2"
+side = "both"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "43a7e395836c0ab6c8538862e31ede8fccf494ba"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"

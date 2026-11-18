@@ -1,0 +1,13 @@
+[package]
+name = "aetheria-horizon-core"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+publish = false
+
+[lib]
+name = "aetheria_horizon"
+path = "src/lib.rs"
+
+[features]
+default = []
