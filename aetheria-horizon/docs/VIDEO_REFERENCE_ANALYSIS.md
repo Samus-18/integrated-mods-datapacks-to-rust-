@@ -1,8 +1,11 @@
-# Uploaded videos reviewed (sampled directly)
+# Four user videos — direct frame sampling, 2026-11-18
+All descriptions are visual observations. Aetheria reinterpretations are **fantasy concepts**, not tested game features.
 
-- **Download (3).mp4, 27.4 sec:** focused green sky column, bright gold/purple impact ring over landscape. Adapt to fantasy ritual judgment and nested runic shockwave.
-- **Download (4).mp4, 58 sec:** enormous descending hand-like 3D form, radial geometry, thick dust impact plume. Adapt to geomantic titan fist and impact dust volumes.
-- **Download (5).mp4, 150.7 sec:** multiple strong beams, world silhouettes, blasted terrain, overbright ritual impact. Adapt to controlled magical ground effects and staged light columns.
-- **Download (6).mp4, 40.1 sec:** violet/teal light eruptions, crystalline spikes, sustained post-impact radiance. Adapt to glacial cathedral and astral shard burst.
+| Video | Duration | Visible reference | Aetheria direction |
+| --- | ---: | --- | --- |
+| Download (3).mp4 | 27.4s | Green vertical sky column and hovering structure (~2–11s); luminous ring and concentrated violet/gold light (~19–27s) | Sky-sized runic ritual with layered magic beam; no orbital device |
+| Download (4).mp4 | 58.0s | Sky split into radial cracks around a dark aperture (~4–12s), large dust plumes (~20–38s), crater (~42–56s) | Dimensional rift, geomantic rupture, temporary magical debris |
+| Download (5).mp4 | 150.7s | Settings wheel, glowing strikes, terrain destruction, circular ritual (~90–105s), lightning/lava burst (~130–140s) | Fluid spell selector, cinematic spell phases, controlled magic impacts |
+| Download (6).mp4 | 40.1s | Violet/teal crystals rise (~3–18s), radiant pillars and bright crystal field (~30–40s) | Glacial crystal cathedral and summoning sanctuary |
 
-Techniques: 3D procedural silhouettes, HDR emissive layers, depth-aware effects where supported, staged timing, distant particle budgets. No video frames or music redistributed.
+Methods to explore: readable 3D silhouettes, glow layers over correct HDR bloom pipeline, depth-aware refraction if API permits, telegraph→cast→impact→afterglow timing, local camera recoil and spatial audio. Staged VFX timing **data** now exists for twenty action intents in `src/vfx/timeline.rs`; there is not yet a real renderer or GPU test. Limit particle counts and protect terrain/player saves. No screenshots, models or audio taken from uploads were committed.

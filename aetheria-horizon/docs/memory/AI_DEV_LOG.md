@@ -38,3 +38,12 @@
 - Commit `a1a10be5b35848d5378495b14c42060885a1f5ea`
 - `cargo test --all-targets`: **28 tests passed, 0 failed**; workflow completed successfully.
 - Does not include Horizon native SDK build, Naga WGSL check, GPU rendering, real world/save or gameplay integration.
+
+## M2 / 2026-11-18 — Expanded portable gameplay core
+- Added second unique gameplay action to all 10 classes (Cinder Fan, Rime Bridge, Razor Crescent, Crystal Traverse, Flowstep, Root Snare, Static Halo, Gravity Thread, Moment Slip, Soul Lantern): **20 distinct core intents, 180 design-only spells**.
+- Implemented ID-based action dispatch without disturbing original 10 class-specific prototypes. Unimplemented actions never spend mana. NaN/infinite charge returns `InvalidInput` before mana/cooldown changes.
+- Added 20 separate four-stage VFX sequences, per-spell timing and particle ceilings; metadata only, **not yet wgpu rendering**.
+- Added Rust tests for 20 unique action variants, safe invalid inputs, temporal request and VFX stage boundaries.
+- Confirmed from official Horizon modding book: native mods are `.hmod` code archives compiled by pinned launcher SDK; source-mixin `.hnmod` workflow is separate. Do not claim compatibility based on Orbital Laser's fork-specific SDK.
+- Rechecked all four attached videos by direct frame samples. Replaced reference notes with observed timings and fantasy-only adaptations.
+- Validation for this milestone: **CI pending**. The prior 28 passing tests belong to M1 only.
