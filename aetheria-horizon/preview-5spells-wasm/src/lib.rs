@@ -4,6 +4,8 @@ mod compact_ui;
 mod catalog30;
 use aetheria_horizon::ui::minimal_hud::QuickSelector;
 use catalog30::{SPELL_COUNT,DIRECT_SLOTS};
+use aetheria_horizon::core::player_data::PlayerMagic;
+use aetheria_horizon::cast as cast_spell;
 use mod_api::{
     self, Hooks, Registrar, RegistrationContext, KeyRegistration, KeyConflictContext,
     ClientHost, ClientTickPostEvent, ClientSetupEvent, ClientResourcesReloadedEvent,
@@ -27,6 +29,8 @@ struct State {
     tick:u64,effects:Vec<Cast>,pipeline:Option<RenderPipelineRef>,
     last_cast:Option<usize>,last_variant:u8,
     quick:QuickSelector,show_constellation:bool,
+    // Client-only training instance; NOT multiplayer player data or world save.
+    demo_magic:Option<PlayerMagic>,
     local_mana:f32,local_cooldowns:[u64;SPELL_COUNT],
 }
 #[derive(Default)]
@@ -104,14 +108,26 @@ impl Hooks for Mod {
             state.show_constellation=false;
             state.local_mana=100.0;
             state.local_cooldowns=[0;SPELL_COUNT];
+            state.demo_magic=None;
             state.quick=QuickSelector::default();
             state.tick=0;
             return;
         }
         state.tick=state.tick.saturating_add(1);
         let now=state.tick;
-        if now==1 {state.local_mana=100.0;}
-        state.local_mana=(state.local_mana+0.24).min(100.0);
+        if state.demo_magic.is_none() {
+            // All 30 curated spells are deliberately enabled for the visual
+            // trial. Genuine discovery/unlocks remain server-owned future work.
+            let mut demo=PlayerMagic::new(0);
+            for slot in 0..SPELL_COUNT {
+                demo.unlocked_nodes.insert(catalog30::id(slot));
+            }
+            state.demo_magic=Some(demo);
+        }
+        if let Some(demo)=state.demo_magic.as_mut() {
+            demo.regenerate(1);
+            state.local_mana=demo.mana;
+        }
         if select_previous {
             state.quick.selected=(state.quick.selected+SPELL_COUNT-1)%SPELL_COUNT;
             state.quick.visible_until_tick=now.saturating_add(55);
@@ -135,10 +151,18 @@ impl Hooks for Mod {
                     // Preview mana is client-local: NOT the future multiplayer
                     // server authority, and never unlocks real world content.
                     let spec=catalog30::spec(kind);
-                    if state.local_mana<spec.mana_cost
-                        || now<state.local_cooldowns[kind] {continue;}
-                    state.local_mana-=spec.mana_cost;
-                    state.local_cooldowns[kind]=now.saturating_add(u64::from(spec.cooldown_ticks));
+                    // One source of truth for mana, cooldown and 30 distinct
+                    // action intents: the shared, tested Rust casting core.
+                    let result={
+                        let Some(magic)=state.demo_magic.as_mut() else {continue;};
+                        magic.selected_class=spec.class_id;
+                        cast_spell(magic,spec.id,now,0.6)
+                    };
+                    let Ok(result)=result else {continue;};
+                    if let Some(magic)=state.demo_magic.as_ref() {
+                        state.local_mana=magic.mana;
+                    }
+                    state.local_cooldowns[kind]=result.next_allowed_tick;
                     state.quick.selected=kind;
                     let center = if matches!(catalog30::school(kind),1|3|5|9) {
                         ground_target.unwrap_or_else(|| {
