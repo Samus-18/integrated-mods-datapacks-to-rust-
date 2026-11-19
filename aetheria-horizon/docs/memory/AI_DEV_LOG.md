@@ -48,3 +48,13 @@
 - Rechecked all four attached videos by direct frame samples. Replaced reference notes with observed timings and fantasy-only adaptations.
 - M2 CI run: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44397904415, source commit `2016ec34013ed97970e1e3ef1984be441b25163d`: **33 tests passed, 0 failed** via `cargo test --all-targets`.
 - First M2 CI run failed because an older test expected spell 2 to be unimplemented. This was correct to update after enabling Cinder Fan; fixed test now targets spell 3. No other tests failed. These are core tests, **not** a playable mod verification.
+
+## M3 / 2026-11-19 — Deterministic 3D effect instance planning
+- Added `src/vfx/scene.rs`, registered via `src/vfx/mod.rs`: portable CPU-side, per-frame 3D instance planning for the 20 M2 spell intents, each with a unique spatial silhouette (not merely a color swap).
+- Added phase-specific scale, alpha and emissive, 10-class palette, local-to-world transforms, finite-input and direction checks, quality control and distance falloff.
+- Added a global 1,200 instances/frame limit, 64-active-effect scheduling limit and fair round-robin distribution among simultaneous casts. Limits protect the intent planner only, not yet actual GPU frame times.
+- Added six Rust tests: unique motifs/paths, fairness/cap, determinism, phase lifetime, bad-input culling, burst limits.
+- GitHub Actions run: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44482049153
+- Code commit `cec3131b3d9b2a13de8985a49d6276c5d8aafe02`: **39 passed, 0 failed** with `cargo test --all-targets`.
+- Updated compatibility research against current official Horizon: a native code mod uses a flat `.hmod`, pinned prebuilt SDK, `#[mod_api::horizon_mod]`, and `Hooks`/typed Host interfaces. Existing `horizon-mod.toml` remains a draft, not a tested installable mod; no real engine hooks or GPU backend have been wired.
+- Technical reference only: Orbital Laser historically used fork-specific WASM APIs; do not copy unsupported renderer hooks or sci-fi content.
