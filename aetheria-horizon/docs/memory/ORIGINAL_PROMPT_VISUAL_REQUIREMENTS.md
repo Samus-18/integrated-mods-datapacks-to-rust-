@@ -38,3 +38,24 @@ Before every VFX change: re-read `PROJECT_SPECIFICATION.md`, `USER_LOG.md`, `VID
 - CPU-regression tests compare complete **geometry coordinates without colors** for all 30 cast identities and assert finite bounded geometry at multiple life stages; each stage is synchronized with three positional SFX cues in the preview.
 - The Horizon guest shader remains UV+color only, with time-varying material modulation; **no real GPU raymarching, screen-space refraction, HDR bloom or dynamic lighting** claimed or implemented here.
 - Real server-side gameplay (damage/healing/world editing/persistence/network) is still a separate incomplete milestone.
+
+## Additional original-conversation recovery (2026-11-19)
+
+A targeted conversation-context retrieval located further **master-prompt fragments** from the user's original message dated **2026-11-18 20:28 UTC**. The original document heading was:
+
+> # MASTER PROJECT SPECIFICATION: "AETHERIA HORIZON" (RUST / WGPU / HORIZON ENGINE)
+
+The recovered source also contained the exact section label:
+
+> "No Vanilla Shortcuts"
+
+The available conversation summary identifies these **source-derived requirements** (not necessarily exact wording):
+
+- Produce custom world-space 3D geometry and WGSL shaders, with **HDR emissive glow, Fresnel, screen-space distortion/refraction** where the verified Horizon renderer permits.
+- Use runic shapes, **dual-layer volumetric beams/ribbons**, procedural lightning/crystalline spikes, GPU-instanced particles, dynamic lighting, terrain-aware impacts, and camera/cinematic effects.
+- Author custom animation and layered 3D spatial audio. All classes have their own geometry and physical magic identity, not generic particle swaps.
+- Reuse Orbital Laser **only as a code-technique reference for spatial beams**. No sci-fi or orbital weapons or cloned third-party media.
+
+**Preservation caveat:** this recovery is additional traceability, not a full verbatim export of the entire first message. The current pinned WASM `PipelineInput` exposes far less than unrestricted wgpu; do not pretend HDR/Fresnel/refraction/instancing are implemented by a UV-color shader. Work toward those only with real API support, preserving the existing safe fallback.
+
+Master-project priority still requires 200 individually authored spells and genuine gameplay systems (cast authority, unlocks, save, SFX, GUI); the 30-spell renderer is an intermediate technical prototype, not full implementation.
