@@ -5,6 +5,7 @@
  use super::{Cast, Scene, add, sub, scale, norm, cross, shade_argb, alpha};
  use crate::catalog30;
  use std::f64::consts::TAU;
+ use aetheria_horizon::vfx::timeline::{for_spell,Stage};
 
  type V=[f64;3];
  fn p(o:V,x:f64,y:f64,z:f64)->V{add(o,[x,y,z])}
@@ -147,19 +148,127 @@
      }
      sparks(s,o,9,age,2.8,color);
  }
+ /// Map the 30 individual core timelines to a visual lifetime capped at 104 ticks.
+ /// Keeps the original choreography proportions, without pretending that the
+ /// client preview implements damage, actual server time or charged controls.
+ fn visual_phase(slot:usize,age:f64)->Option<(Stage,f64)> {
+     if !age.is_finite() || !(0.0..104.0).contains(&age) {return None;}
+     let timeline=for_spell(catalog30::id(slot))?;
+     let at=age/104.0*timeline.total_ticks() as f64;
+     let mut elapsed=0.0;
+     for part in timeline.phases {
+         let length=f64::from(part.duration_ticks);
+         if at<elapsed+length {
+             let progress=((at-elapsed)/length).clamp(0.,1.);
+             return Some((part.kind,progress));
+         }
+         elapsed+=length;
+     }
+     None
+ }
+ /// School-identity telegraphs; little material appears before any big impact.
+ /// An individual spell's rank changes physical layer density and radius.
+ fn anticipation(s:&mut Scene,o:V,school:usize,rank:usize,age:f64,progress:f64,c:u32){
+     let reveal=0.16+progress*0.84;
+     let width=0.8+rank as f64*0.37;
+     let spin=age*(0.007+rank as f64*0.005);
+     match school {
+         0=>{ring(s,p(o,0.,0.16,0.),[0.,1.,0.],width*reveal,0.085,10,spin,c);
+              sparks(s,o,2+rank,age,width,c);}
+         1=>{for j in 0..(2+rank) {
+              let a=TAU*j as f64/(2+rank) as f64;
+              let from=p(o,a.cos()*width,-0.5,a.sin()*width);
+              let to=p(from,0.2*a.cos(),(0.35+0.9*progress)*(j as f64*0.19+0.8),0.2*a.sin());
+              s.solid_crystal(from,to,0.22,a,c,6);
+             }}
+         2=>{for j in 0..2 {ring(s,p(o,0.,0.25+j as f64*0.5,0.),[0.,1.,0.],
+              (1.1+j as f64*0.45)*reveal,0.045,8,spin+j as f64,c);}}
+         3=>{for j in 0..(3+rank) {
+              let a=TAU*j as f64/(3+rank) as f64;
+              s.solid_crystal(p(o,width*a.cos(),-0.6,width*a.sin()),
+                   p(o,width*a.cos(),0.7*progress,width*a.sin()),0.20,a,c,5);
+             }}
+         4=>{ring(s,p(o,0.,0.35,0.),[0.4,1.,0.],width*reveal,0.06,10,spin,c);}
+         5=>{tendril(s,o,age,2+rank,1.6*progress,c);}
+         6=>{ring(s,p(o,0.,0.6,0.),[0.,1.,0.],width*reveal,0.065,8,spin,c);
+              for j in 0..2 {let a=j as f64*TAU/2.+spin;
+              s.tube(p(o,a.cos(),0.2,a.sin()),p(o,0.,1.4*progress,0.),0.08,0.04,a,c,5);}}
+         7=>{rune_seal(s,p(o,0.,0.85,0.),[0.3,0.85,0.1],width*reveal,spin,c);}
+         8=>{ring(s,p(o,0.,1.,0.),[0.,0.2,1.],width*reveal,0.055,10,spin,c);}
+         _=>{sparks(s,o,3+rank,age,width,c);}
+     }
+ }
+ /// A residual world-space echo, not an opaque static leftover. It fades in
+ /// GPU alpha AND reduces its silhouette after the climax.
+ fn afterglow(s:&mut Scene,o:V,school:usize,rank:usize,age:f64,progress:f64,c:u32){
+     let shrink=(1.-progress).max(0.08);
+     let r=(1.+rank as f64*0.49)*shrink;
+     let spin=age*0.013;
+     match school {
+         0=>{sparks(s,o,3+rank,age,r,c);}
+         1=>{for j in 0..4 {let a=j as f64*TAU/4.;
+             s.solid_crystal(p(o,1.4*a.cos(),-0.55,1.4*a.sin()),
+                 p(o,1.4*a.cos(),-0.3+3.0*shrink,1.4*a.sin()),0.19,a,c,6);}}
+         2=>{ring(s,p(o,0.,1.+shrink,0.),[0.,1.,0.],r,0.038,8,spin,c);}
+         3=>{for j in 0..3 {let a=TAU*j as f64/3.;
+             s.solid_crystal(p(o,1.4*a.cos(),-0.3,1.4*a.sin()),p(o,0.,0.5*shrink,0.),0.17,a,c,5);}}
+         4=>{ring(s,p(o,0.,0.6,0.),[0.8,0.2,0.3],r,0.035,10,spin,c);}
+         5=>{tendril(s,o,age,2,2.0*shrink,c);}
+         6=>{sparks(s,o,5,age,r,c);}
+         7=>{ring(s,p(o,0.,1.0,0.),[0.5,0.6,0.6],r,0.045,9,spin,c);}
+         8=>{ring(s,p(o,0.,0.9,0.),[0.,0.2,1.],r,0.03,10,-spin,c);}
+         _=>{sparks(s,o,4,age,r,c);}
+     }
+ }
+ /// An impact halo is only a complement to the unique spell geometry.
+ /// 20–60 world quads at most, with remaining budget reserved by the caller.
+ fn shockwave(s:&mut Scene,o:V,school:usize,rank:usize,age:f64,progress:f64,c:u32){
+     let r=(1.0+4.2*progress)*(0.7+rank as f64*0.16);
+     match school {
+         0|4|6=>ring(s,p(o,0.,0.18,0.),[0.,1.,0.],r,0.055,10,age*0.012,c),
+         1|3=>{for j in 0..6 {
+             let a=TAU*j as f64/6.;
+             let at=p(o,r*a.cos(),-0.5,r*a.sin());
+             s.solid_crystal(at,p(at,0.0,0.7+progress*1.8,0.0),0.18,a,c,5);
+         }}
+         2|5=>sparks(s,o,7,age,r,c),
+         7=>ring(s,p(o,0.,2.,0.),[0.2,0.8,0.3],r,0.06,10,age*0.017,c),
+         8=>ring(s,p(o,0.,0.8,0.),[0.4,0.25,0.9],r,0.045,9,-age*0.018,c),
+         _=>sparks(s,o,5,age,r,c)
+     }
+ }
+
  /// Bound per-spell procedural geometry; spawn only during a finite timeline.
  /// The caller owns a separate fair-budget Scene per concurrent spell.
  pub(super) fn draw(cast:Cast,age:f64,s:&mut Scene){
-     if !(0.0..104.).contains(&age){return;}
+     let Some((scene_phase,progress))=visual_phase(cast.kind,age) else{return;};
      let school=catalog30::school(cast.kind);
      let rank=catalog30::rank(cast.kind);
      let mut color=color(school,age);
-     // Gradual onset, impact, and dissolve. Protect from white flash cascades.
-     if age<9. {color=shade_argb(color,0.57+age/9.*0.34);}
      let o=cast.center;
+     // All spells have a legible telegraph, a physical cast, an impact and a
+     // restrained echo. Times differ according to each registry spell ID.
+     match scene_phase {
+         Stage::Telegraph => {
+             color=shade_argb(color,0.47+progress*0.39);
+             anticipation(s,o,school,rank,age,progress,color);
+             return;
+         }
+         Stage::Afterglow => {
+             let fade=(1.-progress).clamp(0.,1.);
+             let a=((color>>24) as f64*fade).round() as u32;
+             color=(color&0x00FF_FFFF)|(a<<24);
+             afterglow(s,o,school,rank,age,progress,color);
+             return;
+         }
+         _=>{}
+     }
      let f=norm(cast.direction);
      let phase=age*0.026+rank as f64*0.83;
-     let stage=(age/24.).clamp(0.,1.);
+     let stage=match scene_phase {
+         Stage::Impact=>1.0,
+         _=>progress.clamp(0.0,1.0)
+     };
      match (school,rank) {
          // Pyromancy: swirling phoenix wake, spreading fiery fan, rising magma serpent.
          (0,0)=>{pillar(s,o,age,color);}
@@ -239,6 +348,9 @@
          (9,_)=>{tendril(s,o,age,4,4.4*stage,color);ring(s,p(o,0.,0.1,0.),[0.,1.,0.],3.2,0.055,12,phase,color);}
          _=>{}
      }
+     if scene_phase==Stage::Impact {
+         shockwave(s,o,school,rank,age,progress,color);
+     }
  }
  #[cfg(test)]
  mod tests{
@@ -253,4 +365,36 @@
              assert!(scene.facets.iter().all(|(corners,_)|corners.iter().flatten().all(|v|v.is_finite())));
          }
      }
+    #[test]
+    fn thirty_spells_have_finite_distinct_choreography_and_no_lingering_mesh(){
+        for slot in 0..30 {
+            let p=|a:f64|{
+                let mut scene=Scene::new(600);
+                draw(Cast{kind:slot,variant:0,start:0,center:[0.,64.,0.],direction:[0.,0.,1.]},a,&mut scene);
+                scene
+            };
+            for time in [8.,34.,56.,90.] {
+                let scene=p(time);
+                assert!(!scene.facets.is_empty(),"slot {slot} / age {time} empty");
+                assert!(scene.facets.len()<=600,"over budget slot {slot} / age {time}");
+                assert!(scene.facets.iter().all(|(points,_)|points.iter().flatten().all(|x|x.is_finite())));
+            }
+            assert!(p(104.).facets.is_empty());
+        }
+    }
+    #[test]
+    fn phases_differ_across_schools_and_rank(){
+        let ids=[0,1,2,3,5,9,14,18,21,26,29];
+        let mut timelines=std::collections::BTreeSet::new();
+        for slot in ids {
+            let signature=(0..104).filter_map(|age|visual_phase(slot,age as f64)
+                .map(|(stage,_)|stage as u8)).collect::<Vec<_>>();
+            assert_eq!(signature.len(),104);
+            assert!(timelines.insert(signature),"duplicate rhythm slot {slot}");
+        }
+        assert!(visual_phase(0,f64::NAN).is_none());
+        assert!(visual_phase(0,-1.).is_none());
+        assert!(visual_phase(0,104.).is_none());
+    }
+
  }
