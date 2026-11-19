@@ -59,3 +59,10 @@ Exact feedback:
 Attached `Download (3).mp4`, `Download (4).mp4`, `Download (5).mp4`, `Download (6).mp4`. The original project instruction is to archive every user-supplied prompt and attachment in distinct GitHub folders, not only paraphrases and analyses. We had previously saved only textual video descriptions, which was incomplete.
 
 **2026-11-19 preservation:** the exact four MP4s and a combined ZIP have been saved into the user's persistent ChatGPT Library (`/Aetheria Horizon/Reference Videos/`), including their original bytes, while a GitHub `references/original-videos/` folder contains checksum manifest and direct frame analysis. GitHub originals were not copied because the currently available GitHub connector cannot read and upload the multi-MB local binary files. Do not misreport that they're now in GitHub. Next time binary upload is supported, sync the originals and verify SHA256. No manual game testing requested.
+
+## 2026-11-19 — Explicit rejection of stick-and-circle VFX after actual geometry screenshot
+
+Exact user message:
+> "ani nevim co to je nerikej mi ze delas to co jsem rikal ze hlavne nemas delat a to tycky a kruhy  obycejny jako drive to si nepamatujes ale vse jsi prost edelala jen z tycek"
+
+User saw exact generated offscreen geometry picture of Blink Fold (slot 24). The geometry had two empty circular frames, narrow beams/spikes and little volume. This is **unacceptable** even though unit tests passed and polygons were technically 3D. The correction is to prioritize substantial non-generic volumetric **filled forms** with detailed materials, kinetic shape, silhouette and stage continuity. Never assert that a numeric uniqueness/area test proves it looks beautiful. The user does not want to test another half-built mod.
