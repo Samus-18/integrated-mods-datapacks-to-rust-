@@ -271,11 +271,16 @@ fn scene(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
         let edge2=p(o,1.15*g*b.cos(),h,1.15*g*b.sin());
         let neck1=p(o,0.22*g*a.cos(),waist,0.22*g*a.sin());
         let neck2=p(o,0.22*g*b.cos(),waist,0.22*g*b.sin());
+        // Solid visibly translucent facets form the actual hourglass
+        // chamber. Previous thin edge crystals looked like mere wooden rods.
         s.quad([edge1,edge2,neck2,neck1],
-          tint(c,0.65+0.025*(j%4) as f64,0.37));
-        crystal(s,edge1,neck1,0.11*g,a,tint(c,0.84,0.63));
+          tint(c,0.62+0.032*(j%4) as f64,0.81));
       }
    }
+   body(s,p(o,0.,5.18*g,0.),[1.17*g,0.15*g,1.18*g],
+        tint(c,0.65,0.92));
+   body(s,p(o,0.,1.20*g,0.),[1.17*g,0.15*g,1.18*g],
+        tint(c,0.73,0.91));
    for i in 0..6 {
     let a=TAU*i as f64/6.+t;
     let at=p(o,0.67*g*a.cos(),3.1*g,0.67*g*a.sin());
