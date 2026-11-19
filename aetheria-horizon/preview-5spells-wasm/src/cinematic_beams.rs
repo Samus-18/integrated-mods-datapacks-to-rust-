@@ -104,7 +104,23 @@
  fn broken_sky(s:&mut Scene,o:V,age:f64,color:u32){
      let rise=(age/20.).clamp(0.,1.);
      let center=p(o,0.,3.8*rise,0.);
-     rune_seal(s,center,[0.2,0.94,0.2],3.3,age*0.013,color);
+     let rotation=age*0.013;
+     // A physical tilted astral iris in three dimensions: ten dark glass
+     // petals around a dimensional core. Do not merely draw a thin circle.
+     for j in 0..10 {
+         let a=TAU*j as f64/10.+rotation*0.6;
+         let b=TAU*(j+1) as f64/10.+rotation*0.6;
+         let outer_a=p(center,2.8*a.cos(),0.20*a.sin(),2.8*a.sin());
+         let outer_b=p(center,2.8*b.cos(),0.20*b.sin(),2.8*b.sin());
+         let inner_a=p(center,0.75*a.cos(),-0.28,0.75*a.sin());
+         let inner_b=p(center,0.75*b.cos(),-0.28,0.75*b.sin());
+         s.membrane(inner_a,outer_a,outer_b,inner_b,shade_argb(color,0.36));
+         // Raised prismatic rims give the aperture real spatial depth.
+         s.tube(outer_a,outer_b,0.19,0.15,a,color,5);
+     }
+     s.solid_crystal(p(center,0.,-1.25,0.),p(center,0.,1.5,0.),
+                     0.72,rotation,color,6);
+     rune_seal(s,center,[0.2,0.94,0.2],3.3,rotation,color);
      // Radial fracturing in world depth, no skybox edit or copied aperture texture.
      for i in 0..10 {
          let a=TAU*i as f64/10.+0.09*(i as f64*2.).sin();
@@ -282,12 +298,18 @@
                            4.7*stage*a.cos());
                  let inner=p(o,a.sin()*0.3,0.4,0.5);
                  let wing=0.27+0.22*(1.0-a.abs()/1.0).max(0.0);
-                 let left=p(end,-wing,0.27,0.11);
-                 let right=p(end,wing,-0.18,-0.13);
-                 s.membrane(inner,left,end,right,shade_argb(color,0.85));
-                 beam(s,inner,end,0.115,phase+a,color);
-                 s.solid_crystal(end,p(end,0.18*a.sin(),0.85*stage,0.3),
-                                 0.21,a,color,5);
+                 // Broad curved crescent surface with real thickness and
+                 // an irregular multi-sided ember core. Screen coverage is
+                 // measured from BOTH oblique views in our visual audit.
+                 let mid=p(inner,0.62*(end[0]-inner[0]),
+                     0.64*(end[1]-inner[1]),0.62*(end[2]-inner[2]));
+                 let left=p(mid,-wing*2.5,0.37,wing*0.65);
+                 let right=p(mid,wing*2.5,-0.34,-wing*0.65);
+                 s.membrane(inner,left,end,right,shade_argb(color,0.86));
+                 s.solid_crystal(inner,end,0.38+wing*0.36,a,color,6);
+                 beam(s,inner,end,0.18,phase+a,color);
+                 s.solid_crystal(end,p(end,0.23*a.sin(),0.95*stage,0.5),
+                                 0.30,a,color,5);
              }
              sparks(s,o,9,age,2.8,color);
          }
@@ -347,8 +369,24 @@
              s.solid_crystal(base,p(o,1.0*a.cos(),2.9*stage,1.0*a.sin()),0.5,a,color,6);}}
          // Hydromancy: braided crest, wave procession, protective pearl.
          (4,0)=>{tendril(s,o,age,3,3.3*stage,color);beam(s,p(o,0.,1.,0.),p(o,0.,1.,6.*stage),0.18,phase,color);}
-         (4,1)=>{for j in 0..5 {let a=j as f64*0.42;ring(s,p(o,0.,0.6+j as f64*0.23,j as f64*1.1),[0.,0.45,1.],
-            1.4+a,0.055,13,phase+j as f64*0.25,color);}}
+         (4,1)=>{
+             // Flowstep is a cresting spatial wave with translucent *surface*
+             // volume, not five empty hoops viewed from an angle.
+             for j in 0..6 {
+                 let t=j as f64/5.;
+                 let wave=1.8+(t*TAU+phase).sin()*0.56;
+                 let width=1.4+0.7*(1.0-t);
+                 let start=p(o,-width,0.2+0.7*t,5.0*t-1.8);
+                 let end=p(o,width,0.2+0.7*t,5.0*t-1.8);
+                 let left=p(o,-width*0.62,wave*stage,5.0*t-1.6);
+                 let right=p(o,width*0.62,(wave+0.2)*stage,5.0*t-1.6);
+                 s.membrane(start,left,right,end,shade_argb(color,0.73));
+                 s.tube(start,left,0.095,0.055,phase+t,color,5);
+                 s.tube(end,right,0.095,0.055,phase-t,color,5);
+             }
+             tendril(s,o,age,2,2.1*stage,shade_argb(color,0.8));
+             sparks(s,o,7,age,2.2,color);
+         }
          (4,_)=>{for j in 0..4 {ring(s,p(o,0.,1.7,0.),[j as f64*0.15+0.22,0.9,0.4],2.1,0.08,13,phase+j as f64*0.65,color);}}
          // Druid: rooted canopy, binding roots and flowering healing sanctuary.
          (5,0)=>{tendril(s,o,age,5,5.9*stage,color);}
@@ -392,10 +430,18 @@
          }
          (6,_)=>{
              let strike=p(o,f[0]*9.3,1.+f[1]*9.3,f[2]*9.3);
-             beam(s,p(o,0.,1.,0.),strike,0.23,phase,color);
-             // Hard polygonal charged needle plus many short lightning tips.
+             // An energized spear with a wide many-sided hard core.
+             rune_seal(s,p(o,0.,1.,0.),f,1.2,phase,color);
+             beam(s,p(o,0.,1.,0.),strike,0.44,phase,color);
+             for j in 0..5 {
+                 let t=j as f64/5.;
+                 let base=p(o,f[0]*9.3*t,1.+f[1]*9.3*t,f[2]*9.3*t);
+                 let top=p(o,f[0]*9.3*(t+0.17),1.+f[1]*9.3*(t+0.17),
+                             f[2]*9.3*(t+0.17));
+                 s.solid_crystal(base,top,0.47*(1.0-t)+0.13,phase+j as f64,color,6);
+             }
              s.solid_crystal(p(o,f[0]*6.2,1.+f[1]*6.2,f[2]*6.2),
-                 p(strike,f[0]*0.7,f[1]*0.7,f[2]*0.7),0.36,phase,color,6);
+                 p(strike,f[0]*0.9,f[1]*0.9,f[2]*0.9),0.58,phase,color,6);
              for j in 0..8 {
                  let a=TAU*j as f64/8.+phase;
                  let mid=p(strike,a.cos()*0.6,0.35,a.sin()*0.6);
