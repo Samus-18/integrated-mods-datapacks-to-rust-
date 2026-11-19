@@ -24,3 +24,14 @@ Code: `preview-5spells-wasm/src/standard_m26.rs`; actual client routing in `src/
 ## No-slop art gate
 
 The authored shapes are deliberately not generic color swaps. Even so, their visual quality must be manually assessed from the next actual 860-view SVG artifact (Cast and Impact, both camera angles). A polygon-count or uniqueness unit test cannot certify beauty, lighting, translucency or visual similarity to source videos. The pinned client shader still cannot substitute true HDR, depth-aware post and native GPU integration. Review weak silhouettes and repair them before claiming acceptable quality. Do not distribute unpolished user builds.
+
+
+## Actual initial 20-view art audit and first repair pass
+
+Pinned WASM build and geometry CI for M26 pre-review source passed [run 44620581505](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44620581505): **24/24 preview unit tests, 0 failed**, generated 860 diagnostic SVG views and verified the WASM .hmod ZIP, original 30 OGG sounds and WGSL. The audit artifact `Aetheria-200Spells-Visual-Audit-v0.6.0-Internal` was downloaded and the actual 20 relevant Cast projections were decoded and inspected in a 5×4 contact sheet. Every one had nonempty spatial geometry, but several **FAILED the no-slop artistic gate**:
+
+- **#150 Orbiting Moons** was just three smooth purple balls, unrelated to the referenced fractured moon look. Replaced with three thick sculpted chipped *crescent* moon segments, individually varied.
+- **#171 Timeglass Snare** was a visually meaningless pile of intersecting thin crystals. Replaced with a connected, enclosed and visibly tapered double glass chamber and suspended arrow shards.
+- **#110 Mushroom Lantern** was a boxy green trunk under a flat roof, not a lantern mushroom. Replaced with a faceted radial mushroom dome, broad shaded gills and luminous pointed under-hanging caps.
+
+This is a *source-driven correction after seeing real diagnostic geometry*, not a generated concept image. A second full CI must pass and two-camera views of these new shapes should be reopened. **The 200-spell content is not artist-approved and does not have real engine HDR/bloom/depth effects.**
