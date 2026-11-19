@@ -20,6 +20,8 @@ mod charged_standard_forms;
 #[cfg(test)]
 mod visual_audit;
 #[cfg(test)]
+mod explicit_coverage;
+#[cfg(test)]
 mod shader_validation;
 use aetheria_horizon::ui::minimal_hud::QuickSelector;
 use catalog200::{SPELL_COUNT,DIRECT_SLOTS};
