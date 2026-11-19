@@ -3,6 +3,7 @@
 mod compact_ui;
 mod catalog30;
 mod cinematic_beams;
+mod hero_vfx;
 #[cfg(test)]
 mod visual_audit;
 use aetheria_horizon::ui::minimal_hud::QuickSelector;
@@ -563,6 +564,12 @@ fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
 }
 
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
+    if cast.kind==5 {
+        // Independent full-bodied glacier signature — no generic ring/spike
+        // backing sculpt that would undo the reference-led art direction.
+        hero_vfx::render_shard_chorus(cast,age,scene);
+        return;
+    }
     if cast.kind<SPELL_COUNT {
         // Every curated ID gets its own world-space, temporal, 3D motif.
         // Draw this first so the school-wide sculpt cannot starve the magic
