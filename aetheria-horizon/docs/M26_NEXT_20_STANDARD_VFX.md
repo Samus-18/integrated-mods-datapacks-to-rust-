@@ -35,3 +35,10 @@ Pinned WASM build and geometry CI for M26 pre-review source passed [run 44620581
 - **#110 Mushroom Lantern** was a boxy green trunk under a flat roof, not a lantern mushroom. Replaced with a faceted radial mushroom dome, broad shaded gills and luminous pointed under-hanging caps.
 
 This is a *source-driven correction after seeing real diagnostic geometry*, not a generated concept image. A second full CI must pass and two-camera views of these new shapes should be reopened. **The 200-spell content is not artist-approved and does not have real engine HDR/bloom/depth effects.**
+
+
+## Final verified build and second real SVG re-review
+
+Following initial failure triage, source commit `811b44691998de5e9775c7887eb85abac5c76b2f` repaired #110 fungal dome, #150 chipped moon crescents, and the first version of #171 tapered time chambers. A second actual SVG review showed that **#171 still looked like a handful of crossing sticks** because edge crystals dominated transparent faces. Final fix `ef08d2668d85ef3e96d54fef41379029ff96ff8c` removed the thin ribs and strengthened solid chamber material/opaque caps. The **final source-generated Cast SVG** was opened: it now clearly reads as a substantial two-chamber hourglass, with a narrow middle and broad top/bottom; it is no longer a bundle of empty rods. The actual source image is **not an in-game screenshot**.
+
+**Successful final pinned Horizon WASM CI**: [run 44622062765](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44622062765) — **24/24 Rust preview tests**, 0 failures; all **860** source geometry diagnostic SVG snapshots generated; .hmod package, WGSL, original 30 OGG SFX files, ZIP/SHA512 checks passed. No claim of true HDR, actual GPU illumination, real world spell mechanics or playtested compatibility on Windows. The current original 200-spell registry has **150 explicitly scripted per-ID visual compositions** and **30 remaining semantic first-pass standard drafts**; none of this guarantees visually polished cinematic spell quality for all 200.
