@@ -260,15 +260,17 @@ fn extended_170_spells_have_two_angle_cast_and_impact_visual_audit(){
 }
 
 
-/// M24: protect the first 20 dedicated Standard signatures against a
+/// M24–M25: protect forty dedicated Standard signatures against a
 /// renderer regression into invisible, flat or silently truncated geometry.
 /// These numeric bounds are sanity checks, NOT visual beauty certification.
 #[test]
-fn m24_twenty_source_authored_spells_have_two_view_mass_and_impact(){
+fn m24_m25_forty_source_authored_spells_have_two_view_mass_and_impact(){
     use aetheria_horizon::vfx::timeline::for_spell;
     use crate::catalog200;
-    let ids=[6_u16,7,26,27,46,47,66,67,86,87,
-             106,107,126,127,146,147,166,167,186,187];
+    let ids=[6_u16,7,8,9,26,27,28,29,46,47,48,49,
+             66,67,68,69,86,87,88,89,106,107,108,109,
+             126,127,128,129,146,147,148,149,166,167,168,169,
+             186,187,188,189];
     let cameras=[View::new([1.8,1.25,2.8]),View::new([-2.3,1.75,1.1])];
     let mut total=0;
     for id in ids {
@@ -306,5 +308,5 @@ fn m24_twenty_source_authored_spells_have_two_view_mass_and_impact(){
             }
         }
     }
-    assert_eq!(total,80);
+    assert_eq!(total,160);
 }
