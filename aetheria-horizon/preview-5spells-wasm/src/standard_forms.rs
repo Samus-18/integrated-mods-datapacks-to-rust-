@@ -109,8 +109,8 @@ fn forms(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32){
         104=>{ // Briar Loop: interwoven rooted LIVING BRIAR CANOPY.
             // Previous scene was only skinny spikes with stray top leaves.
             for layer in 0..2 {
-              for i in 0..10{
-                let a=TAU*i as f64/10.+layer as f64*0.29;
+              for i in 0..5{
+                let a=TAU*i as f64/5.+layer as f64*0.29;
                 let radius=(1.7+layer as f64*0.46)*g;
                 let base=p(o,radius*a.cos(),-0.55,radius*a.sin());
                 let height=(2.2+0.20*(i%5) as f64+layer as f64*0.27)*g;
@@ -251,7 +251,7 @@ mod tests{
             render(Cast{kind:slot,variant:3,start:0,
                 center:[0.,64.,0.],direction:[0.,0.,1.]},age,&mut s);
             assert!(s.facets.len()>=12,"weak shape: {id}");
-            assert!(s.facets.len()<=500,"budget exceeded: {id}");
+            assert!(s.facets.len()<500,"truncated/over budget Standard: {id}");
             assert!(s.facets.iter().all(|(q,_)|q.iter().flatten().all(|f|f.is_finite())));
             let fingerprint=s.facets.iter().flat_map(|(q,_)|
                 q.iter().flat_map(|pt|pt.iter().map(|v|(*v*100.).round() as i64))
