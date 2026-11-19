@@ -24,6 +24,16 @@ pub enum SpellAction {
  GravityThread{max_target_mass:f32,pull:f32,duration_ticks:u16},
  MomentSlip{lookback_ticks:u16,max_distance:f32},
  SoulLantern{reveal_radius:f32,duration_ticks:u16,hostile_only:bool},
+ MagmaLash{reach:f32,damage:f32,burn_ticks:u16},
+ ShardChorus{spikes:u8,spread_radians:f32,damage:f32},
+ UpdraftWell{radius:f32,lift:f32,duration_ticks:u16},
+ GravelJaws{damage:f32,pin_ticks:u16,radius:f32},
+ PearlShield{absorption:f32,duration_ticks:u16},
+ MossMend{heal_per_tick:f32,duration_ticks:u16},
+ ThunderNeedle{damage:f32,range:f32},
+ BlinkFold{range:f32,arrival_guard_ticks:u16},
+ TickPulse{radius:f32,slow_factor:f32,duration_ticks:u16},
+ GraveWhisper{lure_radius:f32,duration_ticks:u16,undead_only:bool},
 }
 #[derive(Debug,Clone,Copy,PartialEq,Eq)]
 pub enum CastError{UnknownSpell,WrongClass,Locked,NotYetImplemented,Cooldown,InsufficientMana,InvalidInput}
@@ -63,6 +73,16 @@ fn action_for_spell(id:u16,power:f32)->Option<SpellAction>{
  142=>SpellAction::GravityThread{max_target_mass:8.0,pull:1.4*power,duration_ticks:40},
  162=>SpellAction::MomentSlip{lookback_ticks:55,max_distance:8.0*power},
  182=>SpellAction::SoulLantern{reveal_radius:20.0*power,duration_ticks:200,hostile_only:true},
+ 3=>SpellAction::MagmaLash{reach:8.0*power,damage:4.5*power,burn_ticks:70},
+ 23=>SpellAction::ShardChorus{spikes:9,spread_radians:1.4,damage:2.1*power},
+ 43=>SpellAction::UpdraftWell{radius:4.2*power,lift:2.4*power,duration_ticks:70},
+ 63=>SpellAction::GravelJaws{damage:5.8*power,pin_ticks:30,radius:2.7*power},
+ 83=>SpellAction::PearlShield{absorption:8.0*power,duration_ticks:120},
+ 103=>SpellAction::MossMend{heal_per_tick:0.22*power,duration_ticks:110},
+ 123=>SpellAction::ThunderNeedle{damage:8.0*power,range:17.0*power},
+ 143=>SpellAction::BlinkFold{range:6.0*power,arrival_guard_ticks:12},
+ 163=>SpellAction::TickPulse{radius:5.0*power,slow_factor:0.42,duration_ticks:65},
+ 183=>SpellAction::GraveWhisper{lure_radius:13.0*power,duration_ticks:170,undead_only:true},
  _=>return None,
  })
 }
@@ -93,8 +113,8 @@ pub fn cast(p:&mut PlayerMagic,id:u16,tick:u64,charge:f32)->Result<CastResult,Ca
     assert_eq!(p.mana,90.0);
  }
  #[test]fn incomplete_spells_do_not_spend_mana(){
-    let mut p=PlayerMagic::new(0);p.unlock(3);
-    assert_eq!(cast(&mut p,3,100,0.0),Err(CastError::NotYetImplemented));
+    let mut p=PlayerMagic::new(0);p.unlock(4);
+    assert_eq!(cast(&mut p,4,100,0.0),Err(CastError::NotYetImplemented));
     assert_eq!(p.mana,100.0);
  }
  #[test]fn class_and_resource_checks(){
@@ -140,4 +160,40 @@ mod m2_tests {
   assert_eq!(cast(&mut p,162,100,1.0).unwrap().action,
    SpellAction::MomentSlip{lookback_ticks:55,max_distance:16.0});
  }
+}
+
+#[cfg(test)]
+mod thirty_spell_tests {
+    use super::*;
+    use std::{collections::HashSet,mem::discriminant};
+    #[test]
+    fn first_three_in_each_school_have_distinct_cast_actions() {
+        let mut action_kinds=HashSet::new();
+        for school in 0..10u8 {
+            let mut player=PlayerMagic::new(school);
+            for rank in 1..=3u16 {
+                let id=u16::from(school)*20+rank;
+                assert!(by_id(id).unwrap().core_prototype,"spell {id} missing core");
+                if rank>1 {assert!(player.unlock(id));}
+                let result=cast(&mut player,id,300,0.8).expect("cast");
+                assert_eq!(result.spell_id,id);
+                assert!(action_kinds.insert(discriminant(&result.action)),
+                    "duplicate portable action type for {id}");
+            }
+            assert_eq!(player.mana,58.0);
+        }
+        assert_eq!(action_kinds.len(),30);
+    }
+    #[test]
+    fn thirty_integrated_intents_only_no_premature_200_spells_claim() {
+        let count=crate::magic::registry::SPELLS.iter().filter(|s|s.core_prototype).count();
+        assert_eq!(count,30);
+        for school in 0..10u16 {
+            let mut player=PlayerMagic::new(school as u8);
+            let id=school*20+4;
+            assert!(player.unlock(id));
+            assert_eq!(cast(&mut player,id,100,1.0),Err(CastError::NotYetImplemented));
+            assert_eq!(player.mana,100.0);
+        }
+    }
 }
