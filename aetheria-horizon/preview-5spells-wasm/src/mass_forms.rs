@@ -3,7 +3,7 @@
 //! authored phrase, not a color-swapped school default. No ring/rod-only FX.
 //! NOTE: These are visual placeholders awaiting dedicated art-direction;
 //! they are NOT 170 verified cinematic quality VFX or live world mechanics.
-use super::{Cast,Scene,add,sub,scale,norm,cross,shade_argb,alpha};
+use super::{Cast,Scene,add,sub,scale,shade_argb};
 use crate::catalog200;
 use aetheria_horizon::vfx::timeline::{for_spell,Stage};
 use std::f64::consts::{PI,TAU};
@@ -265,7 +265,7 @@ fn signature(scene:&mut Scene,form:Form,o:P,id:u16,age:f64,g:f64,c:u32){
        let b=TAU*(i+1) as f64/sides as f64+age*0.005;
        let pt=|level:f64,ang:f64|{
           let r=(0.27+1.24*(level*2.-1.).abs())*g;
-          pos(o,r*ang.cos(),0.2+level*height,r*ang.sin());
+          pos(o,r*ang.cos(),0.2+level*height,r*ang.sin())
        };
        scene.quad([pt(v,a),pt(v,b),pt(w,b),pt(w,a)],
            color(c,0.7,0.63+0.09*(i%3) as f64));
