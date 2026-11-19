@@ -17,6 +17,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Install official mod building tool
         run: cargo install --locked --git https://github.com/horizon-rust/horizon cargo-horizon-mod
+      - name: Install wasm32 target for cross-check
+        run: rustup target add wasm32-unknown-unknown
       - name: Compile-check native Rust hooks against pinned SDK
         run: cargo horizon-mod check
       - name: Compile preview against pinned Horizon SDK
