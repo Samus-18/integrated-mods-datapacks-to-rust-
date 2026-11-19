@@ -28,6 +28,23 @@ pub fn semantic_form(words:&str)->Form{
  if has(&["cord","thread","strand","tether","braid","chain","ribbon","whip","trail","twist"]){return Form::Ribbon}
  if has(&["rune","sigil","glyph","tablet","gravestone","inscription","etch","mark"]){return Form::Glyph}
  if has(&["bell","lantern","totem","idol","reliquary","altar","vessel","urn"]){return Form::Relic}
+ // Specific phrases in the actual 200-entry authored mesh catalog.
+ // Never silently classify an unknown source silhouette as the same canopy!
+ if has(&["ash cloak","rolling avalanche","refractive veil","wind torus",
+         "air plate helix","sonic cone","vibration helix"]){return Form::Cloud}
+ if has(&["engraved fire seal","constellation chart"]){return Form::Glyph}
+ if has(&["ember hooks","conductor wand"]){return Form::Blade}
+ if has(&["volcanic fan"]){return Form::Phoenix}
+ if has(&["caldera","hail asteroids","fault ridge","cliff mantle"]){return Form::Boulder}
+ if has(&["floating air plate","wind arcs","foaming breakers","liquid toroids"]){return Form::Wave}
+ if has(&["black monolith","earth column","carved monolith","throne"]){return Form::Architecture}
+ if has(&["gem-plated mantle","bark plating","gravity halos"]){return Form::Armor}
+ if has(&["fluid palm","offset silhouette"]){return Form::Avatar}
+ if has(&["insect veil"]){return Form::Phoenix}
+ if has(&["arc torus"]){return Form::Cloud}
+ if has(&["ground filaments","footstep echoes"]){return Form::Ribbon}
+ if has(&["silver phase sheets"]){return Form::SkyRift}
+ if has(&["sandglass"]){return Form::Time}
  if has(&["clock","time","hour","dial","pendulum","chron","sands","stopped"]){return Form::Time}
  if has(&["rift","portal","fracture","fractured sky","space","void","shadow tear","mirror"]) {return Form::SkyRift}
  if has(&["skull","ghost","spirit","humanoid","giant","hand","fist","gauntlet","claw"]){return Form::Avatar}
@@ -390,5 +407,13 @@ mod tests{
      assert_eq!(semantic_form("carved gravestone glyph"),Form::Glyph);
      assert_eq!(semantic_form("braided crimson cord"),Form::Ribbon);
      assert_eq!(semantic_form("vibrating spectral bell"),Form::Relic);
+     // No unclassified mesh from the original 170-design registry may
+     // silently inherit a generic placeholder canopy.
+     for source in &aetheria_horizon::magic::registry::SPELLS{
+         if (source.id-1)%20>=3 {
+             assert_ne!(semantic_form(source.mesh),Form::Canopy,
+                        "unclassified authored mesh for spell {}: {}",source.id,source.mesh);
+         }
+     }
  }
 }
