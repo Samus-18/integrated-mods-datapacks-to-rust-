@@ -188,7 +188,7 @@ impl Hooks for Mod {
         }
     }
 
-    fn mouse_scrolling(&self, host: &dyn ClientHost, event: &mut MouseScrollingEvent<'_>) -> Flow {
+    fn mouse_scrolling(&self, host: &mut dyn ClientHost, event: &mut MouseScrollingEvent) -> Flow {
         // Real Iron-like alternative: hold R, turn the mouse wheel to select
         // a spell, cancel the corresponding vanilla hotbar scroll only then.
         if !host.playing() || !host.is_down(MOD_ID, "quick_picker") {
