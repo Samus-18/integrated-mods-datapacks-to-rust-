@@ -47,6 +47,8 @@ jobs:
           python3 tools/generate_sound_assets.py
       - name: Compile prelinked WASM module and package
         run: cargo horizon-mod build --wasm
+      - name: Test 30 unique procedural world-space meshes and phase choreography
+        run: cargo test --lib -- --nocapture
       - name: Validate WASM package and integrity
         run: |
           python3 - <<'PY'
@@ -62,7 +64,7 @@ jobs:
               assert 'assets/aetheria_preview/shaders/pipeline/ethereal.wgsl' in names
               m=tomllib.loads(z.read('horizon-mod.toml').decode())
               assert m['id']=='aetheria_preview'
-              assert m['version']=='0.5.2'
+              assert m['version']=='0.5.3'
               assert 'native' not in m and 'wasm' in m
               assert hashlib.sha512(z.read('mod.wasm')).hexdigest()==m['wasm']['sha512']
               import json
@@ -72,9 +74,9 @@ jobs:
                   path='assets/aetheria_preview/sounds/'+event+'.ogg'
                   assert path in names and len(z.read(path))>800
                   assert z.read(path)[:4]==b'OggS'
-              print('PASS: wasm .hmod, SHA512, 15 original OGG SFX, shader, ZIP verified')
+              print('PASS: wasm .hmod, SHA512, 30 original OGG SFX, shader, ZIP verified')
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-30Spells-WASM-v0.5.2-Internal
+          name: Aetheria-Horizon-30Spells-WASM-v0.5.3-Internal
           path: aetheria-horizon/preview-5spells-wasm/target/horizon-mod/aetheria_preview.hmod
