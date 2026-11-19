@@ -6,6 +6,7 @@ mod cinematic_beams;
 mod hero_vfx;
 mod catalog200;
 mod mass_forms;
+mod ultimate_forms;
 #[cfg(test)]
 mod visual_audit;
 #[cfg(test)]
@@ -587,6 +588,12 @@ fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
 }
 
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
+    // The twenty ORIGINAL Ultimates each get an explicitly authored scene,
+    // never a scaled-up generic standard spell or hollow ring.
+    if cast.kind<catalog200::SPELL_COUNT && catalog200::rank(cast.kind)>=18 {
+        ultimate_forms::render(cast,age,scene);
+        return;
+    }
     // Core registry and UI are global (0..199); the first 3 spells of each
     // school map explicitly to their original 30 bespoke renderer slots.
     let Some(old_slot)=catalog200::curated_slot(cast.kind) else {
