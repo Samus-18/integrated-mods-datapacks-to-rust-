@@ -3,7 +3,7 @@
 
 No sampled, copyrighted or external material. Deterministic standard-library
 oscillator/noise synthesis then FFmpeg Vorbis encoding.
-Re-run before \`cargo horizon-mod build --wasm\`. No paid generator required.
+Re-run before `cargo horizon-mod build --wasm`. No paid generator required.
 """
 from pathlib import Path
 import math
