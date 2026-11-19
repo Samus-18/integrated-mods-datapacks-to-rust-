@@ -1,7 +1,9 @@
 //! Aetheria Horizon first native/wasm visual preview. Five 3D fantasy spell shapes.
 //! These are LOCAL client effects only; no server damage, block edits or claimed FPS.
 mod compact_ui;
-use aetheria_horizon::ui::minimal_hud::{QuickSelector,QuickMove};
+mod catalog30;
+use aetheria_horizon::ui::minimal_hud::QuickSelector;
+use catalog30::{SPELL_COUNT,DIRECT_SLOTS};
 use mod_api::{
     self, Hooks, Registrar, RegistrationContext, KeyRegistration, KeyConflictContext,
     ClientHost, ClientTickPostEvent, ClientSetupEvent, ClientResourcesReloadedEvent,
@@ -16,34 +18,16 @@ use aetheria_horizon::vfx::arcane_forms::{sculpt_school,Material as ArcaneMateri
 const MOD_ID: &str = "aetheria_preview";
 const IDS: [&str;5] = ["phoenix_garden", "glacier_cathedral", "worldroot", "thunder_wyrm", "astral_sunder"];
 const KEYS: [&str;5] = ["key.keyboard.z", "key.keyboard.x", "key.keyboard.c", "key.keyboard.v", "key.keyboard.b"];
-const NAMES: [&str;5] = ["Phoenix Garden", "Glacier Cathedral", "Living Worldroot", "Thunder Wyrm", "Astral Sunder"];
-// Internal visual preview only; the future authoritative RPG state is separate.
-const LOCAL_COST: [f32;5] = [18.0,24.0,15.0,26.0,28.0];
-const LOCAL_COOLDOWN: [u64;5] = [26,38,24,42,46];
-// Generated original OGG stems in assets/aetheria_preview/sounds/.
-const CAST_SFX: [[&str;3];5] = [
-    ["aetheria_preview:phoenix_charge","aetheria_preview:phoenix_cast","aetheria_preview:phoenix_impact"],
-    ["aetheria_preview:glacier_charge","aetheria_preview:glacier_cast","aetheria_preview:glacier_impact"],
-    ["aetheria_preview:worldroot_charge","aetheria_preview:worldroot_cast","aetheria_preview:worldroot_impact"],
-    ["aetheria_preview:thunder_charge","aetheria_preview:thunder_cast","aetheria_preview:thunder_impact"],
-    ["aetheria_preview:astral_charge","aetheria_preview:astral_cast","aetheria_preview:astral_impact"],
-];
-const VARIANT_NAMES: [[&str;3];5] = [
-    ["Phoenix Garden", "Phoenix Feather Form", "Ember Cyclone"],
-    ["Glacier Cathedral", "Glacial Eruption", "Frost Surge"],
-    ["Living Worldroot", "Ancient Worldroot", "Verdant Canopy"],
-    ["Thunder Wyrm", "Storm Wyvern", "Storm Manta"],
-    ["Astral Sunder", "Astral Shatter", "Fractured Stair"],
-];
+const NAMES: [&str;5] = ["Fire school starter", "Frost school starter", "Druid school starter", "Storm school starter", "Astral school starter"];
 
 #[derive(Clone, Copy)]
 struct Cast { kind: usize, variant: u8, start: u64, center: [f64;3], direction: [f64;3] }
 #[derive(Default)]
 struct State {
     tick:u64,effects:Vec<Cast>,pipeline:Option<RenderPipelineRef>,
-    last_cast:Option<usize>,last_variant:u8,variant_cycle:[u8;5],
+    last_cast:Option<usize>,last_variant:u8,
     quick:QuickSelector,show_constellation:bool,
-    local_mana:f32,local_cooldowns:[u64;5],
+    local_mana:f32,local_cooldowns:[u64;SPELL_COUNT],
 }
 #[derive(Default)]
 struct Mod { state: Mutex<State> }
@@ -96,7 +80,7 @@ impl Hooks for Mod {
         let mut pressed = Vec::new();
         if playing {
             for (i, id) in IDS.iter().enumerate() {
-                if host.consume_click(MOD_ID, id) { pressed.push(i); }
+                if host.consume_click(MOD_ID, id) { pressed.push(DIRECT_SLOTS[i]); }
             }
         }
         let select_previous=playing && host.consume_click(MOD_ID,"previous");
@@ -119,7 +103,7 @@ impl Hooks for Mod {
             state.effects.clear();
             state.show_constellation=false;
             state.local_mana=100.0;
-            state.local_cooldowns=[0;5];
+            state.local_cooldowns=[0;SPELL_COUNT];
             state.quick=QuickSelector::default();
             state.tick=0;
             return;
@@ -128,18 +112,19 @@ impl Hooks for Mod {
         let now=state.tick;
         if now==1 {state.local_mana=100.0;}
         state.local_mana=(state.local_mana+0.24).min(100.0);
-        let book_slots=[Some(1_u16),Some(2),Some(3),Some(4),Some(5)];
         if select_previous {
-            state.quick.move_selection(&book_slots,QuickMove::Previous,now);
+            state.quick.selected=(state.quick.selected+SPELL_COUNT-1)%SPELL_COUNT;
+            state.quick.visible_until_tick=now.saturating_add(55);
         }
         if select_next {
-            state.quick.move_selection(&book_slots,QuickMove::Next,now);
+            state.quick.selected=(state.quick.selected+1)%SPELL_COUNT;
+            state.quick.visible_until_tick=now.saturating_add(55);
         }
         if toggle_constellation {
             state.show_constellation=!state.show_constellation;
         }
         if state.show_constellation {pressed.clear();}
-        else if cast_selected {pressed.push(state.quick.selected.min(4));}
+        else if cast_selected {pressed.push(state.quick.selected.min(SPELL_COUNT-1));}
         state.effects.retain(|c| now.saturating_sub(c.start) <= 104);
         if let Some(cam) = camera {
             let yaw = f64::from(cam.yaw).to_radians();
@@ -149,12 +134,13 @@ impl Hooks for Mod {
                 for kind in pressed {
                     // Preview mana is client-local: NOT the future multiplayer
                     // server authority, and never unlocks real world content.
-                    if state.local_mana<LOCAL_COST[kind]
+                    let spec=catalog30::spec(kind);
+                    if state.local_mana<spec.mana_cost
                         || now<state.local_cooldowns[kind] {continue;}
-                    state.local_mana-=LOCAL_COST[kind];
-                    state.local_cooldowns[kind]=now.saturating_add(LOCAL_COOLDOWN[kind]);
+                    state.local_mana-=spec.mana_cost;
+                    state.local_cooldowns[kind]=now.saturating_add(u64::from(spec.cooldown_ticks));
                     state.quick.selected=kind;
-                    let center = if kind == 1 || kind == 2 {
+                    let center = if matches!(catalog30::school(kind),1|3|5|9) {
                         ground_target.unwrap_or_else(|| {
                             let mut p = add(cam.position, scale(dir, 6.0));
                             p[1] -= 1.6;
@@ -165,9 +151,8 @@ impl Hooks for Mod {
                     };
                     if state.effects.len() >= 8 { state.effects.remove(0); }
                     let tick = state.tick;
-                    // Each repeated cast cycles through three *different geometries*.
-                    let variant = state.variant_cycle[kind];
-                    state.variant_cycle[kind] = (variant + 1) % 3;
+                    // Thirty selectable identities, three different geometry recipes per school.
+                    let variant = catalog30::rank(kind) as u8;
                     state.effects.push(Cast {kind, variant, start: tick, center, direction: dir});
                     state.last_cast = Some(kind);
                     state.last_variant = variant;
@@ -180,7 +165,7 @@ impl Hooks for Mod {
         // Never emits vanilla beam sounds; only this client's player hears it.
         for (kind,variant,origin) in queued_sounds {
             for (i,offset) in [0_u32,9,18].into_iter().enumerate() {
-                let play=SoundPlay::at(CAST_SFX[kind][i], SoundSource::Blocks, origin)
+                let play=SoundPlay::at(catalog30::SCHOOL_SFX[catalog30::school(kind)][i], SoundSource::Blocks, origin)
                     .with_volume(if i==2 {0.85} else {0.62})
                     .with_pitch(0.96+variant as f32*0.045);
                 let _=host.play_local_sound(&play,offset);
@@ -197,12 +182,15 @@ impl Hooks for Mod {
         let steps=event.accumulated[1];
         if steps==0 {return Flow::Continue;}
         let mut state=self.state.lock().unwrap();
-        let slots=[Some(1_u16),Some(2),Some(3),Some(4),Some(5)];
-        let direction=if steps>0 {QuickMove::Previous}else{QuickMove::Next};
         let now=state.tick;
         for _ in 0..steps.unsigned_abs().min(8) {
-            state.quick.move_selection(&slots,direction,now);
+            if steps>0 {
+                state.quick.selected=(state.quick.selected+SPELL_COUNT-1)%SPELL_COUNT;
+            } else {
+                state.quick.selected=(state.quick.selected+1)%SPELL_COUNT;
+            }
         }
+        state.quick.visible_until_tick=now.saturating_add(55);
         Flow::Cancel
     }
 
@@ -244,7 +232,7 @@ impl Hooks for Mod {
     fn gui_render_post(&self, host: &dyn ClientHost, event: &mut GuiRenderPostEvent<'_>) {
         if event.gui_hidden || !event.focused {return;}
         let state=self.state.lock().unwrap();
-        let chosen=state.quick.selected.min(4);
+        let chosen=state.quick.selected.min(SPELL_COUNT-1);
         let open=host.is_down(MOD_ID,"quick_picker")
             ||state.quick.visible(state.tick,false);
         compact_ui::draw(host,event,compact_ui::UiView{
@@ -400,13 +388,12 @@ impl Scene {
 /// quad submissions. This is NOT GPU instancing: dense late-stage ultimates
 /// will need a verified, separate instanced renderer integration.
 fn render_portable_sculpt(cast:Cast,age:f64,scene:&mut Scene)->bool {
-    let school=match cast.kind {
-        0=>0,1=>1,2=>5,3=>6,4=>7,_=>return false
-    };
+    let school=catalog30::school(cast.kind) as u8;
     let Some(form)=sculpt_school(school,(age.max(0.).min(119.)) as u32,1) else {
         return false;
     };
-    let available=scene.budget.saturating_sub(scene.facets.len());
+    // Reserve room for a spell-specific 3D silhouette, not just school meshes.
+    let available=scene.budget.saturating_sub(scene.facets.len())*55/100;
     if available==0 {return true;}
     let triangles=form.triangle_count();
     if triangles==0{return false;}
@@ -440,7 +427,17 @@ fn render_portable_sculpt(cast:Cast,age:f64,scene:&mut Scene)->bool {
             if scene.facets.len()>=scene.budget {return true;}
             let p=|v:u32|->Option<[f64;3]>{
                 let x=part.mesh.vertices.get(v as usize)?.position;
-                Some(add(cast.center,[x[0] as f64,x[1] as f64,x[2] as f64]))
+                let tier=catalog30::rank(cast.kind);
+                let (horizontal,vertical,depth)=match tier {
+                    0=>(0.76,0.88,0.82),
+                    1=>(1.24,0.83,1.17),
+                    _=>(0.91,1.22,0.84),
+                };
+                Some(add(cast.center,[
+                    x[0] as f64*horizontal,
+                    x[1] as f64*vertical,
+                    x[2] as f64*depth
+                ]))
             };
             let (Some(a),Some(b),Some(c))=(p(tri[0]),p(tri[1]),p(tri[2])) else{
                 continue;
@@ -457,7 +454,72 @@ fn render_portable_sculpt(cast:Cast,age:f64,scene:&mut Scene)->bool {
     true
 }
 
+/// Three distinct 3D attack silhouettes per school: rooted lance, unfolding
+/// fan and braided lash. The ten independently sculpted school models live
+/// underneath this signature; all coordinates are world-space.
+fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
+    let school=catalog30::school(cast.kind);
+    let rank=catalog30::rank(cast.kind);
+    let tint=alpha(catalog30::WORLD_COLORS[school],age,104.0);
+    let grow=(age/13.0).clamp(0.,1.).powf(0.68);
+    let o=cast.center;
+    let forward=norm([cast.direction[0],0.03,cast.direction[2]]);
+    let right=norm(cross(forward,[0.,1.,0.]));
+    let phase=age*0.035+school as f64*0.91;
+    match rank {
+        0 => { // Concentrated piercing crown of faceted solid lances
+            for j in 0..7 {
+                let a=TAU*j as f64/7.0+phase;
+                let near=add(o,[a.cos()*0.56*grow,a.sin()*0.46*grow,a.sin()*0.36*grow]);
+                let tip=add(o,add(scale(forward,(3.4+j as f64*0.19)*grow),
+                    [a.cos()*1.35*grow,(0.75+a.sin()*0.85)*grow,a.sin()*0.95*grow]));
+                scene.solid_crystal(near,tip,0.24+(j%3) as f64*0.05,a,tint,6);
+            }
+        }
+        1 => { // Divergent three-dimensional volley, not a flat fan
+            for wing in [-1.0,1.0] {
+                for j in 0..5 {
+                    let t=(j as f64+1.0)/5.0;
+                    let spin=phase+wing*t*1.6;
+                    let root=add(o,add(scale(right,wing*t*0.6),[0.,0.25,0.]));
+                    let end=add(root,add(scale(forward,(3.0+3.1*t)*grow),
+                        add(scale(right,wing*t*3.2*grow),
+                        [0.,(0.7+(t*9.0+phase).sin()*1.45)*grow,0.])));
+                    scene.solid_crystal(root,end,(0.17+0.16*(1.-t))*grow,spin,tint,5);
+                }
+            }
+        }
+        _ => { // Braided rising tendrils and a crown of hard crystal thorns
+            for strand in 0..3 {
+                let shift=TAU*strand as f64/3.0+phase;
+                let mut prev=o;
+                for j in 1..=12 {
+                    let t=j as f64/12.0;
+                    let a=shift+t*TAU*1.65;
+                    let r=(0.42+2.5*t)*grow;
+                    let point=add(o,[a.cos()*r,(t*5.6-0.2)*grow,a.sin()*r]);
+                    scene.tube(prev,point,0.12*(1.-t)+0.035,0.09*(1.-t)+0.025,
+                        a,tint,5);
+                    if j%4==0 {
+                        scene.solid_crystal(point,
+                            add(point,[a.cos()*0.8,0.7*grow,a.sin()*0.8]),
+                            0.15,a,tint,5);
+                    }
+                    prev=point;
+                }
+            }
+        }
+    }
+}
+
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
+    if cast.kind<SPELL_COUNT {
+        // Every chosen spell draws ten-school closed volumetric geometry plus
+        // a rank-specific spatial motif. Never a single recolored beam.
+        let _=render_portable_sculpt(cast,age,scene);
+        render_spell_signature(cast,age,scene);
+        return;
+    }
     // Each spell's second visual profile uses actual closed index meshes
     // sculpted by the portable ten-school geometry system, not flat blades.
     // The engine's supported world-quad API receives one triangle as a
