@@ -7,13 +7,13 @@ use crate::catalog200;
 use aetheria_horizon::vfx::timeline::{for_spell,Stage};
 use std::f64::consts::{TAU,PI};
 type P=[f64;3];
-fn p(o:P,x:f64,y:f64,z:f64)->P{add(o,[x,y,z])}
-fn mix(a:P,b:P,t:f64)->P{add(a,scale(sub(b,a),t))}
-fn tint(c:u32,b:f64,a:f64)->u32{
+pub(super) fn p(o:P,x:f64,y:f64,z:f64)->P{add(o,[x,y,z])}
+pub(super) fn mix(a:P,b:P,t:f64)->P{add(a,scale(sub(b,a),t))}
+pub(super) fn tint(c:u32,b:f64,a:f64)->u32{
   let x=shade_argb(c,b);
   (x&0x00FF_FFFF)|(((a.clamp(0.,1.)*255.).round() as u32)<<24)
 }
-fn body(s:&mut Scene,origin:P,half:P,c:u32){
+pub(super) fn body(s:&mut Scene,origin:P,half:P,c:u32){
   let pts=[
     p(origin,-half[0],-half[1],-half[2]),p(origin,half[0],-half[1],-half[2]),
     p(origin,half[0],half[1],-half[2]),p(origin,-half[0],half[1],-half[2]),
@@ -25,17 +25,17 @@ fn body(s:&mut Scene,origin:P,half:P,c:u32){
     s.quad(idx.map(|j|pts[j]),tint(c,0.54+i as f64*0.066,0.89));
   }
 }
-fn crystal(s:&mut Scene,base:P,top:P,width:f64,spin:f64,c:u32){
+pub(super) fn crystal(s:&mut Scene,base:P,top:P,width:f64,spin:f64,c:u32){
   s.solid_crystal(base,top,width,spin,c,6);
 }
-fn wing(s:&mut Scene,o:P,angle:f64,spread:f64,h:f64,c:u32){
+pub(super) fn wing(s:&mut Scene,o:P,angle:f64,spread:f64,h:f64,c:u32){
   let stem=p(o,0.,0.2,0.);
   let tip=p(o,spread*angle.cos(),h,spread*angle.sin());
   let middle=mix(stem,tip,0.53);
   let flank=[-angle.sin()*spread*0.24,0.2,angle.cos()*spread*0.24];
   s.membrane(stem,add(middle,flank),tip,sub(middle,flank),c);
 }
-fn floor_slab(s:&mut Scene,o:P,r:f64,depth:f64,spin:f64,c:u32){
+pub(super) fn floor_slab(s:&mut Scene,o:P,r:f64,depth:f64,spin:f64,c:u32){
   // Solid broken terrain segments, not a hollow ring.
   let n=8;
   for i in 0..n{
@@ -51,7 +51,7 @@ fn floor_slab(s:&mut Scene,o:P,r:f64,depth:f64,spin:f64,c:u32){
     s.quad([aa,lowa,lowb,bb],tint(c,0.49,0.93));
   }
 }
-fn orb(s:&mut Scene,o:P,rad:P,age:f64,c:u32,opacity:f64){
+pub(super) fn orb(s:&mut Scene,o:P,rad:P,age:f64,c:u32,opacity:f64){
   let n=14usize;let m=9usize;
   let v=|i:usize,j:usize|{
     let theta=TAU*i as f64/n as f64+age*0.008;
@@ -67,7 +67,7 @@ fn orb(s:&mut Scene,o:P,rad:P,age:f64,c:u32,opacity:f64){
     }
   }
 }
-fn curtain(s:&mut Scene,o:P,r:f64,height:f64,age:f64,phase:f64,c:u32){
+pub(super) fn curtain(s:&mut Scene,o:P,r:f64,height:f64,age:f64,phase:f64,c:u32){
   // Broad non-planar translucent atmosphere with spatial depth.
   let rings=8usize;let cols=10usize;
   let v=|j:usize,i:usize|{
@@ -84,7 +84,7 @@ fn curtain(s:&mut Scene,o:P,r:f64,height:f64,age:f64,phase:f64,c:u32){
     }
   }
 }
-fn arch(s:&mut Scene,o:P,a:f64,r:f64,h:f64,c:u32){
+pub(super) fn arch(s:&mut Scene,o:P,a:f64,r:f64,h:f64,c:u32){
   // Thick anchored stone arch, not an outlined circle.
   let n=5;
   for i in 0..n{
