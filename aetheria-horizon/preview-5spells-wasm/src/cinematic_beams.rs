@@ -151,7 +151,7 @@
  /// Map the 30 individual core timelines to a visual lifetime capped at 104 ticks.
  /// Keeps the original choreography proportions, without pretending that the
  /// client preview implements damage, actual server time or charged controls.
- fn visual_phase(slot:usize,age:f64)->Option<(Stage,f64)> {
+ pub(super) fn visual_phase(slot:usize,age:f64)->Option<(Stage,f64)> {
      if !age.is_finite() || !(0.0..104.0).contains(&age) {return None;}
      let timeline=for_spell(catalog30::id(slot))?;
      let at=age/104.0*timeline.total_ticks() as f64;
