@@ -172,10 +172,10 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
     for col in 0..4 {
       let x=(col as f64-1.5)*1.12*g;
       let z=(row as f64-1.)*1.0*g;
-      let height=(1.0+0.38*(row+col)%3 as f64)*g;
+      let height=(1.0+0.38*((row+col)%3) as f64)*g;
       body(s,p(o,x,height*0.5-0.47*g,z),
         [0.60*g,height*0.5,0.58*g],
-        tint(c,0.50+0.047*(row+col)%5 as f64,0.96));
+        tint(c,0.50+0.047*((row+col)%5) as f64,0.96));
     }
   }
   for i in 0..5 {
