@@ -27,3 +27,12 @@ Evidence supplied by user: `horizon-client_MnaFG4NG1R.mp4` (approximately 100 se
 Requirements reaffirmed: visual variation must improve; retain all original master specification requirements in GitHub; keep history, decisions and spell registry updated, without Codex. Preserve fantasy only. Do not equate five early effects with 200 finished spells.
 
 The original large master prompt's full unedited byte-for-byte transcript is **not** presently in this GitHub file; the baseline above summarizes it. See `docs/PROJECT_SPECIFICATION.md` for a durable structured feature and delivery contract. Do not misrepresent a paraphrase as a verbatim record.
+
+## 2026-11-19 — Deferred manual testing until halfway, solid 3D shapes and real systems
+
+Exact user message (verbatim):
+> "testovat uz nebudu jen jsem chtel vydet jestli jsi schopna to udelat dobre az to bude v pulce hotove a hlavne i gui atak dobrej i ziskani tech kouzel a tak to pak navrhnes ale ty kouzla at jsou  3d jo ne jen svetelne paprsky trena glacier je ledove ostny ze zeme co si ne takze 3D vidis na obrazku a tak u kazdeho ve 3D ale i zive at to vypada dobry sfx a animation az do 100 pak otestuju"
+
+Attached image: `image(7).png` showing large broad pale-blue triangular ice spikes protruding from a ground surface, foreground-to-background row/perspective and irregular heights (Ice Awakening screenshot). Use only as reference; do not copy copyrighted assets.
+
+Interpreted gate: next **user-performed** game test only after 100 of 200 actual complete spells (not merely 100 registry lines or visual-only demos). CI/programmatic automated checks remain allowed. 10 classes × (7 standards + 2 awakenings + 1 ultimate) each, full playable loop including solid 3D effects, mana, inventory/unlocking, server-state integration, GUI, animation and original audio. No early ZIPs or requests for testing.
