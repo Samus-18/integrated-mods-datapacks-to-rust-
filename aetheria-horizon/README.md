@@ -39,6 +39,6 @@ Only use a **CI-verified** `aetheria_preview.hmod` containing `mod.wasm` (not a 
 
 - Portable core M3: [39/39 tests passed](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44482049153).
 - WASM preview 0.2.0: [Rust/WASM compile, .hmod SHA-512 and archive checks passed](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44492554390); user subsequently confirmed it runs visually in game.
-- WASM preview 0.3.0: [updated build workflow](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/workflows/aetheria-preview-wasm.yml). Status is shown in GitHub Actions; do not publish unless verified.
+- WASM preview 0.3.0: [successful pinned SDK build and SHA validation](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44496889719), with 15 procedural forms (3 per key) and visual HUD labels. **In-game rendering of 0.3.0 still awaits user verification.**
 
 License / third-party asset redistribution: TBD. No third-party TikTok media or AI-generated paid meshes included.
