@@ -1,9 +1,9 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - 30 Spell Gameplay Preview"
-version = "0.5.3"
+name = "Aetheria Horizon - 200 Spell Internal Design Preview"
+version = "0.6.0"
 api = "0.2"
 side = "client"
-description = "30 selectable fantasy 3D spells, compact picker, local mana/cooldowns and positional SFX. Preview only: no server damage, unlock syncing or world edits."
+description = "200 authored spell identities with core cast intents, client selector and draft 3D forms (30 curated plus 170 unapproved). Local mana/SFX only; no server world mechanics or save sync."
 authors = ["Samus-18"]
 capabilities = ["registries"]
 
