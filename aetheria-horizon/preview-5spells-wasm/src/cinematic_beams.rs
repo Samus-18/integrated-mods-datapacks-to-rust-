@@ -397,12 +397,12 @@
             draw(Cast{kind:slot,variant:0,start:0,
                  center:[0.0,64.0,0.0],direction:[0.0,0.0,1.0]},age,&mut scene);
             assert!(!scene.facets.is_empty(),"slot {slot} has no geometry");
-            let shape=scene.facets.iter().take(24).flat_map(|(corners,_)|
+            let shape=scene.facets.iter().flat_map(|(corners,_)|
                 corners.iter().flat_map(|point|point.iter().map(|v|
                     (v*100.0).round() as i64
                 ))
             ).collect::<Vec<_>>();
-            assert!(geometries.insert(shape),"same first 24 surfaces at slot {slot}");
+            assert!(geometries.insert(shape),"same full spatial mesh at slot {slot}");
         }
         assert_eq!(geometries.len(),30);
     }
