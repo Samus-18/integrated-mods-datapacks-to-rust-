@@ -65,3 +65,10 @@ The portable core has **ten custom 3D sculpt foundations**, each with a distinct
 The internal five-spell preview now imports the **shared 3D Rust sculpt library** and converts closed triangular volumes into the Horizon world's supported quads with face shading, culling and draw limits. Portable class-learning → book equip → cast mana/cooldown validation is consolidated into \`src/core/authority.rs\` for a future authenticated server adapter. [58 Rust core tests passed](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44510503132).
 
 This is **not a public test release**. World damage/healing, acquired items, actual GUI interaction, camera cutscenes, model animations and multiplayer persistency still need real Horizon integration. The upcoming 100-spell manual playtest gate is unchanged.
+
+## M10 complete player persistence and fluid GUI data
+
+- Full versioned v2 portable save codec: [M10 state/UI details](docs/M10_STATE_AND_UI.md), with class, mana, pages, resources, trials, book equipment/tier and cooldowns restored safely.
+- UI model computes fluid mana ripple, 4–8-slot radial spell wheel, cooldown wedges and ten class color palettes.
+- Arcane Inscription tiers I–V now increment actual default spellbook capacity from 4 to 8 slots, not just its title.
+- This is **portable backend logic and GUI layout data** only; Horizon server-world saves, rendered GUI and full gameplay still need engine integration. It is not a playable 100-spell milestone. No manual test build until M100.
