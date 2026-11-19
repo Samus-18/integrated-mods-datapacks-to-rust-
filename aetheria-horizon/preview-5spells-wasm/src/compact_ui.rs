@@ -48,7 +48,7 @@ fn frame(e:&mut GuiRenderPostEvent<'_>,x:f32,y:f32,w:f32,h:f32,color:u32) {
 fn motif(e:&mut GuiRenderPostEvent<'_>,which:usize,x:f32,y:f32,step:f32) {
     // Five original programmatic pixel motifs, *not* generic placeholder dots.
     let s=step.max(1.0);
-    let c=COLORS[which%5];
+    let c=SCHOOL_COLORS[catalog30::school(which)];
     match which%5 {
         0=>{ // phoenix curling wing, feathered tips
             for i in 0..5 {
