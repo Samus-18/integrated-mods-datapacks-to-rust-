@@ -38,15 +38,22 @@ fn shape(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
     crystal(s,base,tip,0.15*g,a,tint(c,0.28,0.59));
    }
   },
- 25=>{ // Hail Carousel: actual lopsided rotating hail ASTEROIDS.
+ 25=>{ // Hail Carousel: 12 jagged, angular free-floating ICE ASTEROIDS.
+   // Former design used expensive sphere meshes; 500-quad budget clipped
+   // away 8 of 12 planned chunks. Faceted bodies keep all twelve visible.
    for i in 0..12{
     let a=TAU*i as f64/12.+t*0.75;
-    let radial=(1.0+0.33*(i%3) as f64)*g;
-    let center=p(o,radial*a.cos(),(1.2+(i%4) as f64*0.53)*g,
+    let radial=(1.4+0.27*(i%4) as f64)*g;
+    let center=p(o,radial*a.cos(),(1.25+(i%4) as f64*0.44)*g,
                         radial*a.sin());
-    let k=(0.28+0.12*(i%4) as f64)*g;
-    orb(s,center,[k*1.15,k,k*0.83],age+i as f64,
-        tint(c,0.79+0.02*(i%4) as f64,0.67),0.72);
+    let k=(0.38+0.12*(i%4) as f64)*g;
+    crystal(s,p(center,-0.23*k,-0.49*k,0.16*k),
+      p(center,0.49*k,0.67*k,-0.22*k),k,a,
+      tint(c,0.70+0.06*(i%4) as f64,0.83));
+    // Detached jagged tips are *part* of irregular ice bodies, not rings.
+    crystal(s,p(center,-0.15*k,0.,-0.2*k),
+      p(center,-0.35*k,1.4*k,0.38*k),k*0.41,a+0.5,
+      tint(c,0.94,0.86));
    }
   },
  45=>{ // Vacuum Pin: convergent solid funnels with denser focal body.
@@ -133,15 +140,31 @@ fn shape(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
     crystal(s,from,end,0.23*g,a,tint(c,0.72,0.80));
    }
   },
- 165=>{ // Temporal Mark: heavy hourglass carving + solid hour pips.
-   body(s,p(o,0.,1.4*g,0.),[1.58*g,1.74*g,0.43*g],tint(c,0.57,0.85));
-   for j in 0..11{
-     let a=TAU*j as f64/11.;
-     let point=p(o,1.12*g*a.cos(),1.4*g+1.12*g*a.sin(),0.53*g);
-     body(s,point,[0.12*g,0.21*g,0.15*g],tint(c,0.85,0.94));
+ 165=>{ // Temporal Mark: floating carved TIME SEAL with open centre.
+   // No featureless slab hiding details: use twelve thick hour-marker stones
+   // and two filled triangular sandglass vessels.
+   for i in 0..12 {
+     let a=TAU*i as f64/12.;
+     let center=p(o,1.46*g*a.cos(),1.72*g+1.46*g*a.sin(),0.);
+     body(s,center,[0.21*g,0.24*g,0.22*g],
+       tint(c,0.63+0.023*(i%6) as f64,0.93));
    }
-   crystal(s,p(o,0.,0.55*g,0.66*g),p(o,0.,2.6*g,0.66*g),
-           0.31*g,t,tint(c,0.92,0.79));
+   let top=p(o,0.,2.95*g,0.25*g);
+   let neck=p(o,0.,1.7*g,0.29*g);
+   let bottom=p(o,0.,0.46*g,0.25*g);
+   for side in [-1.,1.] {
+     let upper=p(o,side*0.94*g,2.94*g,0.2*g);
+     let lower=p(o,side*0.94*g,0.50*g,0.2*g);
+     s.membrane(top,upper,neck,p(o,side*0.42*g,2.20*g,0.41*g),
+       tint(c,0.82,0.72));
+     s.membrane(neck,lower,bottom,p(o,side*0.42*g,1.15*g,0.40*g),
+       tint(c,0.73,0.78));
+     crystal(s,p(o,side*0.72*g,0.5*g,0.10*g),
+       p(o,side*0.72*g,2.9*g,0.10*g),0.11*g,t,
+       tint(c,0.88,0.81));
+   }
+   crystal(s,p(o,0.,1.25*g,0.50*g),p(o,0.,2.02*g,0.50*g),
+     0.31*g,t,tint(c,0.99,0.87));
   },
  185=>{ // Rib Cage: thick interlocked bone ribs surrounding its protected center.
    for side in [-1.,1.]{
