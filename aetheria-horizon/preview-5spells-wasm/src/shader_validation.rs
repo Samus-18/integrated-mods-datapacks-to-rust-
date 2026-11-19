@@ -4,6 +4,27 @@
 #[cfg(test)]
 mod tests {
     #[test]
+    fn original_native_aurora_raymarch_shader_validates_under_horizon_naga(){
+        // This file is **not** packaged into the current WASM preview:
+        // validation proves shader-language correctness and bounded-loop
+        // design, NOT that the game exposes a full-screen post hook.
+        let source=include_str!("../../native-gpu-vfx/aurora_volume.wgsl");
+        let parsed=naga::front::wgsl::parse_str(source)
+            .unwrap_or_else(|e|panic!(
+                "Aetheria experimental 3D raymarch parse error:\n{}",
+                e.emit_to_string(source)
+            ));
+        assert!(parsed.functions.iter().any(|(_,f)|
+            f.name.as_deref()==Some("aetheria_integrate_magic_volume")
+        ));
+        let mut validator=naga::valid::Validator::new(
+            naga::valid::ValidationFlags::all(),
+            naga::valid::Capabilities::all()
+        );
+        validator.validate(&parsed)
+            .expect("Native fantasy raymarch WGSL failed Naga validation");
+    }
+    #[test]
     fn aetheria_material_wgsl_parses_and_validates_with_horizon_naga(){
         let actual=include_str!("../assets/aetheria_preview/shaders/pipeline/ethereal.wgsl");
         // The Horizon mod pipeline supplies PipelineInput and the frame
