@@ -27,3 +27,16 @@ Initial M2 run 44397753631 failed **one legacy unit test** checking that spell I
 - VRAM/performance budgets or visual equivalence to the four supplied video clips
 
 The word **implemented** in project documentation means the standalone Rust **action intent**, not working in-game magic.
+
+
+## M27–M28 internal pinned Horizon branch (2026-11-19)
+
+This section supersedes the old validation ledger's broad 'not yet compiled' statements for the **precompiled WASM preview only**. It does NOT supersede their separate warnings about real server/world integration and native GPU HDR.
+
+| Milestone | Verified | Evidence | Still unverified |
+| --- | --- | --- | --- |
+| M27 | 28/28 preview Rust tests, 200/200 distinct scene routes, 860 source 3D SVG diagnostics, pinned Horizon WASM .hmod/SHA512/30 OGG | [Actions 44629836762](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44629836762) | User game appearance, depth effects, world damage/network, coherent GPU silhouettes |
+| M28 | **31/31 preview Rust tests**, three new fair-quad-allocation tests, full source and 120 M27 2-view gates, valid pinned WASM .hmod/OGG/WGSL/ZIP/SHA512 | [Actions 44632013016](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44632013016) | Real FPS, visually coherent LOD under many casts, native GPU postpass, 170 actual world mechanics |
+| M28 portable Rust + Rapier | Both jobs completed SUCCESS | [Actions 44632013002](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44632013002) | Collision physics wired to Horizon block/entity world |
+
+**Counting policy:** 200/200 authored client scene identities are complete as renderer routes; 0/100 user-accepted fully integrated RPG spells are verified. Shader Naga compilation and 860 CPU SVG geometry snapshots are not Minecraft in-game screenshots or aesthetic sign-off. Final user-facing package is withheld.
