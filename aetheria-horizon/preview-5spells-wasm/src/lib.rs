@@ -300,9 +300,10 @@ impl Hooks for Mod {
         // allocating the actual Horizon quads. The old per_spell_budget cap
         // truncated the LAST body parts first: it could erase wings, bases
         // and impact debris when several spells overlapped.
+        let source_budget=if live.len()==1 {900} else {500};
         let mut drafts=Vec::with_capacity(live.len());
         for (cast,age) in live {
-            let mut spell=Scene::new(500);
+            let mut spell=Scene::new(source_budget);
             render_spell(cast,age,&mut spell);
             drafts.push(spell);
         }
