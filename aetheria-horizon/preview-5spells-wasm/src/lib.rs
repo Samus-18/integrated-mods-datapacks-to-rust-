@@ -61,6 +61,8 @@ impl Hooks for Mod {
             ("next","key.keyboard.m","Next Aetheria spell"),
             ("cast","key.keyboard.g","Cast selected Aetheria spell"),
             ("constellation","key.keyboard.k","Open constellation preview"),
+            ("previous_school","key.keyboard.j","Previous magic school"),
+            ("next_school","key.keyboard.l","Next magic school"),
         ] {
             registrar.register_key_mapping(
                 KeyRegistration::new(id,key)
@@ -102,6 +104,8 @@ impl Hooks for Mod {
         let select_next=active_gameplay && host.consume_click(MOD_ID,"next");
         let cast_selected=active_gameplay && host.consume_click(MOD_ID,"cast");
         let toggle_constellation=active_gameplay && host.consume_click(MOD_ID,"constellation");
+        let previous_school=active_gameplay && host.consume_click(MOD_ID,"previous_school");
+        let next_school=active_gameplay && host.consume_click(MOD_ID,"next_school");
         let camera = if pressed.is_empty() && !cast_selected {None}else{host.camera()};
         // Client-side surface target: makes the ice and roots grow out of a
         // real selected block rather than floating at the player's eye level.
@@ -146,6 +150,13 @@ impl Hooks for Mod {
         if select_next {
             state.quick.selected=(state.quick.selected+1)%SPELL_COUNT;
             state.quick.visible_until_tick=now.saturating_add(55);
+        }
+        if previous_school||next_school {
+            let old=catalog200::school(state.quick.selected);
+            let rank=catalog200::rank(state.quick.selected);
+            let next=if next_school {(old+1)%10}else{(old+9)%10};
+            state.quick.selected=next*20+rank;
+            state.quick.visible_until_tick=now.saturating_add(65);
         }
         if toggle_constellation {
             state.show_constellation=!state.show_constellation;
