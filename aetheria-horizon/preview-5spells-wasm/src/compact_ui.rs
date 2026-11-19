@@ -119,7 +119,7 @@ const GLYPHS:[&str;20]=[
 ];
 fn glyph(e:&mut GuiRenderPostEvent<'_>,local:usize,class:usize,x:f32,y:f32){
     let art=GLYPHS[local%20];
-    let primary=COLORS[class.min(4)];
+    let primary=SCHOOL_COLORS[class.min(9)];
     for (row,line) in art.split('/').enumerate(){
         // Coalesce consecutive on-pixels into one GPU GUI rectangle.
         // This bounds the 20-node menu's shape draw cost.
