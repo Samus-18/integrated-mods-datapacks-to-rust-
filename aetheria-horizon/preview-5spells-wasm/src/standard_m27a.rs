@@ -226,7 +226,7 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
       let v=(i+1) as f64/8.;
       let pos=|q:f64,height:f64|{
         p(o,(q*4.0-2.0)*g,height*g,
-          z+0.53*g*((q*TAU+a+time).sin())+0.28*g*height);
+          z+0.53*g*((q*TAU+a+time).sin())+0.28*g*height)
       };
       s.quad([pos(u,0.12),pos(v,0.12),pos(v,3.75),pos(u,3.75)],
         tint(c,0.67+0.06*panel as f64+0.017*i as f64,0.49));
