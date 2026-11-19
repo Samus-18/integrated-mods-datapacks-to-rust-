@@ -183,8 +183,10 @@ fn shape(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
     }
   },
  148=>{ // WEIGHTLESS FIELD: broad folded levitation membranes and feathers.
-    for plane in 0..6{
-      let a=TAU*plane as f64/6.+time*0.2;
+    // Three substantial fields leave budget for every drifting feather:
+    // six 80-face curtain bodies would silently clip them at 500 quads.
+    for plane in 0..3{
+      let a=TAU*plane as f64/3.+time*0.2;
       curtain(s,p(o,0.,-0.25*g,0.),(1.5+0.15*plane as f64)*g,
            (3.1+0.18*(plane%3) as f64)*g,age,a,
            tint(c,0.56+0.02*plane as f64,0.25));
