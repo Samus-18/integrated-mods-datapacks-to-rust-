@@ -81,33 +81,41 @@ fn crystal_bloom(scene:&mut Scene,o:Vec3,age:f64,energy:f64) {
 /// smoke billboards or decorative rings. Original source video #6 shows
 /// broad lavender-blue lit atmosphere around rigid crystals.
 fn glacial_haze(scene:&mut Scene,o:Vec3,age:f64,energy:f64){
-    let long=9usize;let wide=8usize;
-    for sheet in 0..3 {
-        let theta=sheet as f64*TAU/3.0+0.29;
+    // Actual reference #6 contains broad *rising* atmospheric crystal fog
+    // and violet-blue aurora. Previous horizontal ground plates looked like
+    // cardboard ledges in audit, so replace with three vertical, curling,
+    // translucent surfaces enclosing the spires from distinct directions.
+    // Large, low-alpha transparent areas are ambience, not a wire outline.
+    let high=10usize;let across=8usize;
+    for sheet in 0..3{
+        let theta=sheet as f64*TAU/3.0+0.37+age*0.003;
         let (ca,sa)=(theta.cos(),theta.sin());
-        let base_height=0.12+sheet as f64*0.20;
-        for z in 0..long{
-            let progress=z as f64/long as f64;
-            let next=(z+1) as f64/long as f64;
-            for x in 0..wide{
-                let u=x as f64/wide as f64*2.0-1.0;
-                let v=(x+1) as f64/wide as f64*2.0-1.0;
-                let point=|w:f64,t:f64|{
-                    let radial=(0.65+2.8*t)*energy.max(0.08);
-                    let lateral=2.45*w;
-                    let lift=base_height+0.28*(t*TAU*2.0+age*0.048+w*3.0).sin()
-                       +0.52*t*energy+(sheet as f64*0.18);
-                    at(o,radial*ca-lateral*sa,lift,radial*sa+lateral*ca)
+        for h in 0..high {
+            let t=h as f64/high as f64;
+            let next=(h+1) as f64/high as f64;
+            for col in 0..across {
+                let a=col as f64/across as f64*2.0-1.0;
+                let b=(col+1) as f64/across as f64*2.0-1.0;
+                let position=|u:f64,v:f64|{
+                    let twist=0.75*(v*TAU*0.67+age*0.038+sheet as f64).sin();
+                    let depth=(1.45+0.37*(u*4.3+age*0.04).sin())
+                            *(1.0+0.11*v);
+                    let spread=2.2*(1.0-0.16*v)*u+twist;
+                    let yy=0.15+v*(4.5+2.8*energy)*energy
+                           +0.23*(u*5.0+v*6.0+age*0.06).sin();
+                    at(o,ca*depth-sa*spread,yy,sa*depth+ca*spread)
                 };
-                // Deterministic small scale face-color alternation imitates
-                // rough granular illuminated mist without a texture atlas.
-                let shade=0.75+0.21*((x*7+z*3+sheet*2)%5) as f64/5.0;
-                let color=translucent(
-                    shade_argb(if sheet==2 {0xFF92D5EE}else{0xFF8B86DF},shade),
-                    0.09+0.10*energy
-                );
-                scene.quad([point(u,progress),point(v,progress),
-                            point(v,next),point(u,next)],color);
+                let pulse=(0.5+0.5*(age*0.063+sheet as f64*1.7+
+                                    t*5.3+a*1.2).sin());
+                let edge=1.0-(0.5*(a+b)).abs().powf(1.25);
+                let opacity=(0.045+0.09*energy)*edge.clamp(0.10,1.0)*
+                            (0.72+0.28*pulse);
+                let ice=if sheet==1 {0xFF82CBF4} else if sheet==2{
+                    0xFFB497EC
+                }else{0xFF7AE4D9};
+                let c=translucent(shade_argb(ice,0.75+0.18*pulse),opacity);
+                scene.quad([position(a,t),position(b,t),
+                    position(b,next),position(a,next)],c);
             }
         }
     }
