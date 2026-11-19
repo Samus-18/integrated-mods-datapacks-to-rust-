@@ -1,6 +1,7 @@
 //! Aetheria Horizon first native/wasm visual preview. Five 3D fantasy spell shapes.
 //! These are LOCAL client effects only; no server damage, block edits or claimed FPS.
 mod compact_ui;
+mod fair_geometry;
 mod catalog30;
 mod cinematic_beams;
 mod hero_vfx;
@@ -294,13 +295,19 @@ impl Hooks for Mod {
         }).collect();
         if live.is_empty() { return; }
         let total_budget = capacity.min(900) as usize;
-        let per_spell_budget = total_budget / live.len();
-        let mut scene = Scene::new(total_budget);
-        for (cast, age) in live {
-            let mut spell = Scene::new(per_spell_budget);
-            render_spell(cast, age, &mut spell);
-            scene.facets.extend(spell.facets);
+        if total_budget==0 {return;}
+        // Preserve each authored sculpture in a bounded source draft before
+        // allocating the actual Horizon quads. The old per_spell_budget cap
+        // truncated the LAST body parts first: it could erase wings, bases
+        // and impact debris when several spells overlapped.
+        let mut drafts=Vec::with_capacity(live.len());
+        for (cast,age) in live {
+            let mut spell=Scene::new(500);
+            render_spell(cast,age,&mut spell);
+            drafts.push(spell);
         }
+        let mut scene=Scene::new(total_budget);
+        scene.facets=fair_geometry::sample_fair(&drafts,total_budget);
         if let Some(pipeline) = pipeline {
             let quads: Vec<PipelineQuad> = scene.facets.iter().map(|(corners, color)|
                 PipelineQuad::spanning(*corners, *color)).collect();
