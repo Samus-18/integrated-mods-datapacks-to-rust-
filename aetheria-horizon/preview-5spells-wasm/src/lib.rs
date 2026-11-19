@@ -15,9 +15,9 @@ const KEYS: [&str;5] = ["key.keyboard.z", "key.keyboard.x", "key.keyboard.c", "k
 const NAMES: [&str;5] = ["Phoenix Garden", "Glacier Cathedral", "Living Worldroot", "Thunder Wyrm", "Astral Sunder"];
 
 #[derive(Clone, Copy)]
-struct Cast { kind: usize, start: u64, center: [f64;3], direction: [f64;3] }
+struct Cast { kind: usize, variant: u8, start: u64, center: [f64;3], direction: [f64;3] }
 #[derive(Default)]
-struct State { tick: u64, effects: Vec<Cast>, pipeline: Option<RenderPipelineRef>, last_cast: Option<usize> }
+struct State { tick: u64, effects: Vec<Cast>, pipeline: Option<RenderPipelineRef>, last_cast: Option<usize>, variant_cycle: [u8; 5] }
 #[derive(Default)]
 struct Mod { state: Mutex<State> }
 
@@ -40,7 +40,7 @@ impl Hooks for Mod {
         let id = Identifier::parse("aetheria_preview:ethereal").unwrap();
         // Optional shader: if unsupported on a local build, plain geometry still draws.
         event.pipelines.push(RenderPipeline::new(id.clone(), id,
-            PipelineBlend::Additive, WorldDepth::Tested).optional());
+            PipelineBlend::Translucent, WorldDepth::Tested).optional());
     }
 
     fn client_setup(&self, host: &mut dyn ClientHost, _: &mut ClientSetupEvent) {
@@ -76,7 +76,10 @@ impl Hooks for Mod {
                     let center = add(cam.position, scale(dir, 7.0));
                     if state.effects.len() >= 8 { state.effects.remove(0); }
                     let tick = state.tick;
-                    state.effects.push(Cast {kind, start: tick, center, direction: dir});
+                    // Each repeated cast cycles through three *different geometries*.
+                    let variant = state.variant_cycle[kind];
+                    state.variant_cycle[kind] = (variant + 1) % 3;
+                    state.effects.push(Cast {kind, variant, start: tick, center, direction: dir});
                     state.last_cast = Some(kind);
                 }
             }
@@ -92,11 +95,20 @@ impl Hooks for Mod {
         let time = f64::from(event.view.partial_tick.clamp(0.0, 1.0));
         let camera = event.view.camera;
         let capacity = event.draw.usage().quad_capacity.saturating_sub(event.draw.usage().quads);
-        let mut scene = Scene::new(capacity.min(900) as usize);
-        for cast in &effects {
+        // Fair allocation: none of the active spells can consume the entire draw budget.
+        let live: Vec<(Cast,f64)> = effects.iter().filter_map(|cast| {
             let age = (now.saturating_sub(cast.start)) as f64 + time;
-            if age >= 105.0 || distance2(camera, cast.center) > 115.0 * 115.0 { continue; }
-            render_spell(*cast, age, &mut scene);
+            (age < 105.0 && distance2(camera, cast.center) <= 115.0 * 115.0)
+                .then_some((*cast, age))
+        }).collect();
+        if live.is_empty() { return; }
+        let total_budget = capacity.min(900) as usize;
+        let per_spell_budget = total_budget / live.len();
+        let mut scene = Scene::new(total_budget);
+        for (cast, age) in live {
+            let mut spell = Scene::new(per_spell_budget);
+            render_spell(cast, age, &mut spell);
+            scene.facets.extend(spell.facets);
         }
         if let Some(pipeline) = pipeline {
             let quads: Vec<PipelineQuad> = scene.facets.iter().map(|(corners, color)|
@@ -173,12 +185,23 @@ fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
     let t=(age/60.0).clamp(0.0,1.5);
     // Gradually reveal shape; fade begins late in its distinct lifetime.
     let grow=(age/12.0).clamp(0.0,1.0).powf(0.66);
-    match cast.kind {
-        0=>phoenix_garden(cast.center,age,grow,scene),
-        1=>glacier_cathedral(cast.center,age,grow,scene),
-        2=>worldroot(cast.center,age,grow,scene),
-        3=>thunder_wyrm(cast.center,cast.direction,age,grow,scene),
-        _=>astral_sunder(cast.center,age,t,grow,scene),
+    match (cast.kind, cast.variant) {
+        (0,0)=>phoenix_garden(cast.center,age,grow,scene),
+        (0,1)=>phoenix_wings(cast.center,age,grow,scene),
+        (0,_)=>ember_cyclone(cast.center,age,grow,scene),
+        (1,0)=>glacier_cathedral(cast.center,age,grow,scene),
+        (1,1)=>glacier_arches(cast.center,age,grow,scene),
+        (1,_)=>frost_surge(cast.center,age,grow,scene),
+        (2,0)=>worldroot(cast.center,age,grow,scene),
+        (2,1)=>living_cage(cast.center,age,grow,scene),
+        (2,_)=>verdant_canopy(cast.center,age,grow,scene),
+        (3,0)=>thunder_wyrm(cast.center,cast.direction,age,grow,scene),
+        (3,1)=>storm_antlers(cast.center,age,grow,scene),
+        (3,_)=>storm_manta(cast.center,cast.direction,age,grow,scene),
+        (4,0)=>astral_sunder(cast.center,age,t,grow,scene),
+        (4,1)=>void_blossom(cast.center,age,grow,scene),
+        (4,_)=>fractured_stair(cast.center,age,grow,scene),
+        _ => {}
     }
 }
 
@@ -313,5 +336,256 @@ fn astral_sunder(o:[f64;3],age:f64,t:f64,grow:f64,scene:&mut Scene){
         let p=add(o,[a.cos()*r,a.sin()*r*1.3,z]);
         let tip=add(p,[a.sin()*0.95,a.cos()*0.5,0.75]);
         scene.shard(p,tip,0.18+(i%4) as f64*0.08,a,alpha(if i%2==0{0xC7D9A9FF}else{0xAC8B52F3},age,101.0));
+    }
+}
+
+
+
+// V0.3.0 / VFX gallery: 10 additional true geometric variants.
+// The rotation is per spell key, so casting Z three times cycles
+// Phoenix Garden -> Phoenix Wings -> Ember Cyclone; X/C/V/B behave likewise.
+// No external models, no destructive world interactions and no paid services.
+
+/// Phoenix alternate A: a pair of wide feather membranes growing outward like a living bird.
+fn phoenix_wings(o:[f64;3], age:f64, grow:f64, scene:&mut Scene) {
+    let unfurl = (age / 22.0).clamp(0.0,1.0) * grow;
+    for wing in [-1.0,1.0] {
+        let mut prev_inner = add(o,[0.0,1.2,0.0]);
+        let mut prev_outer = add(o,[0.0,2.0,0.0]);
+        for i in 1..=23 {
+            let u=i as f64 / 23.0;
+            let sweep = 6.3*u*unfurl;
+            let lift = 1.2 + 3.9*(u * std::f64::consts::PI).sin().max(0.0);
+            let inner=add(o,[wing*sweep, lift, 0.45*(u*9.0+age*0.03).sin()]);
+            let outer=add(inner,[wing*(0.25+1.1*u),0.8+0.4*(u*8.0).sin(),-0.9-1.0*u]);
+            let col=if i%4==0 {0xB7FFF0AD} else if i%2==0 {0xA5F86B2B} else {0x9ED5394E};
+            scene.membrane(prev_inner,inner,outer,prev_outer,alpha(col,age,102.0));
+            if i%2==0 {
+                scene.shard(outer,add(outer,[wing*0.4,-1.0-u*1.7,-0.5]),0.12,u*8.0,
+                    alpha(0xA9FFCE7A,age,102.0));
+            }
+            prev_inner=inner;
+            prev_outer=outer;
+        }
+    }
+    // Distinct falling tail plume, not a third wing or straight beam.
+    for i in 0..27 {
+        let u=i as f64/27.0;
+        let a=age*0.035+i as f64*2.4;
+        let p=add(o,[a.sin()*0.45*u,1.4-4.0*u*grow,a.cos()*0.8*u]);
+        scene.shard(p,add(p,[0.25*a.sin(),-0.4,a.cos()*0.18]),0.10,a,
+            alpha(0x95FBB36C,age,102.0));
+    }
+}
+
+/// Phoenix alternate B: four braided rivers of sparks, opening and dissipating organically.
+fn ember_cyclone(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    for plume in 0..4 {
+        let twist=TAU*plume as f64/4.0;
+        let mut previous=add(o,[0.0,0.1,0.0]);
+        for i in 1..=27 {
+            let u=i as f64/27.0;
+            let theta=twist+u*TAU*2.2+age*0.09*(1.0+0.12*plume as f64);
+            let radius=(0.25+3.1*u.powf(0.8))*grow;
+            let p=add(o,[theta.cos()*radius,6.2*u*grow,theta.sin()*radius]);
+            let col=if i%3==0 {0xAFFFDD7A} else {0xA7D94A28};
+            scene.shard(previous,p,0.12+0.15*(1.0-u),theta,alpha(col,age,100.0));
+            if i%4==0 {
+                scene.leaf(p,[theta.sin(),0.45,theta.cos()],0.7+u,
+                    alpha(0x9DFFBE78,age,100.0));
+            }
+            previous=p;
+        }
+    }
+}
+
+/// Glacier alternate A: four segmented pointed vaulted arches with hanging ice tiles.
+fn glacier_arches(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    for arch in 0..4 {
+        let angle=TAU*arch as f64/4.0;
+        let dir=[angle.cos(),0.0,angle.sin()];
+        let side=[-angle.sin(),0.0,angle.cos()];
+        for face in [-1.0,1.0] {
+            let mut prev=add(o,add(scale(dir,face*4.8*grow),[0.0,-0.7,0.0]));
+            for i in 1..=14 {
+                let u=i as f64/14.0;
+                let inward = 4.8*(1.0-u);
+                let height = 7.0 * (u*(2.0-u)).sqrt() * grow;
+                let p=add(o,add(scale(dir,face*inward*grow),[0.0,height-0.7,0.0]));
+                let skew=scale(side,0.65*(u*5.0+arch as f64).sin());
+                scene.shard(prev,add(p,skew),0.38*(1.0-0.65*u)*grow,
+                    angle+u*2.0,alpha(if arch%2==0 {0xA978CFE7}else{0xB1ACDAFC},age,104.0));
+                if i%3==0 {
+                    let drop=add(p,[0.0,-(0.6+0.7*u)*grow,0.0]);
+                    scene.shard(p,drop,0.17,angle+u,alpha(0x9DB3F5FF,age,104.0));
+                }
+                prev=p;
+            }
+        }
+    }
+}
+
+/// Glacier alternate B: a forward-breaking glacial wave made from staggered broad facets.
+fn frost_surge(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    let advance=(age/32.0).clamp(0.0,1.0);
+    for column in 0..8 {
+        for rank in 0..8 {
+            let u=rank as f64/8.0;
+            let v=column as f64/8.0;
+            let l=add(o,[(-3.8+column as f64*1.05)*grow,-0.75,
+                         (rank as f64*1.2-3.5)*advance*grow]);
+            let height=(1.3+4.4*(1.0-v)*(0.5+u))*grow;
+            let tip=add(l,[0.25*(rank as f64*2.1).sin(),height,0.5+0.8*u]);
+            scene.shard(l,tip,0.3+0.17*(1.0-u),v*TAU+u,
+                alpha(if (column+rank)%3==0 {0xB1D5F8FF}else{0xA46EAFDD},age,104.0));
+        }
+    }
+}
+
+/// Druid alternate A: living woody tendrils bend inward to form an articulated prison.
+fn living_cage(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    let curl=(age/33.0).clamp(0.0,1.0);
+    for vine in 0..10 {
+        let a=TAU*vine as f64/10.0;
+        let mut prev=add(o,[a.cos()*3.6*grow,-0.6,a.sin()*3.6*grow]);
+        for i in 1..=13 {
+            let u=i as f64/13.0;
+            let radius=3.6*(1.0-u*u*curl);
+            let p=add(o,[a.cos()*radius*grow,
+                (-0.6+u*6.6)*grow+0.18*(age*0.035+a).sin(),
+                a.sin()*radius*grow]);
+            scene.shard(prev,p,0.25*(1.0-u)+0.09,a+u,alpha(0xB17DB347,age,102.0));
+            if i==4 || i==8 || i==12 {
+                let leafdir=[a.cos()*0.7,0.35,a.sin()*0.7];
+                scene.leaf(p,leafdir,1.4,alpha(0xA36CD389,age,102.0));
+                scene.leaf(p,[-leafdir[2],0.65,leafdir[0]],1.2,
+                    alpha(0xB63FAF73,age,102.0));
+            }
+            prev=p;
+        }
+    }
+}
+
+/// Druid alternate B: a broad unfolding canopy above curved roots, with hanging seedpods.
+fn verdant_canopy(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    let pulse=0.84+0.16*(age*0.065).sin();
+    for stem in 0..7 {
+        let a=TAU*stem as f64/7.0;
+        let base=add(o,[0.5*a.cos(),-0.6,0.5*a.sin()]);
+        let crown=add(o,[a.cos()*2.1*grow,4.1*grow,a.sin()*2.1*grow]);
+        scene.shard(base,crown,0.28,a,alpha(0xB777A044,age,103.0));
+        for leaf in 0..10 {
+            let u=leaf as f64/10.0;
+            let bend=a+(u-0.5)*1.6;
+            let p=add(crown,[bend.cos()*(1.4+2.5*u)*grow,
+                (0.3-1.5*u*u)*grow,
+                bend.sin()*(1.4+2.5*u)*grow]);
+            let wing=add(p,[-bend.sin()*1.1,0.15,bend.cos()*1.1]);
+            scene.membrane(crown,p,add(wing,[0.0,0.4*pulse,0.0]),
+                add(crown,[0.0,0.3,0.0]),
+                alpha(if leaf%3==0 {0xA3B5E971}else{0x9F3EB978},age,103.0));
+            if leaf%3==0 {
+                scene.shard(p,add(p,[0.06,-0.9*grow,0.0]),0.12,a,
+                    alpha(0xB7DAED83,age,103.0));
+            }
+        }
+    }
+}
+
+/// Tempest alternate A: asymmetrical branched thunder-antlers, not a straight ray.
+fn storm_antlers(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    for root in 0..6 {
+        let a=TAU*root as f64/6.0;
+        let dir=[a.cos(),0.0,a.sin()];
+        let mut prev=add(o,[0.0,0.5,0.0]);
+        for i in 1..=13 {
+            let u=i as f64/13.0;
+            let jitter=0.5*(u*23.0+a*9.0+age*0.22).sin();
+            let p=add(o,[
+                dir[0]*5.7*u*grow - dir[2]*jitter,
+                (1.1+4.0*u*u)*grow + 0.35*(age*0.22+i as f64).cos(),
+                dir[2]*5.7*u*grow + dir[0]*jitter
+            ]);
+            scene.shard(prev,p,0.14*(1.0-u)+0.05,a+u,
+                alpha(if i%2==0 {0xBA8CE7F5}else{0xAFE1D3FB},age,99.0));
+            if i>=5 && i%3==0 {
+                let fork=add(p,[
+                    dir[0]*1.2+dir[2]*0.9,1.0+0.8*u,
+                    dir[2]*1.2-dir[0]*0.9
+                ]);
+                scene.shard(p,fork,0.09,a+u,alpha(0xAFA8D2FF,age,99.0));
+            }
+            prev=p;
+        }
+    }
+}
+
+/// Tempest alternate B: a living electric manta, wing membranes and a trailing tail.
+fn storm_manta(o:[f64;3],forward:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    let dir=norm(forward);
+    let lateral=norm(cross(dir,[0.0,1.0,0.0]));
+    let raise=0.6*(age*0.16).sin();
+    for wing in [-1.0,1.0] {
+        let mut prev=add(o,[0.0,1.0,0.0]);
+        let mut previous_edge=add(o,[0.0,1.0,0.0]);
+        for i in 1..=22 {
+            let u=i as f64/22.0;
+            let core=add(o,add(scale(lateral,wing*6.0*u*grow),
+                     scale(dir,2.0*u*grow)));
+            let inner=add(core,[0.0,(1.0+raise+3.0*(1.0-u)*u)*grow,0.0]);
+            let edge=add(inner,add(scale(dir,-2.2*grow),[0.0,-0.5-1.0*u,0.0]));
+            scene.membrane(prev,inner,edge,previous_edge,
+                alpha(if i%4==0 {0xA88DDDF7}else{0x9B7D96D9},age,100.0));
+            if i%3==0 {
+                scene.shard(edge,add(edge,scale(dir,-0.5)),0.08,age*0.06+u,
+                    alpha(0xA6D9E6FF,age,100.0));
+            }
+            prev=inner;previous_edge=edge;
+        }
+    }
+    let tail0=add(o,scale(dir,-1.6*grow));
+    scene.shard(tail0,add(tail0,scale(dir,-7.0*grow)),0.12,age*0.03,
+        alpha(0xA0A0DDFF,age,100.0));
+}
+
+/// Astral alternate A: twelve folded membrane petals peel away into the otherworld.
+fn void_blossom(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    let open=(age/28.0).clamp(0.0,1.0)*grow;
+    for petal in 0..12 {
+        let a=TAU*petal as f64/12.0 + age*0.011;
+        let a2=a+TAU/12.0;
+        let root=add(o,[a.cos()*0.4,a.sin()*0.4,0.0]);
+        let root2=add(o,[a2.cos()*0.4,a2.sin()*0.4,0.0]);
+        let outer=add(o,[a.cos()*4.8*open,a.sin()*5.5*open,
+                         2.2*(petal as f64*1.3+age*0.06).sin()]);
+        let outer2=add(o,[a2.cos()*4.5*open,a2.sin()*5.1*open,
+                          2.2*(petal as f64*1.3+age*0.06+1.0).sin()]);
+        scene.membrane(root,outer,outer2,root2,alpha(
+            if petal%2==0 {0x9E9958BA} else {0xA46F81D5},age,101.0));
+        scene.shard(outer,add(outer,[0.3*a.cos(),0.8*a.sin(),-0.8]),0.13,a,
+            alpha(0xBAC6B8FF,age,101.0));
+    }
+}
+
+/// Astral alternate B: a crooked broken staircase of hovering dimensional monoliths.
+fn fractured_stair(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    for step in 0..13 {
+        let u=step as f64/13.0;
+        let a=u*TAU*1.7+age*0.02;
+        let r=(1.0+3.5*u)*grow;
+        let p=add(o,[a.cos()*r,(-1.0+6.7*u)*grow,a.sin()*r]);
+        let tilt=0.25*(age*0.09+step as f64).sin();
+        let span=1.1+(step%4) as f64*0.24;
+        let a0=add(p,[-span,0.0,-span*0.35]);
+        let b0=add(p,[span,tilt,-span*0.35]);
+        let c0=add(p,[span*0.7,0.5*tilt,span*0.45]);
+        let d0=add(p,[-span*0.6,-tilt,span*0.45]);
+        scene.membrane(a0,b0,c0,d0,
+            alpha(if step%2==0 {0xB06E51A0} else {0xAE956FC8},age,101.0));
+        for fragment in 0..4 {
+            let h=fragment as f64/4.0;
+            let tip=add(p,[h*(step%3) as f64,0.7+h,a.sin()*0.7]);
+            scene.shard(p,tip,0.11,h+age*0.02,alpha(0xA0D9B8FF,age,101.0));
+        }
     }
 }
