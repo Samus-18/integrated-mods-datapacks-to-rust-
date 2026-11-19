@@ -65,3 +65,13 @@
 - SDK pin `dd67b76ff23e28c6d8e21859df600d31572f81a0` has an official release; pinned mixins `e59da9094f0c2fdda6c627fe9eff22dec6a906f0` is checked against official Horizon source.
 - Preview triggers: Z/X/C/V/B, 8 active spell limit and 1,600 extra quad limit. No world edit/entity damage, no direct GLSL/Iris/OptiFine API or Sci-Fi weapons.
 - Source native hmod archive verified locally as safe ZIP; SDK compile and Minecraft 26.3 in-game test NOT performed at this milestone. A dedicated native CI workflow attempts to prove compatibility and emit an artifact.
+
+## M5 / 2026-11-19 — Launcher lock workaround: precompiled Rust/WASM visual preview
+- User's Horizon Launcher 0.2.81 could recognize Aetheria native 0.1.2 but its native builder refused with "A native build or cache cleanup is running" and no useful compiler log. Official launcher sources show its native cache OS lock can fail before any mod compilation; repeatedly repackaging the native mod cannot resolve that environmental failure.
+- Added separate `aetheria-horizon/preview-5spells-wasm/` with same 5 Rust client-render hooks and original procedural mesh/WGSL logic, but no `[native]` manifest. The SDK source pin moves to Cargo metadata and the official tool generates `[wasm]`.
+- Lowered visual world-quad planning cap to 900 for WASM prototype. The sandbox still calls the Horizon renderer, so native builder lock is no longer a prerequisite to test visual spells.
+- Added `.github/workflows/aetheria-preview-wasm.yml`, using official pinned `cargo-horizon-mod` at Horizon `dd67b76ff23e28c6d8e21859df600d31572f81a0`. Job compiles `cargo horizon-mod build --wasm` and checks ZIP layout, `mod.wasm`, manifest pin and SHA-512 integrity.
+- Run: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44492554390 — **SUCCESS**, completed code compilation, package SHA check and artifact upload.
+- Verified downloaded `aetheria_preview.hmod` with independent ZIP integrity checks, wasm magic/version and `SHA512(mod.wasm)==manifest.wasm.sha512`. Package size 2,667,720 bytes, SHA256 `f557746c4c6ccb535afadc5ae4b18cc50d4a0e48600026318c36cef1736c4094`.
+- Installation: remove any native copy from `horizon-native-mods/`, put **only the compiled WASM .hmod** into `horizon-mods/`, enable and launch **without Build**. Same mod id means simultaneous native/wasm copies are unsupported.
+- Important: `cargo horizon-mod build --wasm` succeeds on Linux CI, **not equivalent to verified in-game Windows Horizon rendering**. Damage, mana and multiplayer integration remain missing. The user is to test in-game first.
