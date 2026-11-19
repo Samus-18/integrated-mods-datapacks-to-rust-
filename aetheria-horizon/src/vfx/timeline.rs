@@ -52,7 +52,24 @@ pub fn for_spell(id:u16)->Option<Timeline>{
  163=>([12,14,10,91],[24,75,65,30]), // Tick Pulse: temporal contraction
  183=>([9,17,5,80],[18,55,72,40]), // Grave Whisper: prolonged lure
 
- _=>return None,
+ _=>{
+     // Thirty hand-directed spells above retain their unique phase timings.
+     // Other 170 get bounded phased casting by class, rank and cast mode.
+     let school=(id-1)/20;
+     let local=(id-1)%20;
+     let role:u16=if spec.role=="Ultimate" {2} else if spec.role=="Awakening" {1} else {0};
+     let hold:u16=match spec.cast_type {
+       "Charged"=>8,"Channeled"=>12,"Combo"=>5,_=>0
+     };
+     let ticks=[
+         4+school+if spec.cast_type=="Charged"{6}else{0},
+         6+local+role*8+hold,
+         3+(local%5)+role*5,
+         12+local*2+role*5
+     ];
+     let cap=[18+role*8,70+role*25,135+role*35,26+role*12];
+     (ticks,cap)
+ },
  };
  let kinds=[Stage::Telegraph,Stage::Cast,Stage::Impact,Stage::Afterglow];
  let phases=std::array::from_fn(|i|Phase{kind:kinds[i],duration_ticks:ticks[i],particle_cap:cap[i]});
@@ -99,7 +116,30 @@ mod m14_choreography_tests {
                 assert_eq!(t.stage_at(t.total_ticks()),None);
             }
         }
-        assert!(for_spell(4).is_none(),"future spells must remain design only");
+        assert!(for_spell(4).is_some(),"200-spell timing contract missing");
         assert_eq!(signatures.len(),30);
+    }
+}
+
+#[cfg(test)]
+mod two_hundred_timeline_tests{
+    use super::*;
+    use std::collections::BTreeSet;
+    #[test]
+    fn all_200_authored_cast_intents_have_phases_and_nonclone_rhythm(){
+        let mut fingerprints=BTreeSet::new();
+        for id in 1..=200 {
+            let t=for_spell(id).expect("missing spell phase contract");
+            assert_eq!(t.spell_id,id);
+            assert!(!t.mesh.is_empty()&&!t.shader.is_empty()&&!t.sound.is_empty());
+            assert!(t.total_ticks()<=300&&t.total_ticks()>=12);
+            assert!(t.phases.iter().all(|p|p.duration_ticks>0&&p.particle_cap<=1200));
+            assert_eq!(t.stage_at(0),Some(Stage::Telegraph));
+            assert_eq!(t.stage_at(t.total_ticks()),None);
+            assert!(fingerprints.insert(t.phases.map(|p|p.duration_ticks)),
+                    "duplicated phase signature for spell {id}");
+        }
+        assert_eq!(fingerprints.len(),200);
+        assert!(for_spell(0).is_none()&&for_spell(201).is_none());
     }
 }
