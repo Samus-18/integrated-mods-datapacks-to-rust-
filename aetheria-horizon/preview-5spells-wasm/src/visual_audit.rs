@@ -310,3 +310,60 @@ fn m24_m25_forty_source_authored_spells_have_two_view_mass_and_impact(){
     }
     assert_eq!(total,160);
 }
+
+
+/// M27: actual 30 custom Standard sculptures must remain legible from two
+/// oblique views during the CAST and IMPACT phases. Uniqueness of coordinates
+/// alone would not catch Skyward Hook's old toothpick or Pulse Cage's rings.
+/// These are projection/geometry gates, NOT HDR artistic approval.
+#[test]
+fn m27_all_thirty_custom_standard_spells_show_mass_from_both_angles(){
+    use aetheria_horizon::vfx::timeline::{for_spell,Stage};
+    use crate::catalog200;
+    let mut tested=0;
+    let cameras=[
+        View::new([1.8,1.25,2.8]),
+        View::new([-2.3,1.75,1.1])
+    ];
+    for id in crate::standard_m27a::IDS.into_iter()
+        .chain(crate::standard_m27b::IDS)
+    {
+        let schedule=for_spell(id).expect("missing M27 spell stage schedule");
+        let total=schedule.total_ticks() as f64;
+        for target in [Stage::Cast,Stage::Impact]{
+            let mut offset=0.;
+            let mut age=None;
+            for part in schedule.phases{
+                if part.kind==target{
+                    age=Some((offset+part.duration_ticks as f64*0.65)/total*104.0);
+                    break;
+                }
+                offset+=part.duration_ticks as f64;
+            }
+            let age=age.expect("missing M27 casting stage");
+            let mut scene=Scene::new(500);
+            render_spell(Cast{kind:(id-1) as usize,variant:0,start:0,
+                center:[0.,64.,0.],direction:[0.,0.,1.]},age,&mut scene);
+            assert!((24..500).contains(&scene.facets.len()),
+                "M27 missing or truncated scene {id} {target:?} with {} faces",
+                scene.facets.len());
+            for (camera_id,view) in cameras.iter().copied().enumerate(){
+                let dest=std::env::temp_dir().join(format!(
+                    "aetheria_M27_{id}_{target:?}_view{camera_id}.svg"));
+                let report=export_svg(&scene,view,(id-1) as usize+30,
+                    target,age,&dest);
+                let _=fs::remove_file(dest);
+                assert!(report.coverage>0.055,
+                    "M27 too little substantial visible geometry {id} {target:?} view{camera_id}, coverage {}",
+                    report.coverage);
+                assert!(report.degenerate<0.45,
+                    "M27 collapsed to edge-on spaghetti {id} {target:?} view{camera_id}, ratio {}",
+                    report.degenerate);
+                assert!(report.span<40.,
+                    "M27 runaway scene/world extent {id}: {} blocks",report.span);
+                tested+=1;
+            }
+        }
+    }
+    assert_eq!(tested,120,"30 spell IDs × Cast/Impact × 2 cameras");
+}
