@@ -30,6 +30,8 @@ fn aetheria_aurora_density(q: vec3<f32>, time: f32) -> f32 {
     let local = vec2<f32>(q.x - sweep, q.z - sweep2);
     let radial = length(local);
     let body = exp(-radial * radial * 0.46);
+    let filament = exp(-radial * radial * 4.2) *
+                   (0.75 + 0.25 * sin(y * 2.1 - time * 2.3));
     let base = smoothstep(-0.75, 0.35, y);
     let crown = 1.0 - smoothstep(5.1, 8.3, y);
     let band = 0.55 + 0.45 * sin(y * 2.4 + time * 1.78 - radial * 3.8);
@@ -38,7 +40,7 @@ fn aetheria_aurora_density(q: vec3<f32>, time: f32) -> f32 {
     // it is never a lone outline cylinder.
     let halo = exp(-radial * radial * 0.065) * 0.19;
     return max(0.0, (body * (0.45 + 0.45 * corrugation) +
-        halo * (0.58 + 0.42 * band)) * base * crown);
+        halo * (0.58 + 0.42 * band) + filament * 0.48) * base * crown);
 }
 fn aetheria_fantasy_light_color(p: vec3<f32>,time:f32)->vec3<f32>{
     let alt=0.5+0.5*sin(p.y * 0.79 + time * 1.2 + p.x * 1.3);
@@ -73,8 +75,13 @@ fn aetheria_integrate_magic_volume(
         let attenuation=1.0-exp(-density*ds*0.82);
         let contribution=transmittance*attenuation;
         // Real shadowing would need world depth/lighting; do not claim it.
-        radiance += aetheria_fantasy_light_color(p-center,time)
-                    * contribution * 0.74;
+        let q=p-center;
+        let radial=length(q.xz - vec2<f32>(
+            0.58 * sin(q.y * 0.63 + time * 1.14),
+            0.41 * cos(q.y * 0.39 - time * 0.83)));
+        let hot_core=exp(-radial * radial * 3.4);
+        radiance += aetheria_fantasy_light_color(q,time)
+                    * contribution * (0.74+0.86*hot_core);
         transmittance *= (1.0-attenuation);
         if transmittance<0.018 {break;}
     }
