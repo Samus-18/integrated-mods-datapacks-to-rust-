@@ -1,14 +1,44 @@
-# Aetheria Horizon
+# Aetheria Horizon — Fantasy Magic RPG for Minecraft 26.3 (Horizon Rust)
 
-Fantasy-only Minecraft 26.3 / Horizon Rust magic RPG. Ten classes, 200 distinct **designed** spells (14 standard, four awakenings, two ultimates per class). References use orbital-laser **only for rendering techniques**, no sci-fi or orbital weapons.
+Fantasy-only, original Minecraft RPG magic. **Goal: 10 distinct classes × 20 spells = 200 complete spells**, not 200 color-swapped effects. Each class plans 14 standard, 4 awakenings and 2 cinematic ultimates. **No sci-fi or orbital weapons**; Orbital Laser is a rendering-code reference only. Development happens via this chat and GitHub, no Codex or paid asset generation.
 
-**Current milestone M1: 200-spell design registry and portable Rust RPG gameplay core; NOT a playable Horizon mod.** Twenty entry spells have distinct core action intents with state and cooldowns; remaining 180 are designs. Additional core features: 4–8-slot spellbooks, tiers I–V, charge/channel controls and status reactions (including water + lightning). 3D and WGSL are experiments pending native engine integration; no in-game validation is claimed. See `docs/memory` and `docs/ARCHITECTURE.md`.
+## Status — 2026-11-19
 
-**To test core:** `cd aetheria-horizon && cargo test` (Rust 2024 toolchain). Do not attempt to install the source as `.hmod` yet: the verified SDK bridge is pending.
+| Area | Verified state |
+| --- | --- |
+| Master spell registry | **200 designed**. Individual meshes, mechanics, SFX, API calls are not all complete |
+| Portable Rust RPG gameplay | **20 distinct spell intents**, 39 core tests passed at M3; not yet synced to Horizon player state |
+| First in-game preview v0.2.0 | **5 fantasy visual effects** loaded on the user's Windows/Horizon and visually demonstrated in the provided 100-second video |
+| Visual polish v0.3.0 | **15 3D visual silhouettes across those same 5 spells** (3 per spell key), reduced additive white glare, fairly bounded geometry. **Not yet user-tested** |
+| Actual RPG casting | Mana, cooldown, world impact, multiplayer, full spellbooks/HUD/SFX still need integration into the playable build |
+| Final 200-spell release | **Not completed.** Do not call this a 200-spell playable mod |
 
-Owner license decision: **TBD**. No TikTok audio/models or other copyrighted assets included.
+The game-visible prototype is compiled from Rust to **WASM** and runs in Horizon's sandbox/render APIs. The native Rust route is also kept, but the user's launcher had a native-cache lock problem; the wasm preview can be loaded **without Build**.
 
-## Verified tests
-M1 GitHub Actions run [44395652564](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44395652564): `cargo test --all-targets` → **28 passed, 0 failed**. This does not validate native Horizon packaging, WGSL, FPS, multiplayer or in-game effects.
+## Repository guide
 
-**M2:** 20 unique standalone spell-action intents and per-spell four-phase VFX timelines. Rendering and native Horizon package integration are **not** done. M2 core CI: **33 tests passed, 0 failed** ([Actions run 44397904415](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44397904415)). No native build or in-game verification.
+- [Master project specification](docs/PROJECT_SPECIFICATION.md) — goals, 10 classes, requirements, performance, audio and phased acceptance
+- [USER_LOG](docs/memory/USER_LOG.md) — exact user quotations, decisions and corrections
+- [AI_DEV_LOG](docs/memory/AI_DEV_LOG.md) — milestones, code/CI checks, limitations
+- [SPELL_REGISTRY](docs/memory/SPELL_REGISTRY.md) — all 200 spell design entries and accurate implementation statuses
+- [PLAYTEST_LOG](docs/memory/PLAYTEST_LOG.md) — time-coded evidence from actual in-game footage, improvement backlog
+- [Original reference videos analysis](docs/VIDEO_REFERENCE_ANALYSIS.md)
+- [Source: 5-spell precompiled WASM preview](preview-5spells-wasm/) — Z/X/C/V/B; 0.3.0 contains three distinct versions of each effect
+- [Source: native preview](preview-5spells/) — compiled by compatible native launcher SDK, not used for the successful local WASM gameplay test
+
+## Install the 5-spell precompiled WASM preview
+
+Only use a **CI-verified** `aetheria_preview.hmod` containing `mod.wasm` (not a native source ZIP).
+1. Remove older Aetheria copies from both `horizon-native-mods/` and `horizon-mods/`.
+2. Put this compiled **WASM** `.hmod` in `horizon-mods/`, enable `aetheria_preview`.
+3. Start the game with **Play**, not **Build**. In a world press Z / X / C / V / B. Repeat a key to cycle geometric variations in v0.3.0.
+
+**No** in-game confirmation yet for the *new* 0.3.0 variant shapes; CI compilation is not a rendering-quality test.
+
+## Validation
+
+- Portable core M3: [39/39 tests passed](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44482049153).
+- WASM preview 0.2.0: [Rust/WASM compile, .hmod SHA-512 and archive checks passed](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44492554390); user subsequently confirmed it runs visually in game.
+- WASM preview 0.3.0: [updated build workflow](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/workflows/aetheria-preview-wasm.yml). Status is shown in GitHub Actions; do not publish unless verified.
+
+License / third-party asset redistribution: TBD. No third-party TikTok media or AI-generated paid meshes included.
