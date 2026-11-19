@@ -177,3 +177,11 @@
 - Added GitHub index `aetheria-horizon/references/original-videos/README.md` with per-file SHA, durations, distinguishing frames and accurate storage state. Updated `docs/VIDEO_REFERENCE_ANALYSIS.md` and `docs/memory/USER_LOG.md`.
 - The GitHub connector does **not** currently provide a binary file-upload bridge to local conversation attachments. **The four raw MP4s are not yet git blobs.** Persisted Library/ZIP are the fallback, not a false claim of full compliance. The next available binary-capable GitHub upload should place originals under `references/original-videos`, validate SHA and link commits.
 - VFX implications: restore volumetric 3D beams, sky-scale ritual choreography, physical irregular crystal structures, rift geometry and carefully shaded high-contrast effect phases; keep no sci-fi themes, no asset copying, and avoid user game tests until wanted.
+
+## 2026-11-19 — M13 original volumetric-spell-code pass (after recovering source MP4s)
+
+- Implemented `preview-5spells-wasm/src/cinematic_beams.rs`: thirty curated spell VFX profiles, combined from ten different school-specific 3D compositions and distinct rank variants.
+- Geometries: actual 5–6-sided CPU-generated world tubes/tapered conduits rather than only crossed 2D quads; multi-depth runic seals; stepped crystal eruptions; broken rift branches; organic twisting roots; branching lightning; restrained non-white materials and time gates. Adapted directly from observed reference videos and source design documents; no copied resources.
+- Integrated in `preview-5spells-wasm/src/lib.rs` so 30 spell previews draw the distinct physical choreography **before** budget-hungry shared sculpt art; original five hand-authored spell silhouettes remain as a bounded backing layer for rank-one spells.
+- The same shared world quad budget still applies. This is not GPU raymarching, GPU instancing, world destructibility, player-authoritative damage, inventory unlocks or multiplayer correctness.
+- Updated internal preview package version to `0.5.2`, pinned build CI checks remain required. No request for player-performed intermediate test.
