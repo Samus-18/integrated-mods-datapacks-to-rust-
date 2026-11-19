@@ -51,23 +51,31 @@ fn scene(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
                        0.18*g,side*0.5,tint(c,0.99,0.89));
           }
       },
-      27=>{ // PERMAFROST GRIP: closed physical ice-hand and hooked five fingers.
-          body(s,p(o,0.,1.58*g,0.),[1.20*g,1.28*g,0.53*g],
-               tint(c,0.64,0.87));
-          body(s,p(o,0.,0.29*g,0.1*g),[0.52*g,0.75*g,0.43*g],
-               tint(c,0.75,0.9));
+      27=>{ // PERMAFROST GRIP: articulated five-finger crystal HAND.
+          // Initial Cast review: a blank vertical ice block hiding the fingers.
+          // Now use a defined wrist, palm, five raised knuckles and claw tips.
+          body(s,p(o,0.,0.52*g,0.05*g),[0.49*g,0.67*g,0.37*g],
+               tint(c,0.68,0.94));
+          body(s,p(o,0.,1.73*g,0.),[1.00*g,0.75*g,0.44*g],
+               tint(c,0.73,0.82));
           for finger in 0..5{
-              let x=(finger as f64-2.)*0.48*g;
-              let base=p(o,x,2.57*g,-0.13*g);
-              let knuckle=p(base,0.05*x,(0.83+0.13*(finger%3) as f64)*g,0.23*g);
-              let claw=p(knuckle,0.13*x,-0.24*g,0.62*g);
-              crystal(s,base,knuckle,0.27*g,0.28*finger as f64,tint(c,0.86,0.89));
-              crystal(s,knuckle,claw,0.20*g,0.3*finger as f64,
-                       tint(c,0.98,0.93));
+              let side=(finger as f64-2.)*0.45;
+              let root=p(o,side*g,2.15*g,0.15*g);
+              let knuckle=p(root,0.11*side*g,
+                     (1.01+0.19*(finger%3) as f64)*g,0.17*g);
+              let claw=p(knuckle,0.08*side*g,0.13*g,0.55*g);
+              crystal(s,root,knuckle,0.23*g,0.30*finger as f64,
+                      tint(c,0.89,0.96));
+              crystal(s,knuckle,claw,0.19*g,0.30*finger as f64,
+                      tint(c,0.98,0.96));
           }
-          crystal(s,p(o,-1.0*g,1.54*g,0.),
-                  p(o,-1.85*g,2.18*g,0.52*g),
-                  0.47*g,0.14,tint(c,0.78,0.83));
+          // Separate oversized thumb bends toward the enemy at the front.
+          crystal(s,p(o,-0.84*g,1.75*g,0.),
+                     p(o,-1.54*g,1.98*g,0.53*g),
+                     0.42*g,0.15,tint(c,0.80,0.89));
+          crystal(s,p(o,-1.54*g,1.98*g,0.53*g),
+                     p(o,-1.68*g,1.56*g,0.99*g),
+                     0.30*g,0.35,tint(c,0.96,0.89));
       },
       47=>{ // BANSHEE WHISTLE: wide sculpted pressure TRUMPET, not empty rings.
           for i in 0..8{
@@ -88,19 +96,25 @@ fn scene(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
           body(s,p(o,0.,1.60*g,0.14*g),[0.50*g,0.53*g,0.46*g],
                tint(c,0.88,0.87));
       },
-      67=>{ // ORE SENSE: broken mineral-veined rock and ore crystals below.
-          floor_slab(s,o,3.0*g,0.37*g,0.0,tint(c,0.49,0.85));
-          for i in 0..12 {
-              let a=TAU*i as f64/12.;
-              let dist=(0.65+0.23*(i%5) as f64)*g;
-              let root=p(o,dist*a.cos(),-0.55*g,dist*a.sin());
-              let top=p(root,0.13*g*a.sin(),
-                   (0.7+0.23*(i%4) as f64)*g,0.08*g*a.cos());
-              crystal(s,root,top,(0.22+0.08*(i%3) as f64)*g,a,
-                      tint(c,0.72+0.04*(i%4) as f64,0.96));
+      67=>{ // ORE SENSE: fractured floating mineral *exposure*.
+          // Source review found a featureless dark dinner plate: remove
+          // the dominating disk and show actual embedded luminous ore seams.
+          for i in 0..11{
+              let a=TAU*i as f64/11.;
+              let dist=(0.45+0.26*(i%5) as f64)*g;
+              let center=p(o,dist*a.cos(),-0.25*g,dist*a.sin());
+              body(s,center,[0.44*g,0.17*g,0.37*g],
+                 tint(c,0.54+0.04*(i%4) as f64,0.84));
+              let lean=0.21*(i%3) as f64;
+              let tip=p(center,lean*a.sin()*g,
+                          (0.93+0.35*(i%4) as f64)*g,
+                          lean*a.cos()*g);
+              crystal(s,center,tip,(0.24+0.11*(i%3) as f64)*g,a,
+                    tint(c,0.93,0.96));
               if i%3==0 {
-                  body(s,p(root,0.,0.12*g,0.),[0.45*g,0.18*g,0.32*g],
-                       tint(c,0.56,0.92));
+                  let side=p(center,0.57*a.cos()*g,0.41*g,0.57*a.sin()*g);
+                  crystal(s,center,side,0.20*g,a+0.3,
+                      tint(c,0.73,0.91));
               }
           }
       },
@@ -175,24 +189,40 @@ fn scene(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
               p(o,0.,3.2*g,0.),0.48*g,time,
               tint(c,0.98,0.95));
       },
-      167=>{ // AGING TOUCH: closed sand-colored palm with fracture stones.
-          body(s,p(o,0.,1.7*g,0.),[1.06*g,1.20*g,0.44*g],
-               tint(c,0.63,0.94));
-          for finger in 0..5 {
-              let x=(finger as f64-2.)*0.43*g;
-              crystal(s,p(o,x,2.63*g,0.),
-                  p(o,x+(finger as f64-2.)*0.07*g,
-                     (3.55+0.21*(finger%3) as f64)*g,0.),
-                  0.24*g,0.10*finger as f64,tint(c,0.80,0.95));
+      167=>{ // AGING TOUCH: separate weathered stone PALM with hand-like
+          // silhouette and cracked *front surface* sundial time seal.
+          // Not the former tall featureless slab with little spikes above.
+          body(s,p(o,0.,0.48*g,0.),[0.45*g,0.66*g,0.35*g],
+               tint(c,0.60,0.94));
+          body(s,p(o,0.,1.64*g,0.),[0.97*g,0.79*g,0.47*g],
+               tint(c,0.69,0.93));
+          for finger in 0..5{
+              let side=(finger as f64-2.)*0.42;
+              let base=p(o,side*g,2.16*g,0.09*g);
+              let high=p(base,0.08*side*g,
+                         (0.95+0.26*(finger%3) as f64)*g,
+                         0.14*g);
+              crystal(s,base,high,(0.22+0.03*(finger%2) as f64)*g,
+                      0.17*finger as f64,tint(c,0.81,0.96));
+              if finger%2==0{
+                  crystal(s,high,p(high,0.11*side*g,0.11*g,0.32*g),
+                          0.15*g,0.27*finger as f64,tint(c,0.96,0.94));
+              }
           }
-          crystal(s,p(o,-0.7*g,1.14*g,0.53*g),
-                  p(o,0.42*g,2.2*g,0.54*g),
-                  0.21*g,time,tint(c,0.44,0.86));
-          for j in 0..6 {
-              let a=j as f64*TAU/6.+time*0.1;
-              body(s,p(o,0.68*g*a.cos(),1.72*g+0.65*g*a.sin(),0.56*g),
-                   [0.13*g,0.18*g,0.12*g],tint(c,0.85,0.90));
+          for j in 0..12 {
+              let a=TAU*j as f64/12.;
+              let center=p(o,0.63*g*a.cos(),
+                           1.68*g+0.58*g*a.sin(),0.57*g);
+              body(s,center,[0.10*g,0.15*g,0.10*g],
+                   tint(c,0.92,0.90));
           }
+          // Physical branching fracture across the inlaid time face.
+          crystal(s,p(o,-0.55*g,1.22*g,0.56*g),
+                    p(o,0.58*g,2.16*g,0.57*g),
+                    0.15*g,time,tint(c,0.43,0.85));
+          crystal(s,p(o,0.,1.30*g,0.62*g),
+                    p(o,0.,2.04*g,0.62*g),
+                    0.24*g,time,tint(c,0.94,0.89));
       },
       187=>{ // CARRION SWARM: textured spiritual MOTH WINGS around cloudy core.
           for i in 0..15 {
