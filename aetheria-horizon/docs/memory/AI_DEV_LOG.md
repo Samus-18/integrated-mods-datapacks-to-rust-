@@ -136,3 +136,6 @@
 - An interim CI [44521283590](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44521283590) **failed** one snapshot test after changing the six-slot book test fixture; the faulty hard-coded 4-slot replacement never altered the snapshot. Corrected by equipping the starter spell, changing the six-slot fixture, and validating duplicate slots **with a recomputed matching checksum**, at commit `fa887ef4b591bc8362dfe545b0e48ca24efdca3e`. Final result: [CI workflow](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/workflows/aetheria-core.yml); keep its actual status accurate until finished.
 - Saved implementation notes in `docs/M10_STATE_AND_UI.md`.
 - **No game runtime claim**: neither Horizon world save/load nor actual on-screen GUI is wired. 0/100 end-to-end completed, user will only test again at 100; no ZIP delivered.
+
+### M10 verified regression result
+- [GitHub Actions 44521443263](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44521443263): **68/68 Rust tests passed, 0 failed** after the spellbook tier growth and six-slot full snapshot fixture corrections. Latest source and documentation are stored on GitHub. This does not mean Horizon save or GUI hooks are connected.
