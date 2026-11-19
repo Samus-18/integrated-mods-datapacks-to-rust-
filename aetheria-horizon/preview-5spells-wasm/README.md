@@ -1,37 +1,40 @@
-# Aetheria Horizon — Precompiled five-spell WASM preview v0.3.0
+# Aetheria Horizon — 30-spell test build v0.5.0 (Rust → WASM)
 
-**Why this build:** Horizon Launcher 0.2.81 can refuse native builds before compilation if its cache OS lock is busy. This edition compiles the same Rust rendering hooks to WebAssembly, so **no launcher Build / native compiler / trust permission is needed**.
+**Experimental, not a finished RPG release.** This builds on the previously game-verified 5-spell Horizon client renderer and expands the client selector to **30 distinct registry IDs** (three from each of ten classes). The portable Rust gameplay core has **30 different action intents**, but the server-facing world adapter has not yet been implemented: spells do **not** damage mobs, heal players, place blocks, unlock from loot or persist progression. Effects/costs are client-local; do not confuse them with server-authoritative gameplay.
 
 ## Install
-1. Remove any previous `aetheria_preview.hmod` from **both** `horizon-mods/` and `horizon-native-mods/` in the target game instance.
-2. Copy the **precompiled** `aetheria_preview.hmod` from this release to `horizon-mods/` (not `horizon-native-mods/`). Do not unzip it.
-3. Turn the mod on in Horizon Launcher Mods, or ensure `mod.aetheria_preview:true` is in `horizon-mods.txt` beside `options.txt`.
-4. **Do not press Build.** Launch the game normally; enter a world. Press `Z`, `X`, `C`, `V`, `B`.
+1. Download the compiled **Aetheria-Horizon-30Spells-WASM-v0.5.0-Internal** artifact from this branch's successful GitHub Actions WASM workflow, extract its `aetheria_preview.hmod`. **Never use source ZIP or a build whose CI failed**.
+2. Remove any old `aetheria_preview.hmod` from `horizon-native-mods/` and `horizon-mods/`.
+3. Put the compiled .hmod in the game instance's `horizon-mods/` and enable `aetheria_preview`.
+4. Start **Play** normally, not Launcher Build. You need a Horizon Nightly compatible with the pinned SDK.
 
-Spells: Phoenix Garden (fire blossom), Glacier Cathedral (ice crystal cathedral), Living Worldroot (roots/leaves), Thunder Wyrm (storm serpent), Astral Sunder (space-fantasy rift). 3D quads from Rust, optional original WGSL fragment, HUD labels. No damage, mana, altered saves, block explosions, sci-fi or orbital weapons.
+## Keys
+- **Hold R + mouse wheel**: browse all 30 spells without changing the vanilla hotbar slot.
+- **N / M**: previous / next spell (useful without a mouse wheel).
+- **G**: cast selected spell (local test VFX, mana/cooldown and 3-stage sound).
+- **K**: animated 10-class constellation overlay; N/M changes the viewed class; K closes.
+- **Z / X / C / V / B**: direct preview casts in Fire / Ice / Druid / Lightning / Astral schools.
+- Selected spell name, school palette, readiness, mana bar and 5-neighbour picker appear near the normal hotbar. Vanilla health/armor/food/air are retained.
 
-## Verification and limitations
-- Source is based on the native visual preview's `src/lib.rs` and Shader; this branch uses the same Horizon client rendering API.
-- Build command: `cargo horizon-mod build --wasm`, using SDK-pinned `cargo-horizon-mod` at `dd67b76...`.
-- The `.hmod` must contain `horizon-mod.toml`, `mod.wasm`, `assets/aetheria_preview/shaders/pipeline/ethereal.wgsl`, and a valid SHA-512 in `[wasm]`.
-- CPU-side geometry budget reduced to 900 quads per frame globally, shared fairly among active effects, for the sandbox. Shader remains optional and falls back to vanilla world quads.
-- This is **not native Rust execution**; it is Rust compiled to WebAssembly and drawn via Horizon render hooks.
-- **Not yet physically tested in the user's Windows/Horizon gameplay**; shaders and key events may differ with game build or shader packs. Failure details appear on the game's Mods screen, not a launcher native-build log.
-- Never install both variants simultaneously. They share mod id `aetheria_preview`.
+## Spells
+The first three official Aetheria registry spells of each class:
+- Pyromancer: Ember Needle, Cinder Fan, Magma Lash
+- Cryomancer: Frost Needle, Rime Bridge, Shard Chorus
+- Aeromancer: Gale Dart, Razor Crescent, Updraft Well (see registry for authoritative spelling)
+- Geomancer: Stone Fist, Crystal Traverse, Gravel Jaws
+- Hydromancer: Water Jet, Flowstep, Pearl Shield
+- Druid: Thorn Seed, Root Snare, Moss Mend
+- Electromancer: Fork Lightning, Static Halo, Thunder Needle
+- Astral Mage: Star Shard, Gravity Thread, Blink Fold
+- Chronomancer: Projectile Delay, Moment Slip, Tick Pulse
+- Necromancer: Bone Spike, Soul Lantern, Grave Whisper
 
-Official docs: https://github.com/horizon-rust/horizon/blob/main/docs/modding/src/start/first-wasm-mod.md
+Spell names and costs shown in game come from `src/magic/registry.rs`, **not** a separately copied table. Geometry uses ten independent volumetric 3D school sculpts plus three per-school signature topologies. It does **not** yet meet the final per-spell sculpt quality bar. Max 8 concurrent effects, 900 world quads/frame globally; geometry falls back if optional shader fails. Original 30 OGG files are 10 schools × charge/cast/impact stages, with spell-rank pitch variation.
 
-## Visual improvements based on first in-game recording (2026-11-19)
+## What CI proves
+The GitHub Actions job checks the pinned SDK build, package SHA-512, WASM binary, shader, ZIP integrity and 30 original Vorbis sound files. The core job tests actions, mana/cooldowns, progression and Rapier physics independently. This does **not** prove visual quality, damage, multiplayer or progression inside Horizon. Only a gameplay video or test on the user's Windows build can establish those.
 
-User-confirmed Windows/Horizon 26.3 gameplay footage: all five effects appear at runtime, and captured frames show ~75 FPS overlay (scene-specific, **not a benchmark**). Footage also shows overbright white cores around 14 s and 27 s, many pointed facets, limited variation among effects. This update switches the optional WGSL material to translucent blending, lowers brightness and alpha, adds 10 distinct spatial variants (15 visual sequences total), and distributes the per-frame geometry budget fairly between concurrent effects.
+## Next integration gate
+Server-side player ownership and persistence; world entity targeting/LOS and actual damage/healing/status effects; legitimate unlock drops/pages/trials; multiplayer sync; interactive spellbook rather than view-only constellation; per-spell authored meshes/cameras, client quality settings and accessibility. Keep vanilla vital bars until native health-layer redraw is validated.
 
-**Repeated casts cycle deterministically through 3 distinct shapes for each key.** For instance, Z cycles Phoenix Garden / Phoenix Wings / Ember Cyclone. Repeated X, C, V and B likewise cycle through their own three geometry variants. The default first press is the original shape; the second and third presses are the new alternatives.
-
-These are revised **visual** prototypes, not completed gameplay mechanics. Native physics, sounds, mana, cooldown, screen distortion and proper bloom remain future milestones. See `docs/memory/PLAYTEST_LOG.md` at repository root for captured evidence and outstanding tasks.
-
-## Verified release of v0.3.0
-
-- [GitHub Actions 44496889719](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44496889719): **success**, pinned Horizon SDK compilation, `mod.wasm` SHA512/manifest validation, integrity and artifact upload.
-- Output binary `aetheria_preview.hmod`: SHA256 `24d1f1c8e9ae35e88f52cb230a161919bfdda1bffabfa409ed1126b06ba0e3bd` (2,676,063 bytes).
-- This build includes the active **variant names** in HUD. Press the same spell key repeatedly to cycle variants.
-- User gameplay of this updated version still awaits a real in-game test; the previous v0.2.0 was visibly confirmed.
+Reference: [official mod docs](https://playhorizon.dev/docs/mod-code). All sounds are synthesized and original; no external voice samples or paid AI assets.
