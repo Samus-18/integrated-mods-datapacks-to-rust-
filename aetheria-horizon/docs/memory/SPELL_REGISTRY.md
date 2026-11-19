@@ -1,6 +1,6 @@
 # Aetheria — Master spell registry
 
-200 unique designs across ten classes. The geometry, shader profiles and SFX listed below are **specifications**, not finished per-spell assets. Twenty first/second-spell portable action intents are implemented in the standalone library; **none is linked to a Horizon executable yet**.
+200 unique designs across ten classes. The geometry, shader profiles and SFX listed below are **specifications**, not finished per-spell assets. Twenty first/second-spell portable gameplay action intents are implemented in the standalone library; **they are not yet linked to Horizon's authoritative gameplay**. Separately, five *visual prototype spells* (Phoenix Garden, Glacier Cathedral, Living Worldroot, Thunder Wyrm, Astral Sunder) run as a client-only Rust/WASM `.hmod` and have three distinct VFX geometry variants each in v0.3.0 (15 visual forms). These showcase effects are **not** 15 completed entries of the 200-spell RPG registry. The user supplied first Windows gameplay footage for v0.2.0 on 2026-11-19.
 
 | ID | Class | Spell | Role | Cast | Mana | Cooldown (ticks) | 3D mesh concept | Physics/behavior concept | WGSL profile | Sound cue | Status |
 |---|---|---|---|---|---:|---:|---|---|---|---|---|
