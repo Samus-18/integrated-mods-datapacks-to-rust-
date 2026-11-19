@@ -256,22 +256,48 @@
  /// Repeated dimensional *shutters* for Moment Slip, with thick linked
  /// surfaces that occupy real volume rather than a string of thin hoops.
  fn time_shutters(s:&mut Scene,o:V,age:f64,grow:f64,color:u32) {
+     // Six genuinely THICK rotated spatial slabs. The previous "membranes"
+     // collapsed into lines from the second camera viewpoint. Each slab is
+     // a closed parallelepiped with varying orientation and physical depth.
      for pane in 0..6 {
          let t=pane as f64/5.;
-         let depth=(t-0.5)*4.9;
-         let side=(pane as f64*1.87+age*0.02).sin();
-         let center=p(o,side*0.72,0.9+t*1.4,depth);
-         let width=(0.72+0.65*(t*std::f64::consts::PI).sin())*grow;
-         let height=(1.15+1.0*(1.-t))*grow;
-         let a=p(center,-width,-height,0.1);
-         let b=p(center,width*0.86,-height*0.72,-0.3);
-         let c=p(center,width*1.2,height,0.35);
-         let d=p(center,-width*0.72,height*0.91,0.7);
-         s.membrane(a,b,c,d,shade_argb(color,0.57+0.24*t));
-         // One offset, large curved pane behind to create parallax.
-         let offset=[-0.18,0.04,-0.42];
-         s.membrane(add(a,offset),add(b,offset),
-                    add(c,offset),add(d,offset),shade_argb(color,0.43));
+         let z=(t-0.5)*5.1;
+         let a=0.24+pane as f64*0.58+age*0.013;
+         let tangent=[a.cos(),0.,-a.sin()];
+         let normal=[a.sin(),0.,a.cos()];
+         let center=p(o,
+             0.9*(pane as f64*1.77+age*0.02).sin(),
+             1.65+(t*1.7).sin()*0.6,z);
+         let half_width=(0.75+0.48*(t*std::f64::consts::PI).sin())*grow;
+         let half_height=(1.4+0.48*t)*grow;
+         let half_thick=(0.42+0.17*(pane%3) as f64)*grow;
+         let corner=|sx:f64,sy:f64,sz:f64| {
+             add(add(center,scale(tangent,sx*half_width)),
+                 add([0.,sy*half_height,0.],scale(normal,sz*half_thick)))
+         };
+         let front=[
+             corner(-1.,-1.,1.),corner(1.,-1.,1.),
+             corner(1.,1.,1.),corner(-1.,1.,1.)
+         ];
+         let back=[
+             corner(-1.,-1.,-1.),corner(1.,-1.,-1.),
+             corner(1.,1.,-1.),corner(-1.,1.,-1.)
+         ];
+         s.quad(front,shade_argb(color,0.67+0.06*pane as f64));
+         s.quad([back[3],back[2],back[1],back[0]],
+             shade_argb(color,0.45));
+         for j in 0..4 {
+             let next=(j+1)%4;
+             s.quad([front[j],front[next],back[next],back[j]],
+                    shade_argb(color,0.38+0.13*(j%3) as f64));
+         }
+         // Small offset internal afterimage, also solid rather than a sheet.
+         if pane%2==0 {
+             let inner_top=corner(0.,0.7,0.8);
+             let inner_bottom=corner(0.,-0.7,-0.8);
+             s.solid_crystal(inner_bottom,inner_top,0.18,a,
+                 shade_argb(color,0.78),5);
+         }
      }
  }
  /// Tick Pulse is a wave of intersecting filled shells, not three wire rings.
