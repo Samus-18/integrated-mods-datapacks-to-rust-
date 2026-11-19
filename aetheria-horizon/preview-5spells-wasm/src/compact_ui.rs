@@ -123,9 +123,14 @@ fn glyph(e:&mut GuiRenderPostEvent<'_>,local:usize,class:usize,x:f32,y:f32){
     let art=GLYPHS[local%20];
     let primary=COLORS[class.min(4)];
     for (row,line) in art.split('/').enumerate(){
-        for (col,ch) in line.bytes().enumerate(){
-            if ch==b'#'{
-                fill(e,[x+col as f32,y+row as f32,1.,1.],primary);
+        // Coalesce consecutive on-pixels into one GPU GUI rectangle.
+        // This bounds the 20-node menu's shape draw cost.
+        let mut start=None;
+        for (col,ch) in line.bytes().chain(std::iter::once(b'.')).enumerate(){
+            if ch==b'#' {
+                if start.is_none(){start=Some(col);}
+            } else if let Some(begin)=start.take(){
+                fill(e,[x+begin as f32,y+row as f32,(col-begin) as f32,1.],primary);
             }
         }
     }
