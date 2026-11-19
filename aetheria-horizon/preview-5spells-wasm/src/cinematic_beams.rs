@@ -225,6 +225,107 @@
      }
  }
 
+
+ /// Fully faceted time-vessel: broad 3D hourglass body, not a clock-hand rod.
+ fn time_vessel(s:&mut Scene,o:V,age:f64,grow:f64,color:u32){
+     let rings=9usize;let facets=12usize;
+     let vertex=|j:usize,i:usize|{
+         let v=j as f64/rings as f64;
+         let a=TAU*i as f64/facets as f64+age*0.009+v*0.45;
+         let taper=(2.0*v-1.0).abs().powf(0.82);
+         let r=(0.28+1.45*taper)*(0.55+0.45*grow);
+         p(o,r*a.cos(),0.35+4.6*grow*v,r*a.sin())
+     };
+     for j in 0..rings {
+         for i in 0..facets {
+             let next=(i+1)%facets;
+             s.quad([vertex(j,i),vertex(j,next),vertex(j+1,next),vertex(j+1,i)],
+                 shade_argb(color,0.56+0.4*((i*3+j)%5) as f64/5.0));
+         }
+     }
+     // Crystalline "sand" masses float inside the vessel; no narrow beams.
+     for i in 0..7 {
+         let a=TAU*i as f64/7.+age*0.03;
+         let center=p(o,(0.35+0.12*(i%3) as f64)*a.cos(),
+             1.0+3.1*((i as f64*0.17+age*0.008).fract())*grow,
+             (0.35+0.12*(i%3) as f64)*a.sin());
+         s.solid_crystal(p(center,0.,-0.30,0.),p(center,0.,0.35,0.),
+                         0.16,a,color,6);
+     }
+ }
+ /// Repeated dimensional *shutters* for Moment Slip, with thick linked
+ /// surfaces that occupy real volume rather than a string of thin hoops.
+ fn time_shutters(s:&mut Scene,o:V,age:f64,grow:f64,color:u32) {
+     for pane in 0..6 {
+         let t=pane as f64/5.;
+         let depth=(t-0.5)*4.9;
+         let side=(pane as f64*1.87+age*0.02).sin();
+         let center=p(o,side*0.72,0.9+t*1.4,depth);
+         let width=(0.72+0.65*(t*std::f64::consts::PI).sin())*grow;
+         let height=(1.15+1.0*(1.-t))*grow;
+         let a=p(center,-width,-height,0.1);
+         let b=p(center,width*0.86,-height*0.72,-0.3);
+         let c=p(center,width*1.2,height,0.35);
+         let d=p(center,-width*0.72,height*0.91,0.7);
+         s.membrane(a,b,c,d,shade_argb(color,0.57+0.24*t));
+         // One offset, large curved pane behind to create parallax.
+         let offset=[-0.18,0.04,-0.42];
+         s.membrane(add(a,offset),add(b,offset),
+                    add(c,offset),add(d,offset),shade_argb(color,0.43));
+     }
+ }
+ /// Tick Pulse is a wave of intersecting filled shells, not three wire rings.
+ fn temporal_dome(s:&mut Scene,o:V,age:f64,grow:f64,color:u32) {
+     let ns=12usize;let nv=7usize;
+     for layer in 0..3 {
+         let phase=age*0.023+layer as f64*0.52;
+         let r=(1.2+layer as f64*1.05)*grow;
+         let surface=|j:usize,i:usize|{
+             let az=TAU*i as f64/ns as f64+phase;
+             let el=std::f64::consts::PI*j as f64/nv as f64;
+             let warp=1.0+0.10*(az*3.0+age*0.031).sin();
+             p(o,
+               r*el.sin()*az.cos()*warp,
+               1.7+r*el.cos()*0.92+0.28*(az*2.0).sin(),
+               r*el.sin()*az.sin()*warp)
+         };
+         for j in 0..nv {
+             for i in 0..ns {
+                 let next=(i+1)%ns;
+                 s.quad([surface(j,i),surface(j,next),
+                         surface(j+1,next),surface(j+1,i)],
+                        shade_argb(color,0.38+0.17*(layer as f64)+
+                            0.15*((i+j)%4) as f64/4.0));
+             }
+         }
+     }
+ }
+ /// A full deformed gravitational lens, not generic orbiting wire outlines.
+ fn astral_lens(s:&mut Scene,o:V,age:f64,grow:f64,color:u32){
+     let ns=14usize;let nv=8usize;
+     let vtx=|j:usize,i:usize|{
+         let theta=TAU*i as f64/ns as f64+age*0.013;
+         let phi=std::f64::consts::PI*j as f64/nv as f64;
+         let radius=(1.55+0.31*(theta*4.0+age*0.018).sin())
+                 *(0.55+0.45*grow);
+         p(o,
+             radius*phi.sin()*theta.cos(),
+             2.2+radius*phi.cos()*1.15,
+             radius*phi.sin()*theta.sin()*0.7+
+                 0.45*(phi*2.0+age*0.015).sin())
+     };
+     for j in 0..nv {
+         for i in 0..ns {
+             let next=(i+1)%ns;
+             s.quad([vtx(j,i),vtx(j,next),vtx(j+1,next),vtx(j+1,i)],
+                    shade_argb(color,0.38+0.40*((i*7+j)%9) as f64/9.0));
+         }
+     }
+     // The compact core is opaque faceted matter (not a glowing ring).
+     s.solid_crystal(p(o,0.,0.9,0.),p(o,0.,3.5,0.),
+                     0.72,age*0.013,color,8);
+ }
+
  fn broken_sky(s:&mut Scene,o:V,age:f64,color:u32){
      let rise=(age/20.).clamp(0.,1.);
      let center=p(o,0.,3.8*rise,0.);
@@ -599,11 +700,12 @@
          }
          // Astral: sky fracture, collapsing gravity lens, folded space frames.
          (7,0)=>{broken_sky(s,o,age,color);}
-         (7,1)=>{rune_seal(s,o,[0.3,0.7,0.2],2.4,phase,color);rune_seal(s,p(o,0.,2.3,0.),[0.2,0.7,0.7],1.6,-phase,color);}
-         // Chronomancy: moving gear arcs, trailing delay disks, time pulse.
-         (8,0)=>{rune_seal(s,o,[0.,0.1,1.],2.6,phase,color);beam(s,o,p(o,2.1*phase.cos(),2.1*phase.sin(),0.),0.11,phase,color);}
-         (8,1)=>{for j in 0..5{let t=j as f64/5.;ring(s,p(o,-3.*t,0.8*t,1.4*t),[0.,1.,0.],0.8+1.2*t,0.055,10,phase-t,color);}}
-         (8,_)=>{for j in 0..4 {ring(s,p(o,0.,j as f64*0.75,0.),[0.,1.,0.],2.5-j as f64*0.4,0.09,12,phase+j as f64*0.4,color);}}
+         (7,1)=>{astral_lens(s,o,age,stage.max(0.19),color);}
+         // Chronomancy: actual full 3D time vessel, folded temporal surfaces
+         // and moving pulse shells, not empty outline rings.
+         (8,0)=>{time_vessel(s,o,age,stage.max(0.15),color);}
+         (8,1)=>{time_shutters(s,o,age,stage.max(0.15),color);}
+         (8,_)=>{temporal_dome(s,o,age,stage.max(0.15),color);}
          // Necromancy: rising bone spikes, soul lantern, swirling wisp vortex.
          (9,0)=>{shards(s,o,age,2,color);sparks(s,o,7,age,2.2,color);}
          (9,1)=>{rune_seal(s,p(o,0.,2.3,0.),[0.1,0.9,0.1],2.4,phase,color);tendril(s,o,age,3,3.4*stage,shade_argb(color,0.65));}
