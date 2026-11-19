@@ -192,7 +192,22 @@ impl Hooks for Mod {
         // Original, locally synthesized spatial audio: charge -> cast -> impact.
         // Never emits vanilla beam sounds; only this client's player hears it.
         for (kind,variant,origin) in queued_sounds {
-            for (i,offset) in [0_u32,9,18].into_iter().enumerate() {
+            // Charge / cast / impact sound timestamps must match each spell's
+            // distinct four-stage VFX timing, never a fixed global 9/18 ticks.
+            let offsets=if let Some(timeline)=
+                aetheria_horizon::vfx::timeline::for_spell(catalog30::id(kind))
+            {
+                let scale=104.0/timeline.total_ticks() as f64;
+                let charge=(f64::from(timeline.phases[0].duration_ticks)*scale)
+                    .round().max(1.0) as u32;
+                let impact=((f64::from(timeline.phases[0].duration_ticks)
+                    +f64::from(timeline.phases[1].duration_ticks))*scale)
+                    .round().max(f64::from(charge+1)) as u32;
+                [0,charge,impact]
+            } else {
+                [0,9,18] // Defensive fallback for corrupt/absent registry.
+            };
+            for (i,offset) in offsets.into_iter().enumerate() {
                 let play=SoundPlay::at(catalog30::SCHOOL_SFX[catalog30::school(kind)][i], SoundSource::Blocks, origin)
                     .with_volume(if i==2 {0.85} else {0.62})
                     .with_pitch(0.96+variant as f32*0.045);
