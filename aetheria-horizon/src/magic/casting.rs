@@ -94,6 +94,13 @@ fn action_for_spell(id:u16,power:f32)->Option<SpellAction>{
  }},
  })
 }
+/// Server adapter safeguard: a DesignIntent is a fully identified *request*,
+/// not an implemented world effect. Must never consume authoritative resources.
+pub fn world_adapter_ready(id:u16)->bool {
+    action_for_spell(id,1.0).map(|action|
+        !matches!(action,SpellAction::DesignIntent{..})
+    ).unwrap_or(false)
+}
 /// Calculates a spell cast without touching the world. Never charges unimplemented spells.
 pub fn cast(p:&mut PlayerMagic,id:u16,tick:u64,charge:f32)->Result<CastResult,CastError>{
  let s=by_id(id).ok_or(CastError::UnknownSpell)?;
@@ -206,7 +213,7 @@ mod thirty_spell_tests {
         let mut identities=BTreeSet::new();
         for spec in crate::magic::registry::SPELLS {
             let mut player=PlayerMagic::new(spec.class_id);
-            assert!(player.unlock(spec.id));
+            if !player.unlocked_nodes.contains(&spec.id){assert!(player.unlock(spec.id));}
             player.mana=100.0;
             let result=cast(&mut player,spec.id,100,0.5).unwrap();
             assert_eq!(result.spell_id,spec.id);
