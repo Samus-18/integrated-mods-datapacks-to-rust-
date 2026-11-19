@@ -5,7 +5,7 @@ use mod_api::{
     ClientHost, ClientTickPostEvent, ClientSetupEvent, ClientResourcesReloadedEvent,
     SubmitCustomGeometryEvent, GuiRenderPostEvent, RegisterRenderPipelinesEvent,
     RenderPipeline, RenderPipelineRef, PipelineBlend, PipelineQuad, WorldDepth,
-    WorldQuad, Identifier,
+    WorldQuad, Identifier, CrosshairTarget,
 };
 use std::{f64::consts::TAU, sync::Mutex};
 
@@ -66,6 +66,15 @@ impl Hooks for Mod {
             }
         }
         let camera = if pressed.is_empty() { None } else { host.camera() };
+        // Client-side surface target: makes the ice and roots grow out of a
+        // real selected block rather than floating at the player's eye level.
+        let ground_target = if pressed.is_empty() { None } else {
+            match host.crosshair_target() {
+                Some(CrosshairTarget::Block { hit, .. }) if hit.face[1] > 0
+                    && hit.point.iter().all(|v| v.is_finite()) => Some(hit.point),
+                _ => None,
+            }
+        };
         let mut state = self.state.lock().unwrap();
         if !playing {
             state.effects.clear();
@@ -80,7 +89,15 @@ impl Hooks for Mod {
             let dir = [-yaw.sin()*pitch.cos(), -pitch.sin(), yaw.cos()*pitch.cos()];
             if cam.position.iter().all(|v| v.is_finite()) && dir.iter().all(|v| v.is_finite()) {
                 for kind in pressed {
-                    let center = add(cam.position, scale(dir, 7.0));
+                    let center = if kind == 1 || kind == 2 {
+                        ground_target.unwrap_or_else(|| {
+                            let mut p = add(cam.position, scale(dir, 6.0));
+                            p[1] -= 1.6;
+                            p
+                        })
+                    } else {
+                        add(cam.position, scale(dir, 7.0))
+                    };
                     if state.effects.len() >= 8 { state.effects.remove(0); }
                     let tick = state.tick;
                     // Each repeated cast cycles through three *different geometries*.
@@ -161,6 +178,13 @@ fn alpha(color:u32, age:f64, end:f64)->u32 {
     (color & 0x00FF_FFFF) | (a << 24)
 }
 
+/// Recolors faces without changing alpha: avoids white-out in large formations.
+fn shade_argb(argb:u32, brightness:f64)->u32 {
+    let mul=|shift:u32|->u32 {
+        (((argb>>shift)&255) as f64 * brightness.clamp(0.0,1.0)).round() as u32
+    };
+    (argb&0xFF00_0000) | (mul(16)<<16) | (mul(8)<<8) | mul(0)
+}
 struct Scene { facets:Vec<([[f64;3];4],u32)>, budget:usize }
 impl Scene {
     fn new(budget:usize)->Self { Self{facets:Vec::new(),budget} }
@@ -187,6 +211,42 @@ impl Scene {
     fn membrane(&mut self, a:[f64;3],b:[f64;3],c0:[f64;3],d:[f64;3],color:u32){
         self.quad([a,b,c0,d],color)
     }
+
+    /// Closed-sided 3D crystal grown along its axis. Every side has two
+    /// differently shaded *surfaces* (not two crossed transparent billboards).
+    /// The base is buried beneath terrain; no underside is rendered.
+    fn solid_crystal(
+        &mut self, from:[f64;3], to:[f64;3], radius:f64,
+        twist:f64, color:u32, sides:usize
+    ) {
+        if !(5..=8).contains(&sides) || !radius.is_finite() || radius <= 0.01
+            || !from.iter().chain(to.iter()).all(|v| v.is_finite())
+            || length(sub(to,from)) < 0.1 { return; }
+        let faces = sides * 2;
+        if self.facets.len().saturating_add(faces) > self.budget { return; }
+        let axis=norm(sub(to,from));
+        let reference=if axis[1].abs() < 0.9 {[0.0,1.0,0.0]} else {[1.0,0.0,0.0]};
+        let tangent=norm(cross(axis,reference));
+        let normal=norm(cross(tangent,axis));
+        let mid=add(from,scale(sub(to,from),0.59));
+        for face in 0..sides {
+            let a=TAU*face as f64/sides as f64+twist;
+            let b=TAU*(face+1) as f64/sides as f64+twist;
+            let ring=|center:[f64;3],r:f64,t:f64| -> [f64;3] {
+                add(center,add(scale(tangent,t.cos()*r),scale(normal,t.sin()*r)))
+            };
+            let a0=ring(from,radius,a);
+            let b0=ring(from,radius,b);
+            let a1=ring(mid,radius*0.68,a+0.1);
+            let b1=ring(mid,radius*0.68,b+0.1);
+            let a2=ring(to,0.015,a+0.15);
+            let b2=ring(to,0.015,b+0.15);
+            let shade=match face%5 {0=>0.66,1=>0.82,2=>1.0,3=>0.76,_=>0.9};
+            let shaded=shade_argb(color,shade);
+            self.quad([a0,b0,b1,a1],shaded);
+            self.quad([a1,b1,b2,a2],shade_argb(color,(shade*1.12).min(1.0)));
+        }
+    }
 }
 
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
@@ -197,9 +257,9 @@ fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
         (0,0)=>phoenix_garden(cast.center,age,grow,scene),
         (0,1)=>phoenix_wings(cast.center,age,grow,scene),
         (0,_)=>ember_cyclone(cast.center,age,grow,scene),
-        (1,0)=>glacier_cathedral(cast.center,age,grow,scene),
-        (1,1)=>glacier_arches(cast.center,age,grow,scene),
-        (1,_)=>frost_surge(cast.center,age,grow,scene),
+        (1,0)=>glacier_cathedral(cast.center,cast.direction,age,grow,scene),
+        (1,1)=>glacier_arches(cast.center,cast.direction,age,grow,scene),
+        (1,_)=>frost_surge(cast.center,cast.direction,age,grow,scene),
         (2,0)=>worldroot(cast.center,age,grow,scene),
         (2,1)=>living_cage(cast.center,age,grow,scene),
         (2,_)=>verdant_canopy(cast.center,age,grow,scene),
@@ -236,29 +296,42 @@ fn phoenix_garden(o:[f64;3], age:f64, grow:f64, scene:&mut Scene) {
 }
 
 /// 2: Growth of interlocking glacial crystalline vaults, no flat circles or sticks.
-fn glacier_cathedral(o:[f64;3],age:f64,grow:f64,scene:&mut Scene){
-    for side in 0..6 {
-        let theta=TAU*side as f64/6.0;
-        let dir=[theta.cos(),0.0,theta.sin()];
-        let tangent=[-theta.sin(),0.0,theta.cos()];
-        for rung in 0..7 {
-            let k=rung as f64;
-            let offset=scale(dir,(0.6+k*0.6)*grow);
-            let base=add(o,add(offset,[0.0,-1.2,0.0]));
-            let height=(3.8+k*0.8)*(0.85+0.15*(age*0.05+k).sin())*grow;
-            let tip=add(base,c(scale(dir,0.9+0.25*k),[0.0,height,0.0],scale(tangent,(k*2.3).sin()*0.5)));
-            let width=(0.36+0.1*k)*grow;
-            scene.shard(base,tip,width,theta+0.35*k,alpha(if (side+rung)%3==0 {0xBEE6FFFF}else{0xB66ABDFF},age,104.0));
-            let subtip=add(base,c(scale(dir,0.8),[0.0,height*0.65,0.0],scale(tangent,0.6)));
-            scene.shard(add(base,[0.0,0.35,0.0]),subtip,width*0.35,theta+1.1,alpha(0xBFCDEFFF,age,104.0));
+fn glacier_cathedral(o:[f64;3],forward:[f64;3],age:f64,grow:f64,scene:&mut Scene){
+    // Broad, stepped "Ice Awakening" ground eruption, similar in silhouette
+    // to the user's 3D screenshot: real five/six-sided volume, rising in waves.
+    let horizontal=norm([forward[0],0.0,forward[2]]);
+    let side=[-horizontal[2],0.0,horizontal[0]];
+    for row in 0..6 {
+        let row_age=age-row as f64*3.6;
+        if row_age <= 0.0 { continue; }
+        let rise=(row_age/12.0).clamp(0.0,1.0).powf(0.72)*grow;
+        for j in 0..5 {
+            let across=j as f64-2.0;
+            let seed=row as f64*2.31 + j as f64*0.91;
+            let stagger=0.25*(seed*2.7).sin();
+            let origin=add(o,add(
+                scale(horizontal,(row as f64*1.75+stagger)-2.8),
+                scale(side,across*1.12+0.2*seed.sin())
+            ));
+            let base=add(origin,[0.0,-0.35,0.0]);
+            let height=(2.0+1.05*row as f64+1.15*(seed*1.2).sin().abs())
+                       *rise;
+            let lean=add(scale(horizontal,0.3+0.8*seed.cos()),
+                         scale(side,0.5*(seed*2.0).sin()));
+            let tip=add(base,add([0.0,height,0.0],scale(lean,rise)));
+            let radius=(0.48+0.28*(seed*0.7).sin().abs())*rise.max(0.12);
+            let ice=if (row+j)%4==0 {0xD36BA6DB}
+                    else if j%3==0 {0xC24E93CE}
+                    else {0xC46FAFD8};
+            scene.solid_crystal(base,tip,radius,seed,alpha(ice,age,103.0),6);
+            // Smaller secondary splinters split from the base and remain solid.
+            if (row+j)%3==0 {
+                let flank=add(origin,scale(side,0.4+0.3*seed.cos()));
+                scene.solid_crystal(add(flank,[0.0,-0.24,0.0]),
+                    add(flank,[0.38*seed.cos(),height*0.53,0.22*seed.sin()]),
+                    radius*0.42,seed+1.2,alpha(0xB56BA9DB,age,103.0),5);
+            }
         }
-    }
-    // floating splinter storm
-    for i in 0..32 {
-        let a=i as f64*2.399963+age*0.017;
-        let r=2.2+0.5*(age*0.08+i as f64).sin();
-        let base=add(o,[a.cos()*r, 2.0+(i%5) as f64*0.48,a.sin()*r]);
-        scene.shard(base,add(base,[a.sin()*0.7,0.9,a.cos()*0.7]),0.12,a,alpha(0xB4E2FAFF,age,104.0));
     }
 }
 
@@ -408,44 +481,49 @@ fn ember_cyclone(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
 }
 
 /// Glacier alternate A: four segmented pointed vaulted arches with hanging ice tiles.
-fn glacier_arches(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
-    for arch in 0..4 {
-        let angle=TAU*arch as f64/4.0;
-        let dir=[angle.cos(),0.0,angle.sin()];
-        let side=[-angle.sin(),0.0,angle.cos()];
-        for face in [-1.0,1.0] {
-            let mut prev=add(o,add(scale(dir,face*4.8*grow),[0.0,-0.7,0.0]));
-            for i in 1..=14 {
-                let u=i as f64/14.0;
-                let inward = 4.8*(1.0-u);
-                let height = 7.0 * (u*(2.0-u)).sqrt() * grow;
-                let p=add(o,add(scale(dir,face*inward*grow),[0.0,height-0.7,0.0]));
-                let skew=scale(side,0.65*(u*5.0+arch as f64).sin());
-                scene.shard(prev,add(p,skew),0.38*(1.0-0.65*u)*grow,
-                    angle+u*2.0,alpha(if arch%2==0 {0xA978CFE7}else{0xB1ACDAFC},age,104.0));
-                if i%3==0 {
-                    let drop=add(p,[0.0,-(0.6+0.7*u)*grow,0.0]);
-                    scene.shard(p,drop,0.17,angle+u,alpha(0x9DB3F5FF,age,104.0));
-                }
-                prev=p;
-            }
+fn glacier_arches(o:[f64;3],forward:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    let dir=norm([forward[0],0.0,forward[2]]);
+    let side=[-dir[2],0.0,dir[0]];
+    for arch in 0..5 {
+        let open=((age-arch as f64*4.0)/15.0).clamp(0.0,1.0)*grow;
+        if open<=0.0 {continue;}
+        for wing in [-1.0,1.0] {
+            let base=add(o,add(scale(dir,arch as f64*1.7-2.6),
+                       scale(side,wing*(2.2+arch as f64*0.35))));
+            let top=add(base,add([0.0,(4.6+arch as f64*0.7)*open,0.0],
+                    scale(side,-wing*(2.0+arch as f64*0.22)*open)));
+            scene.solid_crystal(add(base,[0.0,-0.32,0.0]),top,
+                0.64*open,arch as f64+wing,alpha(0xC464A3D7,age,103.0),7);
+            let small=add(base,scale(dir,0.74));
+            scene.solid_crystal(add(small,[0.0,-0.3,0.0]),
+                add(small,add([0.0,(2.4+arch as f64*0.3)*open,0.0],
+                    scale(side,-wing*0.44))),0.32*open,arch as f64,
+                alpha(0xBD7EC7E8,age,103.0),5);
         }
     }
 }
 
 /// Glacier alternate B: a forward-breaking glacial wave made from staggered broad facets.
-fn frost_surge(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
-    let advance=(age/32.0).clamp(0.0,1.0);
-    for column in 0..8 {
-        for rank in 0..8 {
-            let u=rank as f64/8.0;
-            let v=column as f64/8.0;
-            let l=add(o,[(-3.8+column as f64*1.05)*grow,-0.75,
-                         (rank as f64*1.2-3.5)*advance*grow]);
-            let height=(1.3+4.4*(1.0-v)*(0.5+u))*grow;
-            let tip=add(l,[0.25*(rank as f64*2.1).sin(),height,0.5+0.8*u]);
-            scene.shard(l,tip,0.3+0.17*(1.0-u),v*TAU+u,
-                alpha(if (column+rank)%3==0 {0xB1D5F8FF}else{0xA46EAFDD},age,104.0));
+fn frost_surge(o:[f64;3],forward:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
+    let dir=norm([forward[0],0.0,forward[2]]);
+    let side=[-dir[2],0.0,dir[0]];
+    // Fan-shaped glacial wave; each ridge grows only when its pulse arrives.
+    for row in 0..9 {
+        let row_age=age-row as f64*3.1;
+        if row_age<=0.0 {continue;}
+        let rise=(row_age/10.0).clamp(0.0,1.0)*grow;
+        for col in 0..6 {
+            let u=col as f64-2.5;
+            let seed=row as f64*1.71+col as f64*2.33;
+            let base=add(o,add(
+                scale(dir,row as f64*1.45-2.0),
+                scale(side,u*(0.65+row as f64*0.12))
+            ));
+            let height=(1.2+row as f64*0.55+1.5*(seed*0.4).sin().abs())*rise;
+            scene.solid_crystal(add(base,[0.0,-0.33,0.0]),
+                add(base,[0.35*seed.sin(),height,0.4*seed.cos()]),
+                (0.35+0.22*(seed*0.87).sin().abs())*rise.max(0.1),
+                seed,alpha(if col%3==0 {0xC4488FC8}else{0xBF6BAAD1},age,103.0),5);
         }
     }
 }
