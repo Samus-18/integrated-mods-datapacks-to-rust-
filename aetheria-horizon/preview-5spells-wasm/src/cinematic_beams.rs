@@ -273,11 +273,21 @@
          // Pyromancy: swirling phoenix wake, spreading fiery fan, rising magma serpent.
          (0,0)=>{pillar(s,o,age,color);}
          (0,1)=>{
+             // Seven broad curved ember feathers with both front/back and
+             // real edge walls. Distinguish a fan from a bare laser comb.
              for j in 0..7 {
-                 let a=(j as f64-3.)*0.31;
-                 let tip=p(o,6.2*stage*a.sin(),1.4+3.2*stage*a.cos(),
-                           5.2*stage*a.cos());
-                 beam(s,o,tip,0.17,phase+a,color);
+                 let a=(j as f64-3.)*0.32;
+                 let spread=(1.35+a.cos()*3.9)*stage;
+                 let end=p(o,a.sin()*spread*1.7,1.15+2.5*stage*a.cos(),
+                           4.7*stage*a.cos());
+                 let inner=p(o,a.sin()*0.3,0.4,0.5);
+                 let wing=0.27+0.22*(1.0-a.abs()/1.0).max(0.0);
+                 let left=p(end,-wing,0.27,0.11);
+                 let right=p(end,wing,-0.18,-0.13);
+                 s.membrane(inner,left,end,right,shade_argb(color,0.85));
+                 beam(s,inner,end,0.115,phase+a,color);
+                 s.solid_crystal(end,p(end,0.18*a.sin(),0.85*stage,0.3),
+                                 0.21,a,color,5);
              }
              sparks(s,o,9,age,2.8,color);
          }
@@ -285,13 +295,28 @@
          // Cryomancy: towering ice field, raised bridge-like crystals, asymmetric shard chorus.
          (1,0)=>{shards(s,o,age,4,color);}
          (1,1)=>{
+             // Rime Bridge must look like interlocked *walkable ice plates*,
+             // not just an airy chain of tiny spikes.
              for step in 0..8 {
-                 let x=step as f64-3.5;
-                 let origin=p(o,x*0.7,-0.2,step as f64*0.6);
-                 s.solid_crystal(origin,p(origin,0.15,2.1*stage,0.9),
-                                 0.4,step as f64*0.2,color,6);
+                 let t=step as f64;
+                 let x=(t-3.5)*0.55;
+                 let z=(t-3.0)*0.83;
+                 let rise=(0.4+(t*1.7).sin().abs()*0.44)*stage;
+                 let a=p(o,x-0.8,rise,z-0.52);
+                 let b=p(o,x+0.8,rise,z-0.52);
+                 let c=p(o,x+0.9,rise,z+0.53);
+                 let d=p(o,x-0.9,rise,z+0.53);
+                 s.membrane(a,b,c,d,shade_argb(color,0.9));
+                 let root=p(o,x,-0.65,z);
+                 s.solid_crystal(root,p(o,x,rise+0.12,z),0.42,t*0.28,color,6);
+                 // Underlying staggered blue icicles provide mass and depth.
+                 for side in [-1.0,1.0] {
+                     let edge=p(o,x+0.66*side,rise,z);
+                     s.solid_crystal(edge,p(edge,side*0.2,-0.95-(step%3) as f64*0.28,0.12),
+                                     0.18,t,color,5);
+                 }
              }
-             ring(s,p(o,0.,1.4,2.),[0.,1.,0.],2.1,0.08,10,phase,color);
+             ring(s,p(o,0.,0.6,2.),[0.,1.,0.],1.7,0.075,10,phase,color);
          }
          (1,_)=>{
              for i in 0..13 {
@@ -328,16 +353,83 @@
          // Druid: rooted canopy, binding roots and flowering healing sanctuary.
          (5,0)=>{tendril(s,o,age,5,5.9*stage,color);}
          (5,1)=>{tendril(s,o,age,6,2.7*stage,color);for j in 0..6 {let a=TAU*j as f64/6.;s.leaf(p(o,2.3*a.cos(),2.2,2.3*a.sin()),[a.cos(),0.7,a.sin()],1.2,color);}}
-         (5,_)=>{rune_seal(s,p(o,0.,0.2,0.),[0.,1.,0.],3.6,phase,color);sparks(s,o,10,age,2.3,color);}
+         (5,_)=>{
+             // Healing sanctuary: a living flower of thick leaves and a
+             // rising seed crystal, not a lone decorative ring.
+             rune_seal(s,p(o,0.,0.2,0.),[0.,1.,0.],3.1,phase,color);
+             for petal in 0..9 {
+                 let a=TAU*petal as f64/9.+phase*0.15;
+                 let root=p(o,0.55*a.cos(),0.2,0.55*a.sin());
+                 let middle=p(o,1.8*a.cos(),1.0+0.5*stage,1.8*a.sin());
+                 let tip=p(o,2.9*a.cos(),1.35+0.8*stage,2.9*a.sin());
+                 let left=p(middle,-0.42*a.sin(),0.08,0.42*a.cos());
+                 let right=p(middle,0.42*a.sin(),0.02,-0.42*a.cos());
+                 s.membrane(root,left,tip,right,shade_argb(color,0.86));
+                 s.tube(root,middle,0.12,0.065,a,color,5);
+             }
+             s.solid_crystal(p(o,0.,0.45,0.),p(o,0.,3.7*stage,0.),
+                             0.64,phase,color,6);
+             sparks(s,o,10,age,2.3,color);
+         }
          // Electromancy: branching thunder, charged halo and precision needle.
          (6,0)=>{storm(s,o,age,color);}
-         (6,1)=>{for j in 0..3 {rune_seal(s,p(o,0.,1.0+j as f64*0.8,0.),[0.2,1.,0.],1.3+j as f64*0.65,phase+j as f64,color);}}
-         (6,_)=>{beam(s,p(o,0.,1.,0.),p(o,f[0]*10.,1.+f[1]*10.,f[2]*10.),0.14,phase,color);storm(s,p(o,0.,0.,5.),age,shade_argb(color,0.62));}
+         (6,1)=>{
+             // The charged crown needs substantial orbiting electrical
+             // shards and spatial joints, not just thin empty wire hoops.
+             for j in 0..3 {
+                 rune_seal(s,p(o,0.,0.8+j as f64*0.92,0.),
+                     [0.15+j as f64*0.18,1.,0.32],1.1+j as f64*0.58,
+                     phase+j as f64,color);
+             }
+             for j in 0..12 {
+                 let a=TAU*j as f64/12.+phase*0.52;
+                 let h=0.9+(j%4) as f64*0.66;
+                 let base=p(o,2.2*a.cos(),h,2.2*a.sin());
+                 let tip=p(base,0.55*a.cos(),0.95*stage,0.55*a.sin());
+                 s.solid_crystal(base,tip,0.24,a,color,6);
+             }
+             sparks(s,o,8,age,2.0,shade_argb(color,0.9));
+         }
+         (6,_)=>{
+             let strike=p(o,f[0]*9.3,1.+f[1]*9.3,f[2]*9.3);
+             beam(s,p(o,0.,1.,0.),strike,0.23,phase,color);
+             // Hard polygonal charged needle plus many short lightning tips.
+             s.solid_crystal(p(o,f[0]*6.2,1.+f[1]*6.2,f[2]*6.2),
+                 p(strike,f[0]*0.7,f[1]*0.7,f[2]*0.7),0.36,phase,color,6);
+             for j in 0..8 {
+                 let a=TAU*j as f64/8.+phase;
+                 let mid=p(strike,a.cos()*0.6,0.35,a.sin()*0.6);
+                 s.tube(strike,mid,0.085,0.04,a,color,5);
+                 s.solid_crystal(mid,p(mid,0.5*a.cos(),0.65*stage,0.5*a.sin()),
+                                 0.12,a,color,5);
+             }
+             storm(s,strike,age,shade_argb(color,0.62));
+         }
          // Astral: sky fracture, collapsing gravity lens, folded space frames.
          (7,0)=>{broken_sky(s,o,age,color);}
          (7,1)=>{rune_seal(s,o,[0.3,0.7,0.2],2.4,phase,color);rune_seal(s,p(o,0.,2.3,0.),[0.2,0.7,0.7],1.6,-phase,color);}
-         (7,_)=>{for j in 0..7 {let a=TAU*j as f64/7.;let start=p(o,a.cos()*3.,(j%4) as f64*0.7,a.sin()*3.);
-             let end=p(o,-a.sin()*1.3,3.3*stage,a.cos()*1.3);beam(s,start,end,0.075,phase+a,color);}}
+         (7,_)=>{
+             // Blink Fold: two *doors of folded space* with raised dimensional
+             // membranes and a connected braided transit bridge, instead
+             // of a small knot of unrelated stick segments.
+             for side in [-1.0,1.0] {
+                 let origin=p(o,side*2.0,1.7,side*1.2);
+                 rune_seal(s,origin,[0.25*side,0.24,1.],1.85,phase*side,color);
+                 s.solid_crystal(p(origin,0.,-1.5,0.),
+                                 p(origin,0.,1.5*stage,0.),0.38,phase,color,6);
+                 for j in 0..3 {
+                     let a=TAU*j as f64/3.+phase;
+                     let tip=p(origin,a.cos()*1.3,a.sin()*1.35,0.8*side);
+                     s.membrane(p(origin,0.,-0.9,0.),p(tip,-0.2,0.3,0.),
+                                 tip,p(tip,0.25,-0.1,-0.35),shade_argb(color,0.7));
+                 }
+             }
+             for j in 0..4 {
+                 let start=p(o,-2.0,j as f64*0.46, -1.2);
+                 let end=p(o,2.0,2.5-j as f64*0.46,1.2);
+                 beam(s,start,end,0.085,phase+j as f64*0.6,color);
+             }
+         }
          // Chronomancy: moving gear arcs, trailing delay disks, time pulse.
          (8,0)=>{rune_seal(s,o,[0.,0.1,1.],2.6,phase,color);beam(s,o,p(o,2.1*phase.cos(),2.1*phase.sin(),0.),0.11,phase,color);}
          (8,1)=>{for j in 0..5{let t=j as f64/5.;ring(s,p(o,-3.*t,0.8*t,1.4*t),[0.,1.,0.],0.8+1.2*t,0.055,10,phase-t,color);}}
