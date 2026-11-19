@@ -488,7 +488,7 @@ pub fn sculpt_school(class_id:u8,elapsed_ticks:u32,quality:u8)->Option<ArcaneFor
                 let t=i as f32/22.;
                 let angle=TAU*t*3.+elapsed_ticks as f32*0.024;
                 stream.push([
-                    angle.cos()*(0.15+0.6*t),4.0*grow-3.6*t,
+                    angle.cos()*(0.15+0.6*t),(4.0-3.6*t)*grow,
                     angle.sin()*(0.15+0.6*t)
                 ]);
                 widths.push(0.065+0.03*t);
