@@ -1,9 +1,9 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - Five Spells Visual Preview"
-version = "0.4.0"
+name = "Aetheria Horizon - 30 Spell Gameplay Preview"
+version = "0.5.0"
 api = "0.2"
 side = "client"
-description = "Precompiled Horizon Rust-WASM visual-only test of five distinct fantasy spell effects. No entity damage, world editing or multiplayer spell syncing yet."
+description = "30 selectable fantasy 3D spells, compact picker, local mana/cooldowns and positional SFX. Preview only: no server damage, unlock syncing or world edits."
 authors = ["Samus-18"]
 capabilities = ["registries"]
 
