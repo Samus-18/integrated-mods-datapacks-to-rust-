@@ -258,3 +258,53 @@ fn extended_170_spells_have_two_angle_cast_and_impact_visual_audit(){
         println!("M20: rendered 680 additional preview views; ALL 170 are still DRAFT art");
     }
 }
+
+
+/// M24: protect the first 20 dedicated Standard signatures against a
+/// renderer regression into invisible, flat or silently truncated geometry.
+/// These numeric bounds are sanity checks, NOT visual beauty certification.
+#[test]
+fn m24_twenty_source_authored_spells_have_two_view_mass_and_impact(){
+    use aetheria_horizon::vfx::timeline::for_spell;
+    use crate::catalog200;
+    let ids=[6_u16,7,26,27,46,47,66,67,86,87,
+             106,107,126,127,146,147,166,167,186,187];
+    let cameras=[View::new([1.8,1.25,2.8]),View::new([-2.3,1.75,1.1])];
+    let mut total=0;
+    for id in ids {
+        let schedule=for_spell(id).expect("M24 spell timeline missing");
+        let total_ticks=schedule.total_ticks() as f64;
+        for target in [Stage::Cast,Stage::Impact]{
+            let mut elapsed=0.;
+            let mut sample=None;
+            for stage in schedule.phases{
+                let length=stage.duration_ticks as f64;
+                if stage.kind==target{
+                    sample=Some((elapsed+length*0.65)/total_ticks*104.0);
+                    break;
+                }
+                elapsed+=length;
+            }
+            let age=sample.expect("M24 stage missing");
+            let mut scene=Scene::new(500);
+            render_spell(Cast{kind:(id-1) as usize,variant:0,start:0,
+                center:[0.,64.,0.],direction:[0.,0.,1.]},age,&mut scene);
+            assert!((24..500).contains(&scene.facets.len()),
+                "M24 geometry clipped/empty: {id} {:?}, {} quads",
+                target,scene.facets.len());
+            for (idx,view) in cameras.iter().copied().enumerate() {
+                let file=std::env::temp_dir().join(format!(
+                    "aetheria_M24_{id}_{target:?}_{idx}.svg"));
+                let result=export_svg(&scene,view,30+(id-1) as usize,target,age,&file);
+                let _=fs::remove_file(file);
+                assert!(result.coverage>0.045,
+                    "M24 shape almost invisible: spell {id}, phase {target:?}, view {idx}");
+                assert!(result.degenerate<0.55,
+                    "M24 collapsed to edge-on spaghetti: spell {id}, phase {target:?}, view {idx}");
+                assert!(result.span<40.);
+                total+=1;
+            }
+        }
+    }
+    assert_eq!(total,80);
+}
