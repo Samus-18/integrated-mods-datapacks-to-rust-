@@ -383,6 +383,30 @@
         }
     }
     #[test]
+    fn every_cast_has_distinct_geometry_not_only_different_rgb(){
+        use std::collections::BTreeSet;
+        let mut geometries=BTreeSet::new();
+        for slot in 0..30 {
+            // Compare at the middle of each spell's individual Cast stage.
+            // Ignore all colors: equal shapes with different palettes fail.
+            let age=(0..104).find(|tick|matches!(
+                visual_phase(slot,*tick as f64),
+                Some((Stage::Cast,p)) if p>0.55
+            )).expect("Cast stage missing") as f64;
+            let mut scene=Scene::new(900);
+            draw(Cast{kind:slot,variant:0,start:0,
+                 center:[0.0,64.0,0.0],direction:[0.0,0.0,1.0]},age,&mut scene);
+            assert!(!scene.facets.is_empty(),"slot {slot} has no geometry");
+            let shape=scene.facets.iter().take(24).flat_map(|(corners,_)|
+                corners.iter().flat_map(|point|point.iter().map(|v|
+                    (v*100.0).round() as i64
+                ))
+            ).collect::<Vec<_>>();
+            assert!(geometries.insert(shape),"same first 24 surfaces at slot {slot}");
+        }
+        assert_eq!(geometries.len(),30);
+    }
+    #[test]
     fn phases_differ_across_schools_and_rank(){
         let ids=[0,1,2,3,5,9,14,18,21,26,29];
         let mut timelines=std::collections::BTreeSet::new();
