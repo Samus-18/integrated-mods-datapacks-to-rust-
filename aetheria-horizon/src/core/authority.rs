@@ -69,11 +69,17 @@ impl AuthoritativePlayer {
     pub fn apply(
         &mut self,request:ClientRequest,tick:u64
     )->Result<CommandResult,CommandError> {
-        if let Some(last)=self.last_sequence {
-            if request.sequence<=last {return Err(CommandError::ReplayedSequence);}
-            if request.sequence!=last.saturating_add(1) {
+        match self.last_sequence {
+            None if request.sequence != 1 => {
                 return Err(CommandError::OutOfOrderSequence);
             }
+            Some(last) if request.sequence <= last => {
+                return Err(CommandError::ReplayedSequence);
+            }
+            Some(last) if request.sequence != last.saturating_add(1) => {
+                return Err(CommandError::OutOfOrderSequence);
+            }
+            _ => {}
         }
         self.last_sequence=Some(request.sequence);
         match request.command {
@@ -163,14 +169,16 @@ mod tests{
     #[test]
     fn replayed_or_skipped_sequence_has_no_effect(){
         let mut p=AuthoritativePlayer::new(0);
-        p.apply(req(100,PlayerCommand::Cast{charge:0.0}),100).unwrap();
+        assert_eq!(p.apply(req(u64::MAX,PlayerCommand::Cast{charge:0.0}),100),
+                   Err(CommandError::OutOfOrderSequence));
+        p.apply(req(1,PlayerCommand::Cast{charge:0.0}),100).unwrap();
         let after=p.magic.mana;
-        assert_eq!(p.apply(req(100,PlayerCommand::Cast{charge:0.0}),120),
+        assert_eq!(p.apply(req(1,PlayerCommand::Cast{charge:0.0}),120),
                    Err(CommandError::ReplayedSequence));
-        assert_eq!(p.apply(req(102,PlayerCommand::Cast{charge:0.0}),120),
+        assert_eq!(p.apply(req(3,PlayerCommand::Cast{charge:0.0}),120),
                    Err(CommandError::OutOfOrderSequence));
         assert_eq!(p.magic.mana,after);
-        assert_eq!(p.last_sequence(),Some(100));
+        assert_eq!(p.last_sequence(),Some(1));
     }
     #[test]
     fn no_unimplemented_spell_action_can_spend_mana(){
