@@ -58,14 +58,23 @@ fn forms(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32){
                            tint(c,0.8,0.67));
             }
         }
-        44=>{ // Feather Drift: rich fanned feathers falling through 3D space.
-            for i in 0..16{
-                let a=TAU*i as f64/16.+age*0.011;
-                let h=(i%4) as f64*0.73*g+0.6*g;
-                let base=p(o,a.cos()*(0.6+0.18*(i%3) as f64)*g,
-                           h,a.sin()*(0.6+0.18*(i%3) as f64)*g);
-                wing(s,base,a,((i%5) as f64*0.29+1.4)*g,
-                      (0.9+(i%3) as f64*0.22)*g,tint(c,0.65+0.024*i as f64,0.63));
+        44=>{ // Feather Drift: large broad curved 3D FEATHERS, no sticks.
+            for i in 0..12{
+                let a=TAU*i as f64/12.+age*0.012;
+                let h=(i%4) as f64*0.61*g+0.72*g;
+                let r=(0.5+(i%3) as f64*0.22)*g;
+                let base=p(o,a.cos()*r,h,a.sin()*r);
+                let end=p(base,(0.8+0.32*(i%5) as f64)*g*a.cos(),
+                       (0.5+(i%3) as f64*0.12)*g,
+                       (0.8+0.32*(i%5) as f64)*g*a.sin());
+                let mid=add(base,scale(sub(end,base),0.47));
+                let wing_width=0.52*g;
+                let sideways=[-a.sin()*wing_width,0.16*g,a.cos()*wing_width];
+                s.membrane(base,add(mid,sideways),end,sub(mid,sideways),
+                    tint(c,0.64+0.019*i as f64,0.67));
+                // Thick central vein INSIDE the leaf, not an exposed rod.
+                crystal(s,p(mid,0.,-0.12*g,0.),
+                    p(end,0.,0.06*g,0.),0.10*g,a,tint(c,0.93,0.78));
             }
         }
         64=>{ // Faultline: contiguous cracked ground trench in branching Z.
@@ -97,17 +106,29 @@ fn forms(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32){
                     a,1.5*g,2.5*g,tint(c,0.84,0.55));
             }
         }
-        104=>{ // Briar Loop: dense braided thorn WALL with growing thick roots.
-            for i in 0..11{
-                let a=TAU*i as f64/11.;
-                let base=p(o,2.2*g*a.cos(),-0.5,2.2*g*a.sin());
-                let tip=p(o,(1.75+0.22*(i%3) as f64)*g*a.cos(),
-                          (2.2+(i%5) as f64*0.32)*g,
-                          (1.75+0.22*(i%3) as f64)*g*a.sin());
-                crystal(s,base,tip,0.36*g,a,tint(c,0.59,0.9));
-                wing(s,tip,a+1.3,1.0*g,0.8*g,tint(c,0.83,0.8));
+        104=>{ // Briar Loop: interwoven rooted LIVING BRIAR CANOPY.
+            // Previous scene was only skinny spikes with stray top leaves.
+            for layer in 0..2 {
+              for i in 0..10{
+                let a=TAU*i as f64/10.+layer as f64*0.29;
+                let radius=(1.7+layer as f64*0.46)*g;
+                let base=p(o,radius*a.cos(),-0.55,radius*a.sin());
+                let height=(2.2+0.20*(i%5) as f64+layer as f64*0.27)*g;
+                let mid=p(o,radius*a.cos()*1.06,height*0.60,radius*a.sin()*1.06);
+                let tip=p(o,radius*a.cos()*0.72,height,radius*a.sin()*0.72);
+                crystal(s,base,mid,0.39*g,a,tint(c,0.58,0.91));
+                crystal(s,mid,tip,0.31*g,a+0.33,tint(c,0.74,0.91));
+                let foliage=p(o,radius*a.cos()*0.86,height*0.80,
+                                 radius*a.sin()*0.86);
+                for petal in 0..3 {
+                    wing(s,foliage,a+petal as f64*0.53-0.40,
+                      (0.92+0.15*(petal%2) as f64)*g,
+                      (0.52+0.13*petal as f64)*g,
+                      tint(c,0.74+0.06*petal as f64,0.75));
+                }
+              }
             }
-            floor_slab(s,o,2.4*g,0.26,age*0.007,tint(c,0.64,0.75));
+            floor_slab(s,o,2.1*g,0.23,age*0.007,tint(c,0.61,0.76));
         }
         124=>{ // Arc Net: a 3D triangular electrified MESH, no naked outline.
             let layers=6;
@@ -136,18 +157,37 @@ fn forms(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32){
             orb(s,p(o,0.,2.2*g,-0.30*g),[0.61*g,1.42*g,0.27*g],
                 age,tint(c,0.86,0.77),0.61);
         }
-        164=>{ // Sands of Delay: two distinct glass chambers and falling sand.
-            orb(s,p(o,0.,3.75*g,0.),[1.4*g,1.18*g,1.0*g],
-                age,tint(c,0.66,0.54),0.55);
-            orb(s,p(o,0.,1.16*g,0.),[1.2*g,1.11*g,0.92*g],
-                age,tint(c,0.78,0.54),0.58);
-            for i in 0..11{
-                let a=TAU*i as f64/11.;
-                let y=(1.0+(i%7) as f64*0.40)*g;
-                let center=p(o,0.19*g*a.cos(),y,0.19*g*a.sin());
-                crystal(s,p(center,0.,-0.22*g,0.),
-                        p(center,0.,0.28*g,0.),
-                        0.09*g,a,tint(c,0.91,0.82));
+        164=>{ // Sands of Delay: proper DOUBLE INVERTED 3D SANDGLASS.
+            // Angular connected chambers with wide top/bottom and tight waist,
+            // avoiding the earlier embarrassing two spheres.
+            let sides=8usize;
+            let chamber=|height:f64,flip:f64,s:&mut Scene|{
+                for j in 0..sides {
+                    let a=TAU*j as f64/sides as f64;
+                    let b=TAU*(j+1) as f64/sides as f64;
+                    let base=p(o,1.25*g*a.cos(),height,1.05*g*a.sin());
+                    let next=p(o,1.25*g*b.cos(),height,1.05*g*b.sin());
+                    let neck=p(o,0.20*g*a.cos(),height+flip*1.36*g,
+                                 0.20*g*a.sin());
+                    let neck2=p(o,0.20*g*b.cos(),height+flip*1.36*g,
+                                 0.20*g*b.sin());
+                    s.quad([base,next,neck2,neck],tint(c,0.65+0.03*(j%4) as f64,0.55));
+                    crystal(s,base,neck,0.11*g,a,tint(c,0.77,0.76));
+                }
+            };
+            chamber(4.32*g,-1.0,s);
+            chamber(1.60*g,1.0,s);
+            body(s,p(o,0.,4.4*g,0.),[1.27*g,0.19*g,1.09*g],
+                 tint(c,0.82,0.92));
+            body(s,p(o,0.,1.52*g,0.),[1.27*g,0.19*g,1.09*g],
+                 tint(c,0.74,0.93));
+            for i in 0..14{
+                let a=TAU*i as f64/14.;
+                let y=(1.6+(i%7) as f64*0.37)*g;
+                let center=p(o,0.24*g*a.cos(),y,0.24*g*a.sin());
+                crystal(s,p(center,0.,-0.16*g,0.),
+                        p(center,0.,0.22*g,0.),
+                        0.085*g,a,tint(c,0.96,0.88));
             }
         }
         184=>{ // Blood Thread: WIDE braided crimson magical sheets, not rods.
