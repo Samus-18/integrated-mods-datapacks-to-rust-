@@ -121,8 +121,10 @@ fn shape(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
    }
   },
  109=>{ // BLOOMSTEP: a progressive pathway of differentiated large flowers.
-   for bloom in 0..9{
-      let t=bloom as f64/8.;
+   // Eight complete flowers rather than nine near-budget flowers leave
+   // room for impact particles without saturating the 500-face scene cap.
+   for bloom in 0..8{
+      let t=bloom as f64/7.;
       let x=(if bloom%2==0{-0.72}else{0.72})*g;
       let base=p(o,x,-0.41*g,(t-0.5)*8.6*g);
       let seed=p(base,0.,0.40*g,0.);
