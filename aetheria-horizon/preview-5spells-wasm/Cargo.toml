@@ -12,6 +12,11 @@ path = "src/lib.rs"
 aetheria-horizon-core = { path = ".." }
 horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
 
+[dev-dependencies]
+# Match the Naga release pinned in the Horizon SDK revision to parse/validate
+# the REAL guest material WGSL, not just verify the asset ZIP contains it.
+naga = { version = "=30.0.1", features = ["wgsl-in"] }
+
 [package.metadata.horizon]
 sdk = "dd67b76ff23e28c6d8e21859df600d31572f81a0"
 
