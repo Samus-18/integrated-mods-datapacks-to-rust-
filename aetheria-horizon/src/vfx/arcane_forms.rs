@@ -39,7 +39,7 @@ impl School {
         })
     }
 }
-#[derive(Debug,Clone,Copy,PartialEq,Eq)]
+#[derive(Debug,Clone,Copy,PartialEq,Eq,Hash)]
 pub enum GeometryIdentity {
     PhoenixFeathers, GlacialEruption, TempestVortex, MountainGauntlet,
     TidalLeviathan, LivingWorldroot, StormWyvern, AstralShatter,
@@ -302,7 +302,7 @@ pub fn sculpt_school(class_id:u8,elapsed_ticks:u32,quality:u8)->Option<ArcaneFor
                     let s=col as f32-2.;
                     let wave=(elapsed_ticks as f32-(row as f32*3.+col as f32*0.65))/20.;
                     let p=smooth(wave);
-                    let h=(2.+5.5*(1.-u)*pulse+0.6*(row as f32*1.7+s).cos().abs());
+                    let h=2.+5.5*(1.-u)*pulse+0.6*(row as f32*1.7+s).cos().abs();
                     add_crystal(&mut form,h,0.26+0.34*(1.-u),
                                 [s*(0.7+u),-0.32,row as f32*1.35-2.],
                                 [0.1*s,0.5*(row as f32*2.1+s).sin()],
