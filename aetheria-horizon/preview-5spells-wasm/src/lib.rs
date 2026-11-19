@@ -13,6 +13,7 @@ mod standard_channelled;
 mod standard_instant;
 mod standard_combo;
 mod standard_charged2;
+mod standard_m26;
 mod charged_standard_forms;
 #[cfg(test)]
 mod visual_audit;
@@ -595,6 +596,11 @@ fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
 }
 
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
+    if cast.kind<catalog200::SPELL_COUNT &&
+        standard_m26::dedicated(catalog200::id(cast.kind)) {
+        standard_m26::render(cast,age,scene);
+        return;
+    }
     if cast.kind<catalog200::SPELL_COUNT {
         let id=catalog200::id(cast.kind);
         if standard_combo::dedicated(id){
