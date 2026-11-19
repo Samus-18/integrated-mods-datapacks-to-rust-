@@ -1,0 +1,48 @@
+name: Aetheria five-spell PRECOMPILED WASM release
+on:
+  push:
+    paths:
+      - 'aetheria-horizon/preview-5spells-wasm/**'
+      - '.github/workflows/aetheria-preview-wasm.yml'
+  workflow_dispatch:
+jobs:
+  wasm-package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: aetheria-horizon/preview-5spells-wasm
+    env:
+      CARGO_INCREMENTAL: 0
+      CARGO_TERM_COLOR: always
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install pinned Horizon mod tool
+        run: cargo install --locked --git https://github.com/horizon-rust/horizon --rev dd67b76ff23e28c6d8e21859df600d31572f81a0 cargo-horizon-mod
+      - name: Compile prelinked WASM module and package
+        run: cargo horizon-mod build --wasm
+      - name: Validate WASM package and integrity
+        run: |
+          python3 - <<'PY'
+          import zipfile, hashlib, tomllib, pathlib
+          p=pathlib.Path('target/horizon-mod/aetheria_preview.hmod')
+          assert p.is_file(), 'hmod missing'
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              names=set(z.namelist())
+              assert 'mod.wasm' in names
+              assert 'horizon-mod.toml' in names
+              assert 'Cargo.toml' in names
+              assert 'assets/aetheria_preview/shaders/pipeline/ethereal.wgsl' in names
+              m=tomllib.loads(z.read('horizon-mod.toml').decode())
+              assert m['id']=='aetheria_preview'
+              assert m['version']=='0.2.0'
+              assert 'native' not in m and 'wasm' in m
+              assert hashlib.sha512(z.read('mod.wasm')).hexdigest()==m['wasm']['sha512']
+              print('PASS: wasm .hmod, SHA512, manifest, shader, ZIP all verified')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aetheria-Horizon-5Spells-WASM-v0.2.0
+          path: aetheria-horizon/preview-5spells-wasm/target/horizon-mod/aetheria_preview.hmod

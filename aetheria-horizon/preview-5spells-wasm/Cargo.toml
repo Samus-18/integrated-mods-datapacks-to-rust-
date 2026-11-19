@@ -1,0 +1,17 @@
+[package]
+name = "aetheria-preview"
+version = "0.2.0"
+edition = "2024"
+publish = false
+
+[lib]
+name = "aetheria_preview"
+path = "src/lib.rs"
+
+[dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
+
+[package.metadata.horizon]
+sdk = "dd67b76ff23e28c6d8e21859df600d31572f81a0"
+
+[workspace]
