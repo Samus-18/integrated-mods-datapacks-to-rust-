@@ -49,3 +49,13 @@ Confirmed interpretation: continue implementation within this chat and their lin
 > nemusis mi delat obrazek tych animaci jen kdyz jses porste v tom menu pozadi se hejbe krasne a tak ui ikonky ale to herni menu dej styl iron spells wheel vyberu nebo jak to tam je ten druhy zpusob a ukazatek na manu a hp i armor to muzes tam dat upravit vanilla hud aat to udelas nemusis delat dalsi obrazek jen to udelej implementuj to a pak pokracuj v kouzlech a nasel jsem duvod prej proc jsou ty kouzla tak krasne prej tenhle github to dela[https://github.com/dimforge/rapier](https://github.com/dimforge/rapier)
 
 Interpretation: no more requested UI images; draw living menu backdrop + icons in-game. Keep gameplay view clear and HUD tiny; R+mousewheel quick spell selection inspired by Iron's Spells' alternate selection control, use no copied copyrighted UI artwork. Health and armor should come from actual vanilla player stats; do not fabricate or hide food/air. Rust/Rapier can improve physics of 3D debris and projectiles; it does **not** create attractive shaders, 3D meshes, bloom or audio by itself. Continue implementing distinctive, physical-looking 3D spells. User still declines manual testing until 100 actually integrated spells.
+
+
+## 2026-11-19 — User corrected missing archival originals and re-uploaded all four MP4s
+
+Exact feedback:
+> "aha sorry napsala ze tam nejsou i kdyz v originalnim promtu bylo vse co pisu i ty a i prilohy at si vzdy ulozis do githubu vzdy vlastni slozky wtf no tady je mas znovu a uloz si je tam"
+
+Attached `Download (3).mp4`, `Download (4).mp4`, `Download (5).mp4`, `Download (6).mp4`. The original project instruction is to archive every user-supplied prompt and attachment in distinct GitHub folders, not only paraphrases and analyses. We had previously saved only textual video descriptions, which was incomplete.
+
+**2026-11-19 preservation:** the exact four MP4s and a combined ZIP have been saved into the user's persistent ChatGPT Library (`/Aetheria Horizon/Reference Videos/`), including their original bytes, while a GitHub `references/original-videos/` folder contains checksum manifest and direct frame analysis. GitHub originals were not copied because the currently available GitHub connector cannot read and upload the multi-MB local binary files. Do not misreport that they're now in GitHub. Next time binary upload is supported, sync the originals and verify SHA256. No manual game testing requested.
