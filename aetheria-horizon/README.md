@@ -53,3 +53,9 @@ The user will **not** do more manual playtests of five-spell demos. The next use
 - [User screenshot reference and verbatim instruction](docs/memory/USER_LOG.md)
 
 **Current actual progress: 0/100 end-to-end integrated spells; 20 standalone Rust action intents, 5 client-only visual demonstrations, and 15 visual shape variations are not counted as finished RPG spells.** New work: 3D crystalline surface geometry in preview, transactional unlock core across all 200 IDs, 10-class constellation view model, and a generated original SFX pipeline. Do not publish another user-facing test ZIP before this milestone.
+
+## M8 volumetric forms and cinematic choreography (internal work, not a release)
+
+The portable core has **ten custom 3D sculpt foundations**, each with a distinct silhouette and animated construction, and **20 distinct future cinematic camera sequences** with reduced-motion settings. Current portable CI is **[53 tests passed](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44509592898)**. The precompiled WASM preview's second style for each original five spell demos has been connected to the shared volumetric meshes, pending [internal WASM CI](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44510001331).
+
+**No additional user playtest requested.** The ten 3D school scenes and 20 camera trajectories are **not** complete spells or cinematics; M100 remains 0/100 fully integrated/verified. That honesty is deliberate until actual game mechanics, animations, SFX, GUI and persistence work end to end.

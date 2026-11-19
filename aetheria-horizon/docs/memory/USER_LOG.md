@@ -36,3 +36,10 @@ Exact user message (verbatim):
 Attached image: `image(7).png` showing large broad pale-blue triangular ice spikes protruding from a ground surface, foreground-to-background row/perspective and irregular heights (Ice Awakening screenshot). Use only as reference; do not copy copyrighted assets.
 
 Interpreted gate: next **user-performed** game test only after 100 of 200 actual complete spells (not merely 100 registry lines or visual-only demos). CI/programmatic automated checks remain allowed. 10 classes × (7 standards + 2 awakenings + 1 ultimate) each, full playable loop including solid 3D effects, mana, inventory/unlocking, server-state integration, GUI, animation and original audio. No early ZIPs or requests for testing.
+
+## 2026-11-19 — Keep working, preserve original videos and original specification
+
+Exact user message (verbatim):
+> "pokracuj pohraj si v tom ale drz se ty krase jak v tych videich a originalniho promtu"
+
+Confirmed interpretation: continue implementation within this chat and their linked GitHub, no Codex/no paid asset generators, adhere to all original Aetheria requirements (200 spells, 10 classes, native Rust/Horizon when supported, solid unique 3D shapes, elaborate SFX/animations/VFX, fantasy-only, mana/progression/GUI, original videos as artistic references). Do not send test ZIP before 100 fully playable spells (user directive from preceding turn).
