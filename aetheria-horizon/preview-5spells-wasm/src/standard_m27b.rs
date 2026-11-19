@@ -38,29 +38,35 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
     if i%3==0{crystal(s,base,p(base,0.,0.38*g,0.),0.12*g,a,tint(c,0.98,0.89));}
   }
  },
- 113=>{ // CARNIVORE BLOOM: plant jaws split like living clamping petals.
-   crystal(s,p(o,0.,-0.65*g,0.),p(o,0.,1.72*g,0.),
-     0.72*g,t,tint(c,0.52,0.97));
-   for jaw in [-1.0,1.0]{
-    for i in 0..7{
-      let a=(i as f64-3.)*0.31;
-      let x=(0.3+0.22*i as f64)*g;
-      let root=p(o,jaw*0.40*g,1.04*g,0.);
-      let mid=p(o,jaw*1.13*g,(2.0+0.21*a.sin())*g,a.cos()*0.36*g);
-      let tip=p(o,jaw*(1.8+0.4*a.sin())*g,
-          (2.85+0.50*a.cos())*g,(i as f64-3.)*0.37*g);
-      let flank=[-jaw*0.33*g,0.17*g,0.26*g];
-      s.membrane(root,add(mid,flank),tip,sub(mid,flank),
-         tint(c,0.62+0.037*(i%5) as f64,0.85));
-      if i%2==0{
-        crystal(s,p(mid,0.,0.1*g,0.),p(mid,0.,0.68*g,0.),
-          0.17*g,a,tint(c,0.96,0.90));
-      }
-      let _=x;
+ 113=>{ // CARNIVORE BLOOM: huge flowering JAWS with broad thick living petals.
+  crystal(s,p(o,0.,-0.65*g,0.),p(o,0.,1.80*g,0.),
+    0.73*g,t,tint(c,0.46,0.95));
+  // Twelve independent broad recurved leaves make a single blooming maw,
+  // not two disconnected arms or a thicket of vertical toothpicks.
+  for petal in 0..12{
+    let a=TAU*petal as f64/12.+age*0.008;
+    let inner=p(o,0.53*g*a.cos(),1.35*g,0.53*g*a.sin());
+    let mid=p(o,1.38*g*a.cos(),(2.78+0.20*(petal%3) as f64)*g,
+                     1.38*g*a.sin());
+    let tip=p(o,(2.3+0.15*(petal%4) as f64)*g*a.cos(),
+                 (2.27+0.26*(petal%3) as f64)*g,
+                 (2.3+0.15*(petal%4) as f64)*g*a.sin());
+    let flank=[-0.53*g*a.sin(),0.17*g,0.53*g*a.cos()];
+    s.membrane(inner,add(mid,flank),tip,sub(mid,flank),
+       tint(c,0.59+0.03*(petal%6) as f64,0.87));
+    s.membrane(p(inner,0.,-0.18*g,0.),
+         add(mid,scale(flank,0.87)),
+         p(tip,0.,-0.20*g,0.),
+         sub(mid,scale(flank,0.87)),
+         tint(c,0.44+0.03*(petal%4) as f64,0.72));
+    if petal%3==0{
+      let fang=p(mid,0.,0.15*g,0.);
+      crystal(s,fang,p(fang,0.17*g*a.cos(),-0.72*g,0.17*g*a.sin()),
+       0.17*g,a,tint(c,0.91,0.87));
     }
-   }
-   body(s,p(o,0.,1.55*g,0.),[0.56*g,0.22*g,0.53*g],tint(c,0.82,0.96));
- },
+  }
+  body(s,p(o,0.,2.16*g,0.),[0.60*g,0.20*g,0.59*g],tint(c,0.32,0.95));
+ }
  114=>{ // SPORE BURST: seven chunky split seed-sacs and scattered spores.
   for i in 0..8{
     let a=TAU*i as f64/8.+t*0.06;
@@ -77,42 +83,59 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
   }
   floor_slab(s,o,1.9*g,0.20*g,t*0.1,tint(c,0.55,0.64));
  },
- 132=>{ // SKYFIRE CROWN: physically branched thunder tree from a cloud base.
-  body(s,p(o,0.,4.9*g,0.),[1.55*g,0.45*g,1.28*g],tint(c,0.49,0.68));
-  let root=p(o,0.,4.6*g,0.);
-  let trunk=p(o,0.23*g,1.5*g,0.11*g);
-  crystal(s,root,trunk,0.60*g,t,tint(c,0.95,0.95));
-  for i in 0..7{
-    let a=TAU*i as f64/7.;
-    let from=p(o,0.18*g*a.cos(),2.6*g,0.18*g*a.sin());
-    let fork=p(o,1.10*g*a.cos(),(1.45+0.13*(i%3) as f64)*g,
-                 1.10*g*a.sin());
-    crystal(s,from,fork,0.25*g,a,tint(c,0.77,0.88));
-    crystal(s,fork,p(fork,0.66*g*a.cos(),-0.76*g,0.66*g*a.sin()),
-        0.13*g,a+0.27,tint(c,0.98,0.91));
+ 132=>{ // SKYFIRE CROWN: complex layered thundercloud with a full branching bolt.
+  // Replace the flat roof box with irregular sculpted cloud masses.
+  for i in 0..9{
+    let a=TAU*i as f64/9.;
+    let r=(0.6+0.37*(i%4) as f64)*g;
+    let height=(4.85+0.19*(i%3) as f64)*g;
+    body(s,p(o,r*a.cos(),height,r*a.sin()),
+       [(0.53+0.10*(i%3) as f64)*g,
+        (0.39+0.08*(i%4) as f64)*g,
+        (0.52+0.09*(i%3) as f64)*g],
+       tint(c,0.36+0.042*(i%5) as f64,0.66));
   }
- },
- 133=>{ // PULSE CAGE: dense dynamic multi-sided containment crystal panes.
-  for ring in 0..3{
-   let y=(0.28+ring as f64*1.12)*g;
-   let next=(0.95+ring as f64*1.14)*g;
-   for j in 0..8 {
-    let a=TAU*j as f64/8.+t*0.16;
-    let b=TAU*(j+1) as f64/8.+t*0.16;
-    let ra=(1.8+0.16*(ring%2) as f64)*g;
-    let aa=p(o,ra*a.cos(),y,ra*a.sin());
-    let ab=p(o,ra*b.cos(),y,ra*b.sin());
-    let ac=p(o,(ra-0.17*g)*b.cos(),next,(ra-0.17*g)*b.sin());
-    let ad=p(o,(ra-0.17*g)*a.cos(),next,(ra-0.17*g)*a.sin());
-    s.quad([aa,ab,ac,ad],tint(c,0.62+0.035*(j%4) as f64,0.53));
-    if j%2==0 {
-     crystal(s,aa,ad,0.23*g,a,tint(c,0.87,0.90));
+  let top=p(o,0.,4.66*g,0.);
+  let bottom=p(o,0.19*g,1.60*g,0.08*g);
+  crystal(s,top,bottom,0.73*g,t,tint(c,0.96,0.94));
+  for i in 0..8 {
+    let a=TAU*i as f64/8.;
+    let joint=p(o,0.21*g*a.cos(),2.68*g,0.21*g*a.sin());
+    let branch=p(o,1.48*g*a.cos(),
+      (1.32+0.25*(i%3) as f64)*g,1.48*g*a.sin());
+    crystal(s,joint,branch,0.26*g,a,tint(c,0.83,0.88));
+    let fork=p(branch,0.54*g*a.cos(),-0.73*g,0.54*g*a.sin());
+    crystal(s,branch,fork,0.17*g,a,tint(c,0.99,0.92));
+    s.membrane(joint,p(joint,-0.24*g*a.sin(),0.37*g,0.24*g*a.cos()),
+      branch,p(branch,0.20*g*a.sin(),0.07*g,-0.20*g*a.cos()),
+      tint(c,0.85,0.53));
+  }
+ }
+ 133=>{ // PULSE CAGE: volumetric octagonal force-field chamber, NOT 3 rings.
+  // Full height faceted glass panels form one recognisable solid enclosure.
+  for i in 0..8 {
+    let a=TAU*i as f64/8.+t*0.12;
+    let b=TAU*(i+1) as f64/8.+t*0.12;
+    let r=1.92*g;
+    let foot=p(o,r*a.cos(),-0.14*g,r*a.sin());
+    let foot2=p(o,r*b.cos(),-0.14*g,r*b.sin());
+    let top=p(o,0.89*r*a.cos(),3.70*g,0.89*r*a.sin());
+    let top2=p(o,0.89*r*b.cos(),3.70*g,0.89*r*b.sin());
+    s.quad([foot,foot2,top2,top],
+      tint(c,0.58+0.03*(i%4) as f64,0.53));
+    let crown=p(o,0.,4.36*g,0.);
+    s.membrane(top,top2,crown,p(o,0.54*g*a.cos(),4.04*g,0.54*g*a.sin()),
+      tint(c,0.79,0.68));
+    // Broad, interlocking material seams without a hollow outline frame.
+    if i%2==0{
+      let mid=p(o,1.31*g*a.cos(),2.18*g,1.31*g*a.sin());
+      crystal(s,foot,mid,0.24*g,a,tint(c,0.87,0.81));
+      crystal(s,mid,top2,0.19*g,a+0.38,tint(c,0.95,0.85));
     }
-   }
   }
-  crystal(s,p(o,0.,0.3*g,0.),p(o,0.,3.6*g,0.),
-    0.29*g,t,tint(c,0.94,0.82));
- },
+  crystal(s,p(o,0.,0.3*g,0.),p(o,0.,3.45*g,0.),
+     0.63*g,t,tint(c,0.99,0.87));
+ }
  134=>{ // STORM FEATHERS: curved broad high-energy blades, no naked sticks.
   for i in 0..17{
     let a=TAU*i as f64/17.+t*0.24;
@@ -202,25 +225,33 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
       0.66*g,1.8*g,tint(c,0.80,alpha*0.78));
   }
  },
- 173=>{ // PENDULUM EDGE: pair of broad scything time blades, different clocks.
-   for blade in 0..2{
-     let side=if blade==0{-1.0}else{1.0};
-     let a=side*(0.35+(age*0.043+blade as f64*1.3).sin()*0.48);
-     let start=p(o,side*1.15*g,3.40*g,0.);
-     let tip=p(start,(2.9*a.sin())*g,-(2.0+0.3*blade as f64)*g,
-       0.47*g*side);
-     crystal(s,start,tip,0.53*g,a,tint(c,0.66+0.13*blade as f64,0.93));
-     for i in 0..5{
-        let u=i as f64/5.;let v=(i+1) as f64/5.;
-        let at=add(start,scale(sub(tip,start),u));
-        let next=add(start,scale(sub(tip,start),v));
-        let broad=p(at,0.57*g*side,0.13*g,-0.39*g);
-        let broad2=p(next,0.47*g*side,0.28*g,0.29*g);
-        s.quad([at,broad,broad2,next],tint(c,0.77,0.68));
-     }
-   }
-   body(s,p(o,0.,3.55*g,0.),[1.5*g,0.23*g,0.41*g],tint(c,0.53,0.82));
- },
+ 173=>{ // PENDULUM EDGE: two connected wide sweeping time-blades.
+  // The previous version read as two thin sticks from both cameras.
+  for blade in 0..2{
+    let side=if blade==0{-1.0}else{1.0};
+    let phase=age*0.036+blade as f64*1.75;
+    let a=side*(0.35+phase.sin()*0.44);
+    let root=p(o,side*1.13*g,3.77*g,0.);
+    let tip=p(root,(2.6*a.sin())*g,-(2.22+0.21*blade as f64)*g,
+        0.40*g*side);
+    let flank=[0.81*g*side,0.13*g,0.49*g];
+    let mid=add(root,scale(sub(tip,root),0.54));
+    // Broad substantial swept blade with both a front and a back.
+    s.membrane(root,add(mid,flank),tip,sub(mid,flank),
+       tint(c,0.80+0.09*blade as f64,0.89));
+    s.membrane(p(root,0.,0.,-0.25*g),
+       add(mid,scale(flank,0.85)),p(tip,0.,0.,-0.27*g),
+       sub(mid,scale(flank,0.85)),tint(c,0.65,0.78));
+    crystal(s,root,tip,0.35*g,a,tint(c,0.92,0.92));
+    for i in 0..5{
+      let u=(i as f64+0.3)/5.;
+      let at=add(root,scale(sub(tip,root),u));
+      wing(s,at,a+PI*0.4,0.46*g,0.25*g,
+         tint(c,0.96,0.71));
+    }
+  }
+  body(s,p(o,0.,3.80*g,0.),[1.37*g,0.26*g,0.39*g],tint(c,0.54,0.84));
+ }
  174=>{ // CHRONAL BLOOM: phase-specific broad clock-flower petals.
    crystal(s,p(o,0.,-0.45*g,0.),p(o,0.,2.32*g,0.),
      0.62*g,t,tint(c,0.86,0.88));
@@ -267,23 +298,31 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
          0.27*g,a,tint(c,0.77,0.80));
    }
  },
- 194=>{ // BONE PALISADE: nine irregular thick interlocking vertebral walls.
+ 194=>{ // BONE PALISADE: joined substantial organic bone WALL.
+  let mut previous=p(o,-3.2*g,0.7*g,-0.1*g);
   for i in 0..9{
-    let x=(i as f64-4.)*0.76*g;
-    let y=(2.0+0.22*(i%4) as f64)*g;
-    let root=p(o,x,-0.5*g,0.);
-    let joint=p(o,x,y*0.58,0.30*g*((i%3) as f64-1.));
-    let crown=p(o,x+0.21*g,y,0.12*g);
-    crystal(s,root,joint,0.36*g,0.22*i as f64,tint(c,0.62,0.95));
-    crystal(s,joint,crown,0.27*g,0.35*i as f64,tint(c,0.78,0.94));
-    for side in [-1.0,1.0]{
-      let rib=p(o,x+0.38*g*side,(1.35+0.15*(i%3) as f64)*g,0.7*g);
-      crystal(s,joint,rib,0.20*g,0.25*i as f64,
-        tint(c,0.87,0.90));
+    let x=(i as f64-4.)*0.79*g;
+    let y=(1.95+0.22*(i%4) as f64)*g;
+    let root=p(o,x,-0.52*g,0.);
+    let joint=p(o,x,0.59*y,0.24*g*((i%3) as f64-1.));
+    let crown=p(o,x+0.19*g,y,0.12*g);
+    crystal(s,root,joint,0.35*g,0.21*i as f64,tint(c,0.63,0.96));
+    crystal(s,joint,crown,0.30*g,0.27*i as f64,tint(c,0.80,0.95));
+    for side in [-1.,1.]{
+      let rib=p(o,x+0.42*g*side,(1.30+0.13*(i%3) as f64)*g,0.53*g);
+      crystal(s,joint,rib,0.22*g,i as f64+side,tint(c,0.91,0.93));
     }
+    // Enclosing broad ossified plates connect adjacent bone columns,
+    // preventing a visual row of disconnected pointy toothpicks.
+    if i>0{
+      s.membrane(previous,p(previous,0.,0.82*g,0.15*g),
+         p(joint,0.,0.34*g,0.17*g),joint,
+         tint(c,0.67+0.028*(i%4) as f64,0.72));
+    }
+    previous=joint;
   }
-  body(s,p(o,0.,-0.46*g,0.),[3.7*g,0.23*g,0.44*g],tint(c,0.49,0.86));
- },
+  body(s,p(o,0.,-0.43*g,0.),[3.72*g,0.27*g,0.55*g],tint(c,0.51,0.94));
+ }
  _=>unreachable!("M27B only accepts fifteen ID-specific scenes")
  }
 }
