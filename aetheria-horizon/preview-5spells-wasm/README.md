@@ -1,9 +1,9 @@
-# Aetheria Horizon — 30-spell test build v0.5.1 (Rust → WASM)
+# Aetheria Horizon — 30-spell test build v0.5.2 (Rust → WASM)
 
 **Experimental, not a finished RPG release.** This builds on the previously game-verified 5-spell Horizon client renderer and expands the client selector to **30 distinct registry IDs** (three from each of ten classes). The portable Rust gameplay core has **30 different action intents**, but the server-facing world adapter has not yet been implemented: spells do **not** damage mobs, heal players, place blocks, unlock from loot or persist progression. Effects/costs are client-local; do not confuse them with server-authoritative gameplay.
 
 ## Install
-1. Download the compiled **Aetheria-Horizon-30Spells-WASM-v0.5.1-Internal** artifact from this branch's successful GitHub Actions WASM workflow, extract its `aetheria_preview.hmod`. **Never use source ZIP or a build whose CI failed**.
+1. Download the compiled **Aetheria-Horizon-30Spells-WASM-v0.5.2-Internal** artifact from this branch's successful GitHub Actions WASM workflow, extract its `aetheria_preview.hmod`. **Never use source ZIP or a build whose CI failed**.
 2. Remove any old `aetheria_preview.hmod` from `horizon-native-mods/` and `horizon-mods/`.
 3. Put the compiled .hmod in the game instance's `horizon-mods/` and enable `aetheria_preview`.
 4. Start **Play** normally, not Launcher Build. You need a Horizon Nightly compatible with the pinned SDK.
@@ -40,7 +40,12 @@ Server-side player ownership and persistence; world entity targeting/LOS and act
 Reference: [official mod docs](https://playhorizon.dev/docs/mod-code). All sounds are synthesized and original; no external voice samples or paid AI assets.
 
 
-## v0.5.1 correction from real Nightly 2026-11-18 feedback
+## v0.5.2 correction from real Nightly 2026-11-18 feedback
 The user's gameplay video showed the HUD incorrectly layered over title/options/keybind screens, plus an oversized, hard-to-read gold-framed HUD and repetitive sculpt silhouettes. The client now checks **`host.playing()` + player presence + `host.observed_screen_id().is_none()`** in the render hook, in the drawing function and for casting shortcuts. A new compact dark-glass strip (262 × 33 GUI px) is shown only during normal gameplay. R+scroll shows five nearby slots briefly; K opens a small 10-school/3-spell detail panel, no opaque 20-node placeholder map. Five original hand-sculpted spell silhouettes are restored for legacy shortcut schools; the 30-spell backend remains.
 
 This is a code and CI test of the menu visibility predicate, **not** yet a verified user in-game fix. The previous v0.5.0 client should be removed before trying the new verified artifact.
+
+
+## M13 v0.5.2 — cinematic volume pass (internal build, no user playtest)
+
+Original four MP4s were re-uploaded 2026-11-19, inspected as actual videos, saved to the user's persistent Library and indexed with SHA256 under `references/original-videos/` (the raw MP4 binaries are **not** on GitHub yet). New `src/cinematic_beams.rs` draws **30 different fantasy spatial motifs**: real multi-sided beam surfaces, closed runic rings, staggered ice columns, branched thunder, organic tendrils and fractured astral sky portals. Temporal onset, dissipation and overexposure guards apply. Original five visual spell silhouettes are retained as supporting geometry when the budget permits; the old shared rank-pattern overlays are bypassed in active curated casts. This **does not implement real GPU volumetric rays, true bloom, world collision, multiplayer damage or loot**. Final effect fidelity awaits actual game validation later; user explicitly declines more intermediate test requests.
