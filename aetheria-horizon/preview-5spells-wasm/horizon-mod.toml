@@ -1,6 +1,6 @@
 id = "aetheria_preview"
 name = "Aetheria Horizon - 30 Spell Gameplay Preview"
-version = "0.5.0"
+version = "0.5.1"
 api = "0.2"
 side = "client"
 description = "30 selectable fantasy 3D spells, compact picker, local mana/cooldowns and positional SFX. Preview only: no server damage, unlock syncing or world edits."
