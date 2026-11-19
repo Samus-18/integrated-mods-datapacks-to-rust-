@@ -8,7 +8,7 @@
 //! TRUE HDR world light and depth-aware volume shader remain separate work.
 use super::{Cast,Scene,add,sub,scale,shade_argb};
 use crate::catalog200;
-use crate::ultimate_forms::{p,mix,tint,body,crystal,wing,floor_slab,orb,curtain,arch};
+use crate::ultimate_forms::{p,tint,body,crystal,wing,floor_slab,orb,curtain};
 use aetheria_horizon::vfx::timeline::{for_spell,Stage};
 use std::f64::consts::{TAU,PI};
 
@@ -148,7 +148,7 @@ fn form(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32) {
    },
    57=>{ // Storm Eye: transparent still center, folding pressure walls
       for i in 0..5{
-        curtain(s,o,r*(0.54+0.075*i),h*0.93,
+        curtain(s,o,r*(0.54+0.075*i as f64),h*0.93,
           age,TAU*i as f64/5.,tint(c,0.63+0.05*(i%3) as f64,0.49));
       }
       orb(s,p(o,0.,h*0.50,0.),[r*0.21,h*0.21,r*0.20],
@@ -173,7 +173,22 @@ fn form(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32) {
         }
       }
    },
-   76=>shield(s,o,age,g,tint(c,0.78,0.98)), // Gemheart Armor
+   76=>{ // Gemheart Armor: crystalline mantle with overlapping
+      // gem shoulder plates and separately suspended faceted javelins.
+      body(s,p(o,0.,2.2*g,0.),[1.05*g,1.42*g,0.77*g],
+           tint(c,0.55,0.93));
+      for side in [-1.,1.] {
+          for i in 0..4{
+              let offset=side*(0.69+i as f64*0.35)*g;
+              crystal(s,p(o,offset,3.6*g,0.),
+                 p(o,offset+side*0.25*g,5.0*g+(i%3) as f64*0.24*g,-0.3*g),
+                 (0.39+0.05*i as f64)*g,
+                 side*i as f64*0.2,tint(c,0.80+i as f64*0.02,0.9));
+          }
+          body(s,p(o,side*1.1*g,2.5*g,-0.2*g),[0.51*g,0.54*g,0.62*g],
+               tint(c,0.75,0.95));
+      }
+   },
    77=>{ // Tectonic Crown: delayed stone columns that tilt outward
       for i in 0..9 {
         let a=TAU*i as f64/9.;
@@ -356,12 +371,40 @@ fn form(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32) {
       }
       cascade(s,p(o,0.,0.,0.),age,g,3,r*0.60,h*0.70,tint(c,0.81,0.30));
    },
-   197=>shield(s,o,age,g,c), // Crimson Aegis: three large enclosed plates
-   198=>{ // Eidolon Procession: staggered ranks of armored ghost knights
+   197=>{ // Crimson Aegis: five real layered angled overlapping
+      // ritual shields with a raised central star-clasp, no armor clone.
       for i in 0..5 {
-        let x=(i as f64-2.0)*1.38*g;
-        guardian(s,p(o,x,0.,(i%2) as f64*0.71*g),
-            age,g*0.58,tint(c,0.61+i as f64*0.045,0.76));
+         let a=(i as f64-2.0)*0.24;
+         let cx=(i as f64-2.0)*0.55*g;
+         body(s,p(o,cx,2.2*g+(i%2) as f64*0.21*g,
+                  (i as f64-2.0).abs()*0.24*g),
+              [0.62*g,1.38*g,0.34*g],
+              tint(c,0.55+0.07*(i%4) as f64,0.85));
+         crystal(s,p(o,cx,1.3*g,-0.44*g),
+              p(o,cx+a*g,3.3*g,-0.48*g),
+              0.29*g,a,tint(c,0.90,0.90));
+      }
+      orb(s,p(o,0.,2.3*g,-0.65*g),
+          [0.55*g,0.63*g,0.24*g],age,tint(c,0.92,0.90),0.84);
+   },
+   198=>{ // Eidolon Procession: ALL five soldiers must remain
+      // visible even at a medium face budget; use a compact solid
+      // mannequin per soldier instead of 5 full 300-face guardian orbs.
+      for i in 0..5{
+         let x=(i as f64-2.0)*1.39*g;
+         let z=(i%2) as f64*0.69*g;
+         let at=p(o,x,0.,z);
+         body(s,p(at,0.,1.8*g,0.),[0.47*g,0.95*g,0.35*g],
+              tint(c,0.51+i as f64*0.047,0.74));
+         crystal(s,p(at,0.,2.64*g,0.),p(at,0.,3.40*g,0.),
+                 0.37*g,0.1*i as f64,tint(c,0.83,0.81));
+         for side in [-1.,1.]{
+             body(s,p(at,side*0.64*g,1.85*g,0.),
+                  [0.24*g,0.75*g,0.27*g],tint(c,0.64,0.77));
+         }
+         // Shoulder mantle: solid sides to avoid a T-shaped stick figure.
+         wing(s,p(at,0.,2.75*g,0.),PI*0.25,
+              0.82*g,1.2*g,tint(c,0.62,0.34));
       }
    },
    _=>{}
