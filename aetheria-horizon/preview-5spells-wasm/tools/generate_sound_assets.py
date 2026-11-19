@@ -10,6 +10,7 @@ import math
 import random
 import struct
 import subprocess
+import shutil
 import tempfile
 import wave
 import json
@@ -84,6 +85,10 @@ def synthesize(kind:int,stage:int):
     return struct.pack("<"+str(len(pcm))+"h",*pcm)
 
 def generate():
+    ffmpeg=shutil.which("ffmpeg")
+    if ffmpeg is None:
+        import imageio_ffmpeg
+        ffmpeg=imageio_ffmpeg.get_ffmpeg_exe()
     sound_dir=OUT/"sounds"
     sound_dir.mkdir(parents=True,exist_ok=True)
     manifest={}
@@ -97,7 +102,7 @@ def generate():
                     w.writeframes(synthesize(ci,si))
                 dest=sound_dir/(name+".ogg")
                 subprocess.run([
-                    "ffmpeg","-hide_banner","-loglevel","error","-y","-i",str(wav),
+                    ffmpeg,"-hide_banner","-loglevel","error","-y","-i",str(wav),
                     "-c:a","libvorbis","-qscale:a","4",str(dest)
                 ],check=True)
                 if dest.stat().st_size<800:

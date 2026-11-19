@@ -33,13 +33,17 @@ jobs:
       - name: Install pinned Horizon mod tool if not cached
         if: steps.cached-tool.outputs.cache-hit != 'true'
         run: cargo install --locked --git https://github.com/horizon-rust/horizon --rev dd67b76ff23e28c6d8e21859df600d31572f81a0 cargo-horizon-mod
-      - name: Install free audio encoder (FFmpeg)
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
+      - name: Prepare pinned free OGG encoder
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: aetheria-horizon/preview-5spells-wasm/tools/audio-requirements.txt
+      - name: Install bundled FFmpeg wheel (no apt)
+        run: python3 -m pip install --quiet --disable-pip-version-check -r tools/audio-requirements.txt
       - name: Generate original licensed-free spatial sound stems
         run: |
-          ffmpeg -version | head -n 1
+          python3 -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())'
           python3 tools/generate_sound_assets.py
       - name: Compile prelinked WASM module and package
         run: cargo horizon-mod build --wasm
