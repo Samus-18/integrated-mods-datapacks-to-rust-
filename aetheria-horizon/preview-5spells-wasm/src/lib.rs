@@ -7,6 +7,7 @@ mod hero_vfx;
 mod catalog200;
 mod mass_forms;
 mod ultimate_forms;
+mod awakening_forms;
 #[cfg(test)]
 mod visual_audit;
 #[cfg(test)]
@@ -588,6 +589,13 @@ fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
 }
 
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
+    // All forty source-authored Awakening spells have their own additional
+    // spatial forms, not merely enlarged and recolored standard shapes.
+    if cast.kind<catalog200::SPELL_COUNT &&
+       (14..=17).contains(&catalog200::rank(cast.kind)) {
+        awakening_forms::render(cast,age,scene);
+        return;
+    }
     // The twenty ORIGINAL Ultimates each get an explicitly authored scene,
     // never a scaled-up generic standard spell or hollow ring.
     if cast.kind<catalog200::SPELL_COUNT && catalog200::rank(cast.kind)>=18 {
