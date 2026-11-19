@@ -197,3 +197,10 @@
 - Spatial Charge/Cast/Impact original audio now uses each spell's telegraph and cast duration for offsets, replacing fixed 9/18-tick cues. Added conservative animated surface material WGSL (UV/shimmer), with no claim of true HDR/refraction/bloom or GPU volumetric rays.
 - New preview unit tests verify finite bounded geometry at several moments, deterministic absence after the lifetime, individual rhythmic phase signatures, and geometrically different full world meshes for 30 spells **with all colors ignored**. CI workflow now attempts `cargo test --lib` after the pinned WASM build instead of treating successful compilation as sufficient. Specific GitHub workflow validation should be checked before a release.
 - M14 docs: `docs/M14_TEMPORAL_VFX.md`. Internal preview version 0.5.3. No user gameplay test requested. Real world damage/healing, spell acquisition, persistence, authoritative multiplayer, full GPU rendering and 100 finished spells are not yet implemented.
+
+### M14 automated validation — 2026-11-19
+
+- **WASM pinned SDK build and `cargo test --lib`: passed** — [GitHub Actions run 44565012790](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44565012790).
+- Newly enforced preview `cinematic_beams` geometry tests: **5 passed, 0 failed**, including unique full 3D meshes ignoring all RGB colors, phase signatures, finite coordinates and bounded lifetimes.
+- Validated compiled internal `Aetheria-Horizon-30Spells-WASM-v0.5.3-Internal` package, SHA-512, 30 OGG cues, WGSL and ZIP integrity. Core Rust tests also passed on commit `135b207d5c2db665469b4b0d784c38af7ccea782`: [core run 44565012649](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44565012649).
+- This does **not** prove the actual aesthetic result on the user's Horizon Nightly nor server effects, persisted world state or 100 integrated spells. No user-performed interim playtest requested.
