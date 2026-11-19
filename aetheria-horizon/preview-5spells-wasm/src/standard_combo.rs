@@ -144,25 +144,30 @@ fn shape(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
       }
     }
   },
- 108=>{ // BARKSKIN: actual articulated ribbed tree-bark armor, not a cube.
-    body(s,p(o,0.,1.45*g,0.),[0.67*g,0.97*g,0.48*g],
-        tint(c,0.53,0.91));
-    for side in [-1.,1.]{
-      for panel in 0..6{
-        let h=(0.4+panel as f64*0.33)*g;
-        let a=panel as f64*0.21+time*0.02;
-        let origin=p(o,side*(0.53+0.13*(panel%3) as f64)*g,h,
-                         (0.25+0.14*(panel%2) as f64)*g);
-        crystal(s,p(origin,0.,-0.35*g,0.),
-             p(origin,side*(0.14+0.10*a.sin())*g,
-                           0.38*g,0.14*g),
-             (0.36+0.04*(panel%3) as f64)*g,a,
-             tint(c,0.63+0.025*panel as f64,0.90));
-        if panel%2==0{
-          wing(s,p(origin,0.,0.05*g,0.),PI*0.38*side,
-             0.75*g,0.75*g,tint(c,0.83,0.84));
+ 108=>{ // BARKSKIN: interlocking angled bark ARMOR, no huge green brick.
+    // The first M25 image was an unreadable rectangular block.
+    body(s,p(o,0.,1.50*g,0.),[0.40*g,0.75*g,0.26*g],
+        tint(c,0.47,0.79));
+    for side in [-1.,1.] {
+      for panel in 0..7{
+        let h=(0.47+panel as f64*0.27)*g;
+        let width=(0.45+0.1*(panel%3) as f64)*g;
+        let root=p(o,side*0.27*g,h,0.10*g);
+        let tip=p(o,side*(0.73+0.12*(panel%3) as f64)*g,
+                h+0.39*g,(0.22+0.06*(panel%2) as f64)*g);
+        crystal(s,root,tip,width,side*0.25+time*0.01,
+              tint(c,0.65+0.032*(panel%5) as f64,0.91));
+        // Overlapping leaf-like plates complete a real joined body shell.
+        if panel%2==0 {
+          wing(s,p(tip,0.,-0.13*g,0.),side*PI*0.40,
+               (0.57+0.09*(panel%3) as f64)*g,
+               0.58*g,tint(c,0.80,0.76));
         }
       }
+      // Heavy asymmetrical wooden shoulder guard, not a thin stick.
+      body(s,p(o,side*0.73*g,2.23*g,-0.11*g),
+           [0.54*g,0.26*g,0.56*g],
+           tint(c,0.60,0.91));
     }
   },
  128=>{ // CHAIN ARC: physically branching thunder TREE, braided discharge.
@@ -182,21 +187,32 @@ fn shape(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
       wing(s,mid,a,0.72*g,0.55*g,tint(c,0.78,0.55));
     }
   },
- 148=>{ // WEIGHTLESS FIELD: broad folded levitation membranes and feathers.
-    // Three substantial fields leave budget for every drifting feather:
-    // six 80-face curtain bodies would silently clip them at 500 quads.
-    for plane in 0..3{
-      let a=TAU*plane as f64/3.+time*0.2;
-      curtain(s,p(o,0.,-0.25*g,0.),(1.5+0.15*plane as f64)*g,
-           (3.1+0.18*(plane%3) as f64)*g,age,a,
-           tint(c,0.56+0.02*plane as f64,0.25));
+ 148=>{ // WEIGHTLESS FIELD: levitating large FEATHERS + moving rocklets.
+    // Previous picture was a giant dark sack of folded cards. The actual
+    // main silhouette is now open anti-gravity air carrying distinct bodies.
+    for veil in 0..2 {
+      curtain(s,p(o,0.,-0.2*g,0.),
+             (1.50+0.25*veil as f64)*g,3.4*g,age,
+             veil as f64*1.83+time*0.22,
+             tint(c,0.71,0.10));
     }
-    for feather in 0..12{
-      let a=TAU*feather as f64/12.+time*0.43;
-      let radius=(0.5+0.19*(feather%6) as f64)*g;
-      let point=p(o,radius*a.cos(),(0.8+0.25*(feather%7) as f64)*g,
-                   radius*a.sin());
-      wing(s,point,a,0.48*g,0.56*g,tint(c,0.92,0.60));
+    for feather in 0..19 {
+      let a=TAU*feather as f64/19.+time*0.34;
+      let r=(0.64+0.18*(feather%5) as f64)*g;
+      let y=(0.6+0.30*(feather%8) as f64)*g;
+      let origin=p(o,r*a.cos(),y,r*a.sin());
+      let length=(0.68+0.10*(feather%4) as f64)*g;
+      let top=p(origin,0.23*a.cos()*g,0.7*g,0.23*a.sin()*g);
+      let mid=p(origin,0.30*a.cos()*g,0.42*g,0.30*a.sin()*g);
+      let side=[-a.sin()*0.31*g,0.05*g,a.cos()*0.31*g];
+      s.membrane(origin,add(mid,side),top,sub(mid,side),
+           tint(c,0.84+0.01*(feather%4) as f64,0.63));
+      if feather%3==0{
+         body(s,p(origin,0.,0.21*g,0.),
+               [0.16*g,0.18*g,0.18*g],
+               tint(c,0.59,0.68));
+      }
+      let _=length;
     }
   },
  168=>{ // STOLEN BREATH: time fractured into floating clock-plates.
