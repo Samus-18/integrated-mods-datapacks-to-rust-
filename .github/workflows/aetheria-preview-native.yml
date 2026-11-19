@@ -1,0 +1,27 @@
+name: Aetheria five-spell native SDK build
+on:
+  push:
+    paths:
+      - 'aetheria-horizon/preview-5spells/**'
+      - '.github/workflows/aetheria-preview-native.yml'
+  workflow_dispatch:
+jobs:
+  native-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: aetheria-horizon/preview-5spells
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install official mod building tool
+        run: cargo install --locked --git https://github.com/horizon-rust/horizon cargo-horizon-mod
+      - name: Compile preview against pinned Horizon SDK
+        run: cargo horizon-mod build
+      - name: Validate native package
+        run: cargo horizon-mod check target/horizon-mod/aetheria_preview.hmod
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aetheria-preview-5spells-native
+          path: aetheria-horizon/preview-5spells/target/horizon-mod/aetheria_preview.hmod

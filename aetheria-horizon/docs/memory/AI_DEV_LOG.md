@@ -58,3 +58,10 @@
 - Code commit `cec3131b3d9b2a13de8985a49d6276c5d8aafe02`: **39 passed, 0 failed** with `cargo test --all-targets`.
 - Updated compatibility research against current official Horizon: a native code mod uses a flat `.hmod`, pinned prebuilt SDK, `#[mod_api::horizon_mod]`, and `Hooks`/typed Host interfaces. Existing `horizon-mod.toml` remains a draft, not a tested installable mod; no real engine hooks or GPU backend have been wired.
 - Technical reference only: Orbital Laser historically used fork-specific WASM APIs; do not copy unsupported renderer hooks or sci-fi content.
+
+## M4 / 2026-11-19 — First five-spell native VISUAL test package
+- Added separate `preview-5spells/` source-native mod. Five distinct procedural 3D fantasy silhouettes rather than only circles/beams: Phoenix Garden, Glacier Cathedral, Living Worldroot, Thunder Wyrm, Astral Sunder.
+- Verified available Horizon APIs: `Registrar::register_key_mapping`, `ClientHost::consume_click`, `ClientHost::camera`, `Hooks::submit_custom_geometry`, `WorldQuad`, optional render pipeline WGSL fragment.
+- SDK pin `dd67b76ff23e28c6d8e21859df600d31572f81a0` has an official release; pinned mixins `e59da9094f0c2fdda6c627fe9eff22dec6a906f0` is checked against official Horizon source.
+- Preview triggers: Z/X/C/V/B, 8 active spell limit and 1,600 extra quad limit. No world edit/entity damage, no direct GLSL/Iris/OptiFine API or Sci-Fi weapons.
+- Source native hmod archive verified locally as safe ZIP; SDK compile and Minecraft 26.3 in-game test NOT performed at this milestone. A dedicated native CI workflow attempts to prove compatibility and emit an artifact.
