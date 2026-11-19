@@ -173,9 +173,10 @@ fn scene(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
               let a=0.67-0.13*k as f64;
               body(s,p(loc,0.,1.55*g,0.),
                     [0.60*g,1.26*g,0.42*g],tint(c,0.64,a));
-              orb(s,p(loc,0.,2.78*g,0.),
-                    [0.43*g,0.50*g,0.36*g],age,
-                    tint(c,0.78,0.42),0.42);
+              // Four 126-face sphere heads exhaust the per-spell draw budget.
+              // Keep the full ghost group with chunky original faceted skulls.
+              body(s,p(loc,0.,2.78*g,0.),
+                  [0.43*g,0.50*g,0.36*g],tint(c,0.78,0.50));
               wing(s,p(loc,0.,1.75*g,-0.12*g),PI*0.18,
                    1.04*g,1.42*g,tint(c,0.72,0.35));
           }
