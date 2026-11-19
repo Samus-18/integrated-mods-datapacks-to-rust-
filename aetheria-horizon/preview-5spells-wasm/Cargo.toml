@@ -9,6 +9,7 @@ name = "aetheria_preview"
 path = "src/lib.rs"
 
 [dependencies]
+aetheria-horizon-core = { path = ".." }
 horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
 
 [package.metadata.horizon]

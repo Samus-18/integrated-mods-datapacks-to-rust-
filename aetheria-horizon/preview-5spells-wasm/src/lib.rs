@@ -8,6 +8,7 @@ use mod_api::{
     WorldQuad, Identifier, CrosshairTarget, SoundPlay, SoundSource,
 };
 use std::{f64::consts::TAU, sync::Mutex};
+use aetheria_horizon::vfx::arcane_forms::{sculpt_school,Material as ArcaneMaterial};
 
 const MOD_ID: &str = "aetheria_preview";
 const IDS: [&str;5] = ["phoenix_garden", "glacier_cathedral", "worldroot", "thunder_wyrm", "astral_sunder"];
@@ -22,11 +23,11 @@ const CAST_SFX: [[&str;3];5] = [
     ["aetheria_preview:astral_charge","aetheria_preview:astral_cast","aetheria_preview:astral_impact"],
 ];
 const VARIANT_NAMES: [[&str;3];5] = [
-    ["Phoenix Garden", "Phoenix Wings", "Ember Cyclone"],
-    ["Glacier Cathedral", "Glacier Arches", "Frost Surge"],
-    ["Living Worldroot", "Living Cage", "Verdant Canopy"],
-    ["Thunder Wyrm", "Storm Antlers", "Storm Manta"],
-    ["Astral Sunder", "Void Blossom", "Fractured Stair"],
+    ["Phoenix Garden", "Phoenix Feather Form", "Ember Cyclone"],
+    ["Glacier Cathedral", "Glacial Eruption", "Frost Surge"],
+    ["Living Worldroot", "Ancient Worldroot", "Verdant Canopy"],
+    ["Thunder Wyrm", "Storm Wyvern", "Storm Manta"],
+    ["Astral Sunder", "Astral Shatter", "Fractured Stair"],
 ];
 
 #[derive(Clone, Copy)]
@@ -314,7 +315,74 @@ impl Scene {
     }
 }
 
+
+/// Convert a bounded world-space 3D mesh into actual Horizon's supported
+/// quad submissions. This is NOT GPU instancing: dense late-stage ultimates
+/// will need a verified, separate instanced renderer integration.
+fn render_portable_sculpt(cast:Cast,age:f64,scene:&mut Scene)->bool {
+    let school=match cast.kind {
+        0=>0,1=>1,2=>5,3=>6,4=>7,_=>return false
+    };
+    let Some(form)=sculpt_school(school,(age.max(0.).min(119.)) as u32,1) else {
+        return false;
+    };
+    let available=scene.budget.saturating_sub(scene.facets.len());
+    if available==0 {return true;}
+    let triangles=form.triangle_count();
+    if triangles==0{return false;}
+    // Keep silhouettes from every part visible, even if a large ritual
+    // has more triangles than the selected engine's per-frame quad limit.
+    let stride=(triangles+available-1)/available;
+    let mut index=0usize;
+    let sun=norm([0.45,0.85,0.30]);
+    for part in form.parts {
+        let rgb=match part.material {
+            ArcaneMaterial::Ember=>0x00FA7335,
+            ArcaneMaterial::Ice=>0x0075BEDB,
+            ArcaneMaterial::Wind=>0x00AEDADD,
+            ArcaneMaterial::Stone=>0x008A7D82,
+            ArcaneMaterial::Water=>0x00469ECF,
+            ArcaneMaterial::Wood=>0x00766E45,
+            ArcaneMaterial::Leaf=>0x0066BF79,
+            ArcaneMaterial::Lightning=>0x0091C9F5,
+            ArcaneMaterial::Rift=>0x006D5AAF,
+            ArcaneMaterial::Starlight=>0x00B6A2E7,
+            ArcaneMaterial::Brass=>0x00C2A260,
+            ArcaneMaterial::Bone=>0x00D5CBAA,
+            ArcaneMaterial::Soul=>0x00B9C3EB,
+        };
+        let alpha=((part.opacity * 195.0).clamp(0.0,195.0)).round() as u32;
+        let base=(alpha<<24)|rgb;
+        for tri in part.mesh.indices.chunks_exact(3) {
+            let selected=index%stride==0;
+            index+=1;
+            if !selected {continue;}
+            if scene.facets.len()>=scene.budget {return true;}
+            let p=|v:u32|->Option<[f64;3]>{
+                let x=part.mesh.vertices.get(v as usize)?.position;
+                Some(add(cast.center,[x[0] as f64,x[1] as f64,x[2] as f64]))
+            };
+            let (Some(a),Some(b),Some(c))=(p(tri[0]),p(tri[1]),p(tri[2])) else{
+                continue;
+            };
+            let normal=cross(sub(b,a),sub(c,a));
+            let nlen=length(normal);
+            if nlen<=0.000001 {continue;}
+            let diffuse=(normal[0]*sun[0]+normal[1]*sun[1]+normal[2]*sun[2]).abs()/nlen;
+            let shaded=shade_argb(base,0.47+0.48*diffuse);
+            // The duplicate last point produces a single triangular facet.
+            scene.quad([a,b,c,c],shaded);
+        }
+    }
+    true
+}
+
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
+    // Each spell's second visual profile uses actual closed index meshes
+    // sculpted by the portable ten-school geometry system, not flat blades.
+    // The engine's supported world-quad API receives one triangle as a
+    // three-corner quad (last corner repeated) with face-aware shading.
+    if cast.variant == 1 && render_portable_sculpt(cast,age,scene){return;}
     let t=(age/60.0).clamp(0.0,1.5);
     // Gradually reveal shape; fade begins late in its distinct lifetime.
     let grow=(age/12.0).clamp(0.0,1.0).powf(0.66);
