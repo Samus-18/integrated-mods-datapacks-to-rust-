@@ -168,3 +168,12 @@
 - Extended free synthesized SFX to 30 OGG events (ten schools × 3 stages), updated pinned WASM CI package validation to v0.5.0.
 - Found and repaired CI regressions: unused legacy five-school COLORS symbol and an outdated authority test expecting rank-three spells to remain unimplemented. Core+Rapier tests passed on `6f4d696`; latest WASM branch build must pass before manual test package is recommended.
 - World damage/healing, interactive unlocking, real loot, multiplayer sync and saved Horizon progression remain open work; 30 successful client VFX cannot be counted as 30 finished RPG spells.
+
+
+## 2026-11-19 — M13 reference preservation correction
+
+- The user explicitly pointed out that all four originally supplied video **attachments** should be archived, not just their verbal descriptions. Re-read the exact four re-uploaded MP4 files. Created sampled contact sheets and verified full H264/AAC metadata, lengths, bytes and SHA-256.
+- Saved four exact original MP4 files to persistent ChatGPT Library `/Aetheria Horizon/Reference Videos/Original Uploads/`, plus verified bundle `/Aetheria Horizon/Reference Videos/Aetheria_Original_4_Videos_References.zip`.
+- Added GitHub index `aetheria-horizon/references/original-videos/README.md` with per-file SHA, durations, distinguishing frames and accurate storage state. Updated `docs/VIDEO_REFERENCE_ANALYSIS.md` and `docs/memory/USER_LOG.md`.
+- The GitHub connector does **not** currently provide a binary file-upload bridge to local conversation attachments. **The four raw MP4s are not yet git blobs.** Persisted Library/ZIP are the fallback, not a false claim of full compliance. The next available binary-capable GitHub upload should place originals under `references/original-videos`, validate SHA and link commits.
+- VFX implications: restore volumetric 3D beams, sky-scale ritual choreography, physical irregular crystal structures, rift geometry and carefully shaded high-contrast effect phases; keep no sci-fi themes, no asset copying, and avoid user game tests until wanted.
