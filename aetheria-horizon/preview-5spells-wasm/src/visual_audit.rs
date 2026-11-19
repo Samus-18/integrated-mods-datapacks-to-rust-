@@ -147,7 +147,8 @@ fn visual_audit_silhouette_bounds_and_optional_svg_contact_sheets(){
             let stage=[Stage::Cast,Stage::Impact,Stage::Afterglow][stage_idx];
             let mut scene=Scene::new(900);
             super::render_spell(Cast{
-                kind:slot,variant:catalog30::rank(slot) as u8,
+                kind:(catalog30::id(slot)-1) as usize,
+                variant:catalog30::rank(slot) as u8,
                 start:0,center:[0.,64.,0.],direction:[0.,0.,1.]
             },age,&mut scene);
             assert!(!scene.facets.is_empty(),"empty spell id {} stage {:?}",slot,stage);
