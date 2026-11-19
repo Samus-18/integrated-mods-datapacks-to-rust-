@@ -95,7 +95,12 @@ fn export_svg(scene:&Scene,view:View,slot:usize,stage:Stage,age:f64,path:&Path)-
     }
     faces.sort_by(|a,b|b.depth.total_cmp(&a.depth));
     let mut svg=String::with_capacity(scene.facets.len()*130+3000);
-    let name=catalog30::spec(slot).name;
+    let (display_id,name)=if slot<30 {
+        (catalog30::id(slot),catalog30::spec(slot).name)
+    }else{
+        let global=slot-30;
+        (crate::catalog200::id(global),crate::catalog200::spec(global).name)
+    };
     write!(svg,"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"420\" height=\"370\" viewBox=\"0 0 420 370\">\n").unwrap();
     svg.push_str("<rect width=\"420\" height=\"370\" fill=\"#101926\"/>\n");
     svg.push_str("<rect x=\"10\" y=\"10\" width=\"400\" height=\"350\" rx=\"11\" fill=\"#142333\" stroke=\"#304556\"/>\n");
@@ -116,7 +121,7 @@ fn export_svg(scene:&Scene,view:View,slot:usize,stage:Stage,age:f64,path:&Path)-
                (a as f64/255.).min(0.86)).unwrap();
     }
     write!(svg,"<rect x=\"11\" y=\"11\" width=\"398\" height=\"41\" fill=\"#101926\" fill-opacity=\".90\"/>\n").unwrap();
-    write!(svg,"<text x=\"22\" y=\"30\" fill=\"#e7f4f6\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\">{:02}  {}</text>\n",slot+1,xml(name)).unwrap();
+    write!(svg,"<text x=\"22\" y=\"30\" fill=\"#e7f4f6\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\">{:03}  {}</text>\n",display_id,xml(name)).unwrap();
     write!(svg,"<text x=\"22\" y=\"46\" fill=\"#94c0ce\" font-family=\"monospace\" font-size=\"10\">{:?} @ {:04.1} ticks  |  {:.1} blocks  |  {} surfaces</text>\n",
         stage,age,span,scene.facets.len()).unwrap();
     svg.push_str("<text x=\"22\" y=\"346\" fill=\"#668899\" font-family=\"sans-serif\" font-size=\"10\">OFFSCREEN CPU GEOMETRY PROJECTION, NOT IN-GAME SCREENSHOT</text>\n</svg>\n");
@@ -182,5 +187,74 @@ fn visual_audit_silhouette_bounds_and_optional_svg_contact_sheets(){
         fs::write(dir.join("index.html"),html).unwrap();
         fs::write(dir.join("geometry_report.tsv"),tab).unwrap();
         println!("AETHERIA_VISUAL_AUDIT: wrote 180 visual SVGs, geometry_report.tsv and index.html");
+    }
+}
+
+#[test]
+fn extended_170_spells_have_two_angle_cast_and_impact_visual_audit(){
+    use aetheria_horizon::vfx::timeline::{for_spell,Stage};
+    use crate::catalog200;
+    let export=std::env::var_os("AETHERIA_VISUAL_AUDIT").is_some();
+    let dir=Path::new("target/visual-audit/extended");
+    if export {fs::create_dir_all(dir).expect("create extended audit");}
+    let views=[View::new([1.8,1.25,2.8]),
+               View::new([-2.3,1.75,1.1])];
+    let mut gallery=String::from("<!doctype html><meta charset='utf-8'><title>Aetheria 170 extended-form art review</title><style>body{background:#0c1420;color:#d2e3ec;font:14px sans-serif}section{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}img{width:100%}h2{margin:28px 10px 5px}</style><h1>170 first-draft geometry spell silhouettes</h1><p>NOT approved artwork, NOT a Horizon game screenshot. The goal is to identify generic or weak silhouettes for manual redesign.</p>");
+    let mut tab=String::from("id\tname\tstage\tview\tquads\tspan_blocks\tprojected_coverage\tdegenerate_fraction\n");
+    let mut checked=0;
+    for global in 0..200{
+        if catalog200::curated_slot(global).is_some(){continue;}
+        let spec=catalog200::spec(global);
+        let t=for_spell(spec.id).expect("200 timing contracts");
+        let fullname=xml(spec.name);
+        if export{write!(gallery,"<h2>{:03} {} — {:?}</h2><section>",
+                         spec.id,fullname,super::mass_forms::semantic_form(spec.mesh)).unwrap();}
+        for stage in [Stage::Cast,Stage::Impact]{
+            let age=(0..1040).map(|x|x as f64/10.0).find(|age|{
+                let current=*age/104.0*t.total_ticks() as f64;
+                let mut elapsed=0.0;
+                for p in t.phases {
+                    let limit=elapsed+p.duration_ticks as f64;
+                    if current<limit{
+                        return p.kind==stage && (current-elapsed)/p.duration_ticks as f64>=0.55;
+                    }
+                    elapsed=limit;
+                }
+                false
+            }).expect("expected stage midpoint");
+            let mut scene=Scene::new(500);
+            render_spell(Cast{kind:global,variant:catalog200::rank(global) as u8,
+                start:0,center:[0.,64.,0.],direction:[0.,0.,1.]},
+                age,&mut scene);
+            assert!(!scene.facets.is_empty(),"no geometry for spell {}",spec.id);
+            assert!(scene.facets.len()<=500);
+            for (view_id,view) in views.iter().copied().enumerate(){
+                let name=format!("spell_{:03}_{:?}_view{}.svg",spec.id,stage,view_id+1);
+                let dest=if export{dir.join(&name)}
+                    else{std::env::temp_dir().join(format!("aetheria_exp_{name}"))};
+                let r=export_svg(&scene,view,30+global,stage,age,&dest);
+                if !export{let _=fs::remove_file(&dest);}
+                assert!(r.degenerate<0.97,
+                    "spell {} still looks almost entirely like lines from angle {}",spec.id,view_id+1);
+                assert!(r.coverage>0.0001,
+                    "spell {} is nearly invisible from angle {}",spec.id,view_id+1);
+                assert!(r.range_y<75.);
+                if export{
+                    write!(gallery,"<img src='{name}' alt='{fullname} {:?} view {}'>",
+                          stage,view_id+1).unwrap();
+                    write!(tab,"{}\t{}\t{:?}\t{}\t{}\t{:.2}\t{:.6}\t{:.4}\n",
+                          spec.id,spec.name,stage,view_id+1,r.polygons,r.span,
+                          r.coverage,r.degenerate).unwrap();
+                }
+                checked+=1;
+            }
+        }
+        if export{gallery.push_str("</section>\n");}
+    }
+    assert_eq!(checked,680);
+    if export{
+        fs::write(dir.join("index.html"),gallery).unwrap();
+        fs::write(dir.join("geometry_report.tsv"),tab).unwrap();
+        println!("M20: rendered 680 additional preview views; ALL 170 are still DRAFT art");
     }
 }
