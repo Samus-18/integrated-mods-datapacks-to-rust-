@@ -551,6 +551,19 @@ fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
         // Draw this first so the school-wide sculpt cannot starve the magic
         // circle, physical beam, sky fracture or staggered impact of geometry.
         cinematic_beams::draw(cast,age,scene);
+        // The original five large sculpts support the physical cast/impact,
+        // not the anticipatory whisper or the fading afterimage.
+        let filled=matches!(
+            cinematic_beams::visual_phase(cast.kind,age),
+            Some((aetheria_horizon::vfx::timeline::Stage::Cast,_))
+                |Some((aetheria_horizon::vfx::timeline::Stage::Impact,_))
+        );
+        if !filled {return;}
+        // Cap legacy supporting geometry to ~one third of the remaining
+        // draw slots so the actual spell signature cannot be drowned out.
+        let original_limit=scene.budget;
+        let extra=original_limit.saturating_sub(scene.facets.len());
+        scene.budget=scene.facets.len().saturating_add(extra*34/100);
         let school=catalog30::school(cast.kind);
         let rank=catalog30::rank(cast.kind);
         if rank==0 {
@@ -568,6 +581,7 @@ fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
         } else {
             let _=render_portable_sculpt(cast,age,scene);
         }
+        scene.budget=original_limit;
         return;
     }
     // Each spell's second visual profile uses actual closed index meshes
