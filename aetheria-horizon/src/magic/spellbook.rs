@@ -15,6 +15,7 @@ impl Spellbook{
         Ok(Self{slots:vec![None;slots],selected:0,tier:1})
     }
     pub fn capacity(&self)->usize{self.slots.len()}
+    pub fn selected_index(&self)->usize{self.selected}
     pub fn selected_spell(&self)->Option<u16>{self.slots[self.selected]}
     pub fn slot(&self,index:usize)->Option<u16>{self.slots.get(index).copied().flatten()}
     pub fn select(&mut self,index:usize)->Result<(),BookError>{
