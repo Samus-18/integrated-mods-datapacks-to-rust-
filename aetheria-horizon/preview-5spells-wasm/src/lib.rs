@@ -2,6 +2,7 @@
 //! These are LOCAL client effects only; no server damage, block edits or claimed FPS.
 mod compact_ui;
 mod catalog30;
+mod cinematic_beams;
 use aetheria_horizon::ui::minimal_hud::QuickSelector;
 use catalog30::{SPELL_COUNT,DIRECT_SLOTS};
 use aetheria_horizon::core::player_data::PlayerMagic;
@@ -545,26 +546,28 @@ fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
 }
 
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
-    // Preserve the more legible hand-authored original five-spell silhouettes
-    // for the five direct hotkeys and the corresponding first school spells.
-    // The new school sculpt is used for the remaining curated actions.
-    let school=catalog30::school(cast.kind);
-    if catalog30::rank(cast.kind)==0 {
-        let grow=(age/12.0).clamp(0.0,1.0).powf(0.66);
-        match school {
-            0=>{phoenix_garden(cast.center,age,grow,scene);return;}
-            1=>{glacier_cathedral(cast.center,cast.direction,age,grow,scene);return;}
-            5=>{worldroot(cast.center,age,grow,scene);return;}
-            6=>{thunder_wyrm(cast.center,cast.direction,age,grow,scene);return;}
-            7=>{astral_sunder(cast.center,age,(age/60.0).clamp(0.,1.5),grow,scene);return;}
-            _=>{}
-        }
-    }
     if cast.kind<SPELL_COUNT {
-        // Every chosen spell draws ten-school closed volumetric geometry plus
-        // a rank-specific spatial motif. Never a single recolored beam.
-        let _=render_portable_sculpt(cast,age,scene);
-        render_spell_signature(cast,age,scene);
+        // Every curated ID gets its own world-space, temporal, 3D motif.
+        // Draw this first so the school-wide sculpt cannot starve the magic
+        // circle, physical beam, sky fracture or staggered impact of geometry.
+        cinematic_beams::draw(cast,age,scene);
+        let school=catalog30::school(cast.kind);
+        let rank=catalog30::rank(cast.kind);
+        if rank==0 {
+            // Preserve the strong five original spell silhouettes as a
+            // backdrop for the first school spell, with bounded geometry.
+            let grow=(age/12.0).clamp(0.0,1.0).powf(0.66);
+            match school {
+                0=>phoenix_garden(cast.center,age,grow,scene),
+                1=>glacier_cathedral(cast.center,cast.direction,age,grow,scene),
+                5=>worldroot(cast.center,age,grow,scene),
+                6=>thunder_wyrm(cast.center,cast.direction,age,grow,scene),
+                7=>astral_sunder(cast.center,age,(age/60.0).clamp(0.,1.5),grow,scene),
+                _=>{let _=render_portable_sculpt(cast,age,scene);}
+            };
+        } else {
+            let _=render_portable_sculpt(cast,age,scene);
+        }
         return;
     }
     // Each spell's second visual profile uses actual closed index meshes
