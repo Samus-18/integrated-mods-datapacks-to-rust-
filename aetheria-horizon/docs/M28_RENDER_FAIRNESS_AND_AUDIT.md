@@ -77,7 +77,7 @@ source-image and Windows runtime quality must be checked before approval.
 
 - Initial M27 internal pinned Horizon WASM: [44629836762](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44629836762), **28 passed**, 860 diagnostic views, ZIP/WGSL/30 OGG/SHA512 checks.
 - M28 introduced code commits `50e7a1f`, `141fae5`, `aa06755`, `b3c9d42`.
-- **M28 pinned WASM run:** [44632013016](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44632013016), initially pending/in progress. Check the final status and test counts before reporting green.
+- **M28 pinned WASM run:** [44632013016](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44632013016) — **SUCCESS: 31/31 Rust preview tests, 0 failures**, including three M28 fairness tests, the Bone Palisade face-headroom assertion, all M27 camera/shape and 200-route coverage gates; pinned Horizon WASM `.hmod` compiled, 860 CPU geometry audit projections exported, 30 generated OGG events, Naga WGSL checks, ZIP and SHA512 integrity verified. These checks do NOT establish Windows in-game visual quality or multiplayer gameplay.
 - No manual in-game testing or final release, by explicit user request.
 
 ## Highest-priority next steps
