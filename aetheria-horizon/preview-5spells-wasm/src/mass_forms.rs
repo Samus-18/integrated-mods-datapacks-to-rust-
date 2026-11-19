@@ -16,7 +16,8 @@ fn color(base:u32,a:f64,brightness:f64)->u32 {
 }
 #[derive(Clone,Copy,Debug,PartialEq,Eq)]
 pub enum Form{Crystal,Wave,Canopy,Beast,Armor,Architecture,Blade,
-             SkyRift,Avatar,Time,Cloud,Flora,Boulder,Phoenix,Artifact}
+             SkyRift,Avatar,Time,Cloud,Flora,Boulder,Phoenix,Artifact,
+             Glyph,Ribbon,Relic}
 /// Primary shape is selected from an authored mesh description, NOT school
 /// palette or a random hash. The ordering resolves overlapping descriptors.
 pub fn semantic_form(words:&str)->Form{
@@ -24,6 +25,9 @@ pub fn semantic_form(words:&str)->Form{
  let has=|tokens:&[&str]|tokens.iter().any(|t|w.contains(t));
  if has(&["dragon","serpent","wyrm","leviathan","manta","beast","skeleton guardian","knight","goat"]) {return Form::Beast}
  if has(&["feather","wing","phoenix","moth","bird"]){return Form::Phoenix}
+ if has(&["cord","thread","strand","tether","braid","chain","ribbon","whip","trail","twist"]){return Form::Ribbon}
+ if has(&["rune","sigil","glyph","tablet","gravestone","inscription","etch","mark"]){return Form::Glyph}
+ if has(&["bell","lantern","totem","idol","reliquary","altar","vessel","urn"]){return Form::Relic}
  if has(&["clock","time","hour","dial","pendulum","chron","sands","stopped"]){return Form::Time}
  if has(&["rift","portal","fracture","fractured sky","space","void","shadow tear","mirror"]) {return Form::SkyRift}
  if has(&["skull","ghost","spirit","humanoid","giant","hand","fist","gauntlet","claw"]){return Form::Avatar}
@@ -93,6 +97,52 @@ fn signature(scene:&mut Scene,form:Form,o:P,id:u16,age:f64,g:f64,c:u32){
  let height=(2.5+((id*13)%9) as f64*0.33)*g;
  let petals=4+(id as usize%5);
  match form {
+ Form::Glyph=>{
+   // Carved stone/metal RUNIC PLINTH: large solid body, engraved inset plates
+   // with readable negative-space relief rather than hollow glyph outlines.
+   solid(scene,pos(o,0.,height*0.45,0.),[extent*0.64,height*0.53,0.40*g],
+         f*0.013,color(c,0.92,0.77));
+   for i in 0..6{
+     let a=TAU*i as f64/6.0;
+     let r=extent*0.32;
+     solid(scene,pos(o,a.cos()*r,height*(0.51+a.sin()*0.22),
+                       0.42*g),
+           [0.10*g,height*0.13,0.08*g],a+f*0.013,color(c,0.80,0.98));
+   }
+ }
+ Form::Ribbon=>{
+   // Three BROAD woven magical bands with real membrane thickness and
+   // changing curvature; no laser rods or a single school-wide ring.
+   for band in 0..3 {
+     let twist=TAU*band as f64/3.+f*0.018;
+     let mut prev=pos(o,0.,0.2,0.);
+     for i in 0..10{
+       let t=(i+1) as f64/10.;
+       let angle=twist+t*TAU*1.1+age*0.025;
+       let r=extent*(0.16+t*0.65);
+       let nxt=pos(o,r*angle.cos(),height*t,r*angle.sin());
+       let side=[angle.sin(),0.,-angle.cos()];
+       let left=add(between(prev,nxt,0.66),scale(side,0.54*g));
+       let right=add(between(prev,nxt,0.66),scale(side,-0.54*g));
+       scene.membrane(prev,left,nxt,right,color(c,0.52,0.74));
+       prev=nxt;
+     }
+   }
+ }
+ Form::Relic=>{
+   // Suspended artifact with a closed solid bell/cup and heavy floating
+   // relief panels, not an orbital wire frame.
+   solid(scene,pos(o,0.,height*0.53,0.),[0.64*g,height*0.41,0.69*g],
+         f*0.017,color(c,0.82,0.72));
+   solid(scene,pos(o,0.,height*0.90,0.),[0.29*g,0.29*g,0.32*g],
+         f*0.017,color(c,0.96,0.92));
+   for i in 0..petals{
+     let a=TAU*i as f64/petals as f64+f*0.02;
+     let r=1.35*g;
+     solid(scene,pos(o,r*a.cos(),height*0.52,r*a.sin()),
+        [0.25*g,0.41*g,0.27*g],a,color(c,0.65,0.87));
+   }
+ }
  Form::Crystal=>{
     central_core(scene,o,id,g,color(c,0.91,0.95));
     for i in 0..petals{
@@ -337,6 +387,8 @@ mod tests{
      assert_eq!(semantic_form("towering ice cathedral ribs"),Form::Architecture);
      assert_eq!(semantic_form("interlocking suspended ice plates"),Form::Crystal);
      assert_eq!(semantic_form("unfolding flaming phoenix"),Form::Phoenix);
-     assert_eq!(semantic_form("carved gravestone glyph"),Form::Canopy);
+     assert_eq!(semantic_form("carved gravestone glyph"),Form::Glyph);
+     assert_eq!(semantic_form("braided crimson cord"),Form::Ribbon);
+     assert_eq!(semantic_form("vibrating spectral bell"),Form::Relic);
  }
 }
