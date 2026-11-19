@@ -1,5 +1,7 @@
 //! Aetheria Horizon first native/wasm visual preview. Five 3D fantasy spell shapes.
 //! These are LOCAL client effects only; no server damage, block edits or claimed FPS.
+mod compact_ui;
+use aetheria_horizon::ui::minimal_hud::{QuickSelector,QuickMove};
 use mod_api::{
     self, Hooks, Registrar, RegistrationContext, KeyRegistration, KeyConflictContext,
     ClientHost, ClientTickPostEvent, ClientSetupEvent, ClientResourcesReloadedEvent,
@@ -14,6 +16,9 @@ const MOD_ID: &str = "aetheria_preview";
 const IDS: [&str;5] = ["phoenix_garden", "glacier_cathedral", "worldroot", "thunder_wyrm", "astral_sunder"];
 const KEYS: [&str;5] = ["key.keyboard.z", "key.keyboard.x", "key.keyboard.c", "key.keyboard.v", "key.keyboard.b"];
 const NAMES: [&str;5] = ["Phoenix Garden", "Glacier Cathedral", "Living Worldroot", "Thunder Wyrm", "Astral Sunder"];
+// Internal visual preview only; the future authoritative RPG state is separate.
+const LOCAL_COST: [f32;5] = [18.0,24.0,15.0,26.0,28.0];
+const LOCAL_COOLDOWN: [u64;5] = [26,38,24,42,46];
 // Generated original OGG stems in assets/aetheria_preview/sounds/.
 const CAST_SFX: [[&str;3];5] = [
     ["aetheria_preview:phoenix_charge","aetheria_preview:phoenix_cast","aetheria_preview:phoenix_impact"],
@@ -33,7 +38,12 @@ const VARIANT_NAMES: [[&str;3];5] = [
 #[derive(Clone, Copy)]
 struct Cast { kind: usize, variant: u8, start: u64, center: [f64;3], direction: [f64;3] }
 #[derive(Default)]
-struct State { tick: u64, effects: Vec<Cast>, pipeline: Option<RenderPipelineRef>, last_cast: Option<usize>, last_variant: u8, variant_cycle: [u8; 5] }
+struct State {
+    tick:u64,effects:Vec<Cast>,pipeline:Option<RenderPipelineRef>,
+    last_cast:Option<usize>,last_variant:u8,variant_cycle:[u8;5],
+    quick:QuickSelector,show_constellation:bool,
+    local_mana:f32,local_cooldowns:[u64;5],
+}
 #[derive(Default)]
 struct Mod { state: Mutex<State> }
 
@@ -45,6 +55,20 @@ impl Hooks for Mod {
                 KeyRegistration::new(IDS[i], KEYS[i])
                     .context(KeyConflictContext::InGame)
                     .label(NAMES[i])
+                    .category("Aetheria magic")
+            );
+        }
+        for (id,key,label) in [
+            ("quick_picker","key.keyboard.r","Show compact spell picker"),
+            ("previous","key.keyboard.n","Previous Aetheria spell"),
+            ("next","key.keyboard.m","Next Aetheria spell"),
+            ("cast","key.keyboard.g","Cast selected Aetheria spell"),
+            ("constellation","key.keyboard.k","Open constellation preview"),
+        ] {
+            registrar.register_key_mapping(
+                KeyRegistration::new(id,key)
+                    .context(KeyConflictContext::InGame)
+                    .label(label)
                     .category("Aetheria magic")
             );
         }
@@ -74,10 +98,14 @@ impl Hooks for Mod {
                 if host.consume_click(MOD_ID, id) { pressed.push(i); }
             }
         }
-        let camera = if pressed.is_empty() { None } else { host.camera() };
+        let select_previous=playing && host.consume_click(MOD_ID,"previous");
+        let select_next=playing && host.consume_click(MOD_ID,"next");
+        let cast_selected=playing && host.consume_click(MOD_ID,"cast");
+        let toggle_constellation=playing && host.consume_click(MOD_ID,"constellation");
+        let camera = if pressed.is_empty() && !cast_selected {None}else{host.camera()};
         // Client-side surface target: makes the ice and roots grow out of a
         // real selected block rather than floating at the player's eye level.
-        let ground_target = if pressed.is_empty() { None } else {
+        let ground_target = if pressed.is_empty() && !cast_selected { None } else {
             match host.crosshair_target() {
                 Some(CrosshairTarget::Block { hit, .. }) if hit.face[1] > 0
                     && hit.point.iter().all(|v| v.is_finite()) => Some(hit.point),
@@ -88,10 +116,24 @@ impl Hooks for Mod {
         let mut queued_sounds: Vec<(usize,u8,[f64;3])> = Vec::new();
         if !playing {
             state.effects.clear();
+            state.show_constellation=false;
             return;
         }
-        state.tick = state.tick.saturating_add(1);
-        let now = state.tick;
+        state.tick=state.tick.saturating_add(1);
+        let now=state.tick;
+        if now==1 {state.local_mana=100.0;}
+        state.local_mana=(state.local_mana+0.24).min(100.0);
+        let book_slots=[Some(1_u16),Some(2),Some(3),Some(4),Some(5)];
+        if select_previous {
+            state.quick.move_selection(&book_slots,QuickMove::Previous,now);
+        }
+        if select_next {
+            state.quick.move_selection(&book_slots,QuickMove::Next,now);
+        }
+        if toggle_constellation {
+            state.show_constellation=!state.show_constellation;
+        }
+        if cast_selected { pressed.push(state.quick.selected.min(4)); }
         state.effects.retain(|c| now.saturating_sub(c.start) <= 104);
         if let Some(cam) = camera {
             let yaw = f64::from(cam.yaw).to_radians();
@@ -99,6 +141,14 @@ impl Hooks for Mod {
             let dir = [-yaw.sin()*pitch.cos(), -pitch.sin(), yaw.cos()*pitch.cos()];
             if cam.position.iter().all(|v| v.is_finite()) && dir.iter().all(|v| v.is_finite()) {
                 for kind in pressed {
+                    // Preview mana is client-local: NOT the future multiplayer
+                    // server authority, and never unlocks real world content.
+                    if state.local_mana<LOCAL_COST[kind]
+                        || now<state.local_cooldowns[kind] {continue;}
+                    state.local_mana-=LOCAL_COST[kind];
+                    state.local_cooldowns[kind]=now.saturating_add(LOCAL_COOLDOWN[kind]);
+                    state.quick.selected=kind;
+                    state.quick.open(now);
                     let center = if kind == 1 || kind == 2 {
                         ground_target.unwrap_or_else(|| {
                             let mut p = add(cam.position, scale(dir, 6.0));
@@ -168,14 +218,21 @@ impl Hooks for Mod {
         let _ = event.draw.quads(&quads);
     }
 
-    fn gui_render_post(&self, _: &dyn ClientHost, event: &mut GuiRenderPostEvent<'_>) {
-        if event.gui_hidden || !event.focused { return; }
-        event.batch.text("AETHERIA  |  Z Phoenix  X Glacier  C Worldroot  V Wyrm  B Rift",
-            [8.0, 9.0], 0xFFC9D5E9, true);
-        let state = self.state.lock().unwrap();
-        if let Some(last) = state.last_cast {
-            event.batch.text(VARIANT_NAMES[last][state.last_variant as usize], [8.0, 22.0], 0xFFE8C9FF, true);
-        }
+    fn gui_render_post(&self, host: &dyn ClientHost, event: &mut GuiRenderPostEvent<'_>) {
+        if event.gui_hidden || !event.focused {return;}
+        let state=self.state.lock().unwrap();
+        let chosen=state.quick.selected.min(4);
+        let open=host.is_down(MOD_ID,"quick_picker")
+            ||state.quick.visible(state.tick,false);
+        compact_ui::draw(host,event,compact_ui::UiView{
+            tick:state.tick,
+            chosen,
+            quick_open:open,
+            constellation:state.show_constellation,
+            mana:state.local_mana,
+            cooldowns:state.local_cooldowns,
+            cast_variant:state.last_variant,
+        });
     }
 }
 impl Mod {
