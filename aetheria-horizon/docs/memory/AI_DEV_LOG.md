@@ -185,3 +185,15 @@
 - Integrated in `preview-5spells-wasm/src/lib.rs` so 30 spell previews draw the distinct physical choreography **before** budget-hungry shared sculpt art; original five hand-authored spell silhouettes remain as a bounded backing layer for rank-one spells.
 - The same shared world quad budget still applies. This is not GPU raymarching, GPU instancing, world destructibility, player-authoritative damage, inventory unlocks or multiplayer correctness.
 - Updated internal preview package version to `0.5.2`, pinned build CI checks remain required. No request for player-performed intermediate test.
+
+
+## 2026-11-19 — M14 unique temporal VFX pass (prompt-grounded)
+
+- Before coding, consulted `docs/PROJECT_SPECIFICATION.md`, exact preserved phrases in `docs/memory/USER_LOG.md`, the four original video observation notes in `docs/VIDEO_REFERENCE_ANALYSIS.md`, and code of the pinned 0.5.2 Horizon renderer. Personal conversation context confirmed broad original-prompt constraints; the exact first master prompt text **could not be fully recovered** and remains honestly marked as a summary rather than a verbatim copy.
+- Added `docs/memory/ORIGINAL_PROMPT_VISUAL_REQUIREMENTS.md`, a direct-quote vs structured-summary distinction and mandatory pre-graphics-edit source list. Do not claim that a paraphrase is the original.
+- Extended `src/vfx/timeline.rs` from 20 to 30 first-three-spell timelines, each with unique four-stage durations and per-stage effect bounds. Static check detected a normalized identical rhythm for spell 1 and spell 61; made spell 61's choreography actually unique.
+- Upgraded `preview-5spells-wasm/src/cinematic_beams.rs`: `visual_phase` maps each individual spell's timeline to 104 bounded client ticks. Added distinct low-cost school/rank **telegraph volumes**, the full cast silhouette, school-aware impact shockwave, and fading spatial residuals; not mere constant geometry with differently tinted pixels.
+- Old five large supporting sculptures only render during the actual Cast and Impact windows and take at most 34% of leftover quad budget, preserving readable new volumetric silhouettes.
+- Spatial Charge/Cast/Impact original audio now uses each spell's telegraph and cast duration for offsets, replacing fixed 9/18-tick cues. Added conservative animated surface material WGSL (UV/shimmer), with no claim of true HDR/refraction/bloom or GPU volumetric rays.
+- New preview unit tests verify finite bounded geometry at several moments, deterministic absence after the lifetime, individual rhythmic phase signatures, and geometrically different full world meshes for 30 spells **with all colors ignored**. CI workflow now attempts `cargo test --lib` after the pinned WASM build instead of treating successful compilation as sufficient. Specific GitHub workflow validation should be checked before a release.
+- M14 docs: `docs/M14_TEMPORAL_VFX.md`. Internal preview version 0.5.3. No user gameplay test requested. Real world damage/healing, spell acquisition, persistence, authoritative multiplayer, full GPU rendering and 100 finished spells are not yet implemented.
