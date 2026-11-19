@@ -9,6 +9,9 @@ mod tests {
         // validation proves shader-language correctness and bounded-loop
         // design, NOT that the game exposes a full-screen post hook.
         let source=include_str!("../../native-gpu-vfx/aurora_volume.wgsl");
+        // Quality guard for the user's RX 580: a ray march must remain
+        // explicitly bounded until real GPU timing validates a larger cap.
+        assert!(source.contains("let steps=clamp(quality,6u,24u);"));
         let parsed=naga::front::wgsl::parse_str(source)
             .unwrap_or_else(|e|panic!(
                 "Aetheria experimental 3D raymarch parse error:\n{}",
