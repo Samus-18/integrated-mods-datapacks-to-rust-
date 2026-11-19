@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate original five-class/three-stage positional magic SFX.
+"""Generate original ten-school/three-stage positional magic SFX.
 
 No sampled, copyrighted or external material. Deterministic standard-library
 oscillator/noise synthesis then FFmpeg Vorbis encoding.
@@ -17,9 +17,9 @@ import json
 import argparse
 
 RATE=24000
-KINDS=("phoenix","glacier","worldroot","thunder","astral")
+KINDS=("phoenix","glacier","aero","geo","hydro","worldroot","thunder","astral","chrono","necro")
 STAGES=("charge","cast","impact")
-BASE=(95.0,220.0,108.0,62.0,52.0)
+BASE=(95.0,220.0,145.0,65.0,180.0,108.0,62.0,52.0,74.0,92.0)
 OUT=Path(__file__).resolve().parents[1]/"assets"/"aetheria_preview"
 TWO_PI=2*math.pi
 
@@ -48,9 +48,9 @@ def synthesize(kind:int,stage:int):
             phase_hi+=TWO_PI*f*2.01/RATE
             wave0=(math.sin(phase)*0.48+
                     math.sin(phase_hi+0.1*math.sin(7*t))*brightness*0.25+
-                    low_noise*(0.20 if kind==2 else 0.08))
+                    low_noise*(0.20 if kind==5 else 0.08))
             if kind==1: wave0+=0.1*math.sin(TWO_PI*(840*t+75*t*t))
-            if kind==3: wave0+=0.08*high*(0.5+0.5*math.sin(TWO_PI*23*t))
+            if kind==6: wave0+=0.08*high*(0.5+0.5*math.sin(TWO_PI*23*t))
         elif stage==1:  # cast: an acoustic attack, whoosh/chime/lightning burst
             f=base*(3.0+5.0*(1.0-p)**2)
             phase+=TWO_PI*f/RATE
@@ -58,9 +58,9 @@ def synthesize(kind:int,stage:int):
             wave0=0.20*math.sin(phase)+0.15*math.sin(phase_hi)+high*0.27
             if kind==0: wave0+=low_noise*1.8
             if kind==1: wave0+=0.20*math.sin(TWO_PI*(1400*t-560*t*t))
-            if kind==2: wave0+=0.21*math.sin(TWO_PI*(430*t+190*t*t))
-            if kind==3: wave0+=0.44*high*abs(math.sin(TWO_PI*37*t))
-            if kind==4: wave0+=0.19*math.sin(TWO_PI*(270*t+250*t*t))
+            if kind==5: wave0+=0.21*math.sin(TWO_PI*(430*t+190*t*t))
+            if kind==6: wave0+=0.44*high*abs(math.sin(TWO_PI*37*t))
+            if kind==7: wave0+=0.19*math.sin(TWO_PI*(270*t+250*t*t))
         else:  # impact: weight, brittle echoes and natural decays
             f=base*(0.86+0.06*math.exp(-t*6))
             phase+=TWO_PI*f/RATE
@@ -73,11 +73,16 @@ def synthesize(kind:int,stage:int):
                     envelope=math.exp(-delay*(15+transient*2))
                     tone=base*(5.2+transient*0.7+kind*0.15)
                     wave0+=0.12*envelope*math.sin(TWO_PI*tone*delay)
-                    if kind in (1,3):
+                    if kind in (1,6):
                         wave0+=0.11*envelope*high
             if kind==0: wave0+=0.18*low_noise*math.exp(-t*6)
-            if kind==2: wave0+=0.15*math.sin(TWO_PI*(174*t+12*t*t))*math.exp(-t*5)
-            if kind==4: wave0+=0.07*math.sin(TWO_PI*(73*t+11*t*t))
+            if kind==5: wave0+=0.15*math.sin(TWO_PI*(174*t+12*t*t))*math.exp(-t*5)
+            if kind==7: wave0+=0.07*math.sin(TWO_PI*(73*t+11*t*t))
+        if kind==2: wave0+=0.17*math.sin(TWO_PI*(340*t+240*t*t))*math.exp(-t*2.2)
+        if kind==3: wave0+=0.18*low_noise+0.08*math.sin(TWO_PI*73*t)
+        if kind==4: wave0+=0.11*math.sin(TWO_PI*(600*t+70*t*t))
+        if kind==8: wave0+=0.13*math.sin(TWO_PI*203*t*(1+0.12*math.sin(3*t)))
+        if kind==9: wave0+=0.17*low_noise-0.07*math.sin(TWO_PI*47*t)
         values.append(wave0*env)
     peak=max(max(abs(x) for x in values),0.001)
     factor=0.73/peak
