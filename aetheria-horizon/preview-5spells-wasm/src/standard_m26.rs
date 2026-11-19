@@ -145,18 +145,24 @@ fn scene(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
    }
    body(s,p(o,0.,-0.02*g,0.),[0.39*g,0.17*g,0.43*g],tint(c,0.85,0.76));
   },
- 110=>{ // MUSHROOM LANTERN: articulated stalk + thick luminescent fungus crown.
-   body(s,p(o,0.,1.3*g,0.),[0.40*g,1.36*g,0.41*g],tint(c,0.70,0.89));
-   for i in 0..11{
-    let a=TAU*i as f64/11.;
-    let at=p(o,1.34*g*a.cos(),2.45*g,1.34*g*a.sin());
-    wing(s,at,a+PI,(1.2+0.14*(i%3) as f64)*g,
-       0.68*g,tint(c,0.87,0.91));
-   }
-   for i in 0..7{
-    let a=TAU*i as f64/7.;
-    let at=p(o,1.05*g*a.cos(),1.47*g,1.05*g*a.sin());
-    crystal(s,at,p(at,0.,0.66*g,0.),0.23*g,a,tint(c,0.97,0.73));
+ 110=>{ // MUSHROOM LANTERN: broad domed cap and genuinely lit gills.
+   // More recognizably fungal than the initial flat rectangular cap.
+   body(s,p(o,0.,1.28*g,0.),[0.35*g,1.24*g,0.36*g],
+       tint(c,0.65,0.93));
+   for i in 0..12 {
+    let a=TAU*i as f64/12.;let b=TAU*(i+1) as f64/12.;
+    let rim=p(o,1.48*g*a.cos(),2.35*g,1.48*g*a.sin());
+    let rim2=p(o,1.48*g*b.cos(),2.35*g,1.48*g*b.sin());
+    let crown=p(o,0.30*g*a.cos(),3.32*g,0.30*g*a.sin());
+    let crown2=p(o,0.30*g*b.cos(),3.32*g,0.30*g*b.sin());
+    s.quad([rim,rim2,crown2,crown],
+       tint(c,0.59+0.03*(i%5) as f64,0.90));
+    let gill=p(o,1.18*g*a.cos(),2.14*g,1.18*g*a.sin());
+    s.membrane(p(o,0.,2.23*g,0.),gill,
+      rim,p(o,0.24*g*a.cos(),2.35*g,0.24*g*a.sin()),
+      tint(c,0.95,0.62));
+    crystal(s,gill,p(gill,0.,-0.32*g,0.),0.13*g,a,
+       tint(c,0.98,0.75));
    }
   },
  111=>{ // SAPLING CHAIN: branches connect five actual miniature grown trees.
@@ -198,15 +204,34 @@ fn scene(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
    crystal(s,p(o,0.,-0.28*g,0.),p(o,0.,3.15*g,0.),
       0.66*g,t,tint(c,0.91,0.97));
   },
- 150=>{ // ORBITING MOONS: 3 asymmetric closed lunar bodies, crater facets.
-   for i in 0..3{
+ 150=>{ // ORBITING MOONS: distinct CHIPPED CRESCENT moons, NOT spheres.
+   // A pair of thick curved overlapping 3D lunar faces gives each a dark
+   // open bite and a ridge; three bodies keep unique phases and heights.
+   for i in 0..3 {
     let a=TAU*i as f64/3.+t*0.29;
-    let at=p(o,2.18*g*a.cos(),(2.0+0.34*i as f64)*g,
-        2.18*g*a.sin());
-    orb(s,at,[(0.68+0.10*i as f64)*g,0.71*g,0.68*g],
-        age+i as f64*4.,tint(c,0.67+0.04*i as f64,0.82),0.79);
-    crystal(s,p(at,-0.18*g,-0.2*g,0.3*g),
-       p(at,0.30*g,0.42*g,0.22*g),0.22*g,a,tint(c,0.92,0.78));
+    let center=p(o,2.18*g*a.cos(),(2.0+0.34*i as f64)*g,
+       2.18*g*a.sin());
+    let size=(0.73+0.11*i as f64)*g;
+    for j in 0..6 {
+      let q=-PI*0.81+j as f64*PI*1.62/6.;
+      let b=-PI*0.81+(j+1) as f64*PI*1.62/6.;
+      let outer1=p(center,size*q.cos(),size*q.sin(),-0.31*g);
+      let outer2=p(center,size*b.cos(),size*b.sin(),-0.31*g);
+      let inner1=p(center,size*0.43*q.cos()+0.26*g,
+             size*0.43*q.sin(),0.23*g);
+      let inner2=p(center,size*0.43*b.cos()+0.26*g,
+             size*0.43*b.sin(),0.23*g);
+      s.quad([outer1,outer2,inner2,inner1],
+        tint(c,0.55+0.04*((j+i)%4) as f64,0.93));
+      s.quad([p(outer1,0.,0.,-0.30*g),p(outer2,0.,0.,-0.30*g),
+              outer2,outer1],tint(c,0.47,0.89));
+    }
+    for chip in 0..3{
+      let q=TAU*chip as f64/3.0+a;
+      let at=p(center,size*0.65*q.cos(),size*0.55*q.sin(),0.);
+      crystal(s,at,p(at,0.22*g*q.cos(),0.16*g,0.35*g),
+         0.17*g,q,tint(c,0.83,0.79));
+    }
    }
   },
  151=>{ // CONSTELLATION SNARE: 7 physical star shards connected by cloth planes.
@@ -235,20 +260,27 @@ fn scene(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
     }
    }
   },
- 171=>{ // TIMEGLASS SNARE: frozen arrow-shards inside two deep time funnels.
-   for i in 0..7{
-     let a=TAU*i as f64/7.;
-     let at=p(o,1.3*g*a.cos(),1.25*g,1.3*g*a.sin());
-     crystal(s,at,p(o,0.,3.6*g,0.),0.33*g,a,tint(c,0.66,0.65));
-     crystal(s,p(o,0.,3.6*g,0.),
-       p(o,1.1*g*a.cos(),5.4*g,1.1*g*a.sin()),
-       0.24*g,a,tint(c,0.89,0.72));
+ 171=>{ // TIMEGLASS SNARE: *solid glass chambers* and arrow stasis.
+   // Previous radiating spikes looked like crossed wooden sticks in audit.
+   for upper in [false,true] {
+      let h=if upper {5.2*g}else{1.2*g};
+      let waist=3.2*g;
+      for j in 0..10 {
+        let a=TAU*j as f64/10.;let b=TAU*(j+1) as f64/10.;
+        let edge1=p(o,1.15*g*a.cos(),h,1.15*g*a.sin());
+        let edge2=p(o,1.15*g*b.cos(),h,1.15*g*b.sin());
+        let neck1=p(o,0.22*g*a.cos(),waist,0.22*g*a.sin());
+        let neck2=p(o,0.22*g*b.cos(),waist,0.22*g*b.sin());
+        s.quad([edge1,edge2,neck2,neck1],
+          tint(c,0.65+0.025*(j%4) as f64,0.37));
+        crystal(s,edge1,neck1,0.11*g,a,tint(c,0.84,0.63));
+      }
    }
-   for i in 0..6{
+   for i in 0..6 {
     let a=TAU*i as f64/6.+t;
-    let at=p(o,0.89*g*a.cos(),2.8*g,0.89*g*a.sin());
-    crystal(s,p(at,-0.33*g,0.,0.),p(at,0.46*g,0.,0.),
-       0.20*g,a,tint(c,0.95,0.84));
+    let at=p(o,0.67*g*a.cos(),3.1*g,0.67*g*a.sin());
+    crystal(s,p(at,-0.36*g,0.,0.),
+       p(at,0.49*g,0.,0.),0.22*g,a,tint(c,0.95,0.83));
    }
   },
  190=>{ // CRIMSON POOL: dark 3D blood-crystal reservoir & submerged wedges.
