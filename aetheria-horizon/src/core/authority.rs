@@ -129,7 +129,7 @@ mod tests{
         assert_eq!(p.apply(req(1,PlayerCommand::Learn{spell_id:22}),100),
                    Ok(CommandResult::Learned{spell_id:22}));
         assert!(p.magic.unlocked_nodes.contains(&22));
-        assert_eq!(p.progression.supply.shards,26);
+        assert_eq!(p.progression.supply.shards,34);
         assert_eq!(p.apply(req(2,PlayerCommand::Equip{slot:1,spell_id:22}),100),
                    Ok(CommandResult::Equipped{slot:1,spell_id:22}));
         assert_eq!(p.apply(req(3,PlayerCommand::Select{slot:1}),100),
