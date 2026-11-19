@@ -28,3 +28,10 @@ User-confirmed Windows/Horizon 26.3 gameplay footage: all five effects appear at
 **Repeated casts cycle deterministically through 3 distinct shapes for each key.** For instance, Z cycles Phoenix Garden / Phoenix Wings / Ember Cyclone. Repeated X, C, V and B likewise cycle through their own three geometry variants. The default first press is the original shape; the second and third presses are the new alternatives.
 
 These are revised **visual** prototypes, not completed gameplay mechanics. Native physics, sounds, mana, cooldown, screen distortion and proper bloom remain future milestones. See `docs/memory/PLAYTEST_LOG.md` at repository root for captured evidence and outstanding tasks.
+
+## Verified release of v0.3.0
+
+- [GitHub Actions 44496889719](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44496889719): **success**, pinned Horizon SDK compilation, `mod.wasm` SHA512/manifest validation, integrity and artifact upload.
+- Output binary `aetheria_preview.hmod`: SHA256 `24d1f1c8e9ae35e88f52cb230a161919bfdda1bffabfa409ed1126b06ba0e3bd` (2,676,063 bytes).
+- This build includes the active **variant names** in HUD. Press the same spell key repeatedly to cycle variants.
+- User gameplay of this updated version still awaits a real in-game test; the previous v0.2.0 was visibly confirmed.
