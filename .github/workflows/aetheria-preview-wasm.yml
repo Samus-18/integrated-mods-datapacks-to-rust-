@@ -20,6 +20,10 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Install pinned Horizon mod tool
         run: cargo install --locked --git https://github.com/horizon-rust/horizon --rev dd67b76ff23e28c6d8e21859df600d31572f81a0 cargo-horizon-mod
+      - name: Install free audio encoder (FFmpeg)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
       - name: Generate original licensed-free spatial sound stems
         run: |
           ffmpeg -version | head -n 1
