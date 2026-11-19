@@ -228,6 +228,7 @@ mod tests{
     fn full_state(class:u8)->AuthoritativePlayer{
         let mut state=AuthoritativePlayer::new(class);
         state.book=Spellbook::new(6).unwrap();
+        state.book.equip(0,u16::from(class)*20+1,&state.magic).unwrap();
         let second=u16::from(class)*20+2;
         state.magic.unlock(second);
         state.magic.mana=23.75;
@@ -307,8 +308,17 @@ mod tests{
     #[test] fn invalid_payload_is_rejected_without_changing_active_player(){
         let mut p=full_state(1);
         let before=encode_snapshot(&p,1000).unwrap();
-        let damaged=before.replace("book_entries=21,22,0,0","book_entries=21,21,0,0");
-        assert!(decode_snapshot(&damaged,1000).is_err());
+        let damaged=before.replace("book_entries=21,22,0,0,0,0",
+                                   "book_entries=21,21,0,0,0,0");
+        assert_ne!(damaged,before);
+        // Recompute the integrity check: rejection must come from the
+        // duplicate equipped spell, not just the modified checksum.
+        let lines=damaged.lines().collect::<Vec<_>>();
+        let payload=lines[..lines.len()-1].join("\n")+"\n";
+        let valid_hash_but_invalid_book=format!(
+            "{}checksum={:016x}\n",payload,checksum(payload.as_bytes()));
+        assert_eq!(decode_snapshot(&valid_hash_but_invalid_book,1000).err(),
+                   Some(SnapshotError::BadField("book_entries")));
         assert_eq!(encode_snapshot(&p,1000).unwrap(),before);
     }
     #[test] fn past_cooldowns_are_not_persisted(){
