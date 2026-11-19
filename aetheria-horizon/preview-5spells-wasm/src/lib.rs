@@ -3,6 +3,8 @@
 mod compact_ui;
 mod catalog30;
 mod cinematic_beams;
+#[cfg(test)]
+mod visual_audit;
 use aetheria_horizon::ui::minimal_hud::QuickSelector;
 use catalog30::{SPELL_COUNT,DIRECT_SLOTS};
 use aetheria_horizon::core::player_data::PlayerMagic;
