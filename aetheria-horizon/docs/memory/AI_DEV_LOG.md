@@ -158,3 +158,13 @@
 - [**GitHub Actions 44533426370**](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44533426370): **SUCCESS** — both standalone Rust RPG core and native Rapier3D physics tests green.
 - The user's requested **fantasy reskin of the vanilla HP/armor hearts and armor icons** remains **unfinished**. Real vanilla values remain visible; the internal quick-picker optionally prints their genuine readings. `health_hud` can replace the entire layer but must recreate hearts, armor, food and air rather than silently removing them.
 - This CI validates compilation/packaging and standalone physics tests, **not** screenshot fidelity, client FPS, world-collision integration, multiplayer progression, or a 100-spell complete release. M100 remains **0 / 100 fully verified** end-to-end until those systems truly work together.
+
+
+### 2026-11-19 — M12 experimental 30-spell test (user explicitly requested)
+- Created branch `aetheria-30-spell-test` to keep the last 5-spell preview safe on `main`.
+- Added `preview-5spells-wasm/src/catalog30.rs`, mapping all 10 schools × first 3 spells to the original 200-entry core registry. 30 selectable spell identities, 10 distinct base 3D sculptures and three rank-specific solid world-space motifs per school.
+- Client control integration: hold R + wheel, N/M, cast G, constellation K, Z/X/C/V/B direct five-school starters; visible selected name, palette, 5-neighbor selector, mana, cooldown and real vanilla vital bars.
+- Client casts now use the shared `magic::casting::cast` logic with a deliberately permissive client-only training inventory; no fake server-authoritative claims. New portable action intents for third spells: Magma Lash, Shard Chorus, Updraft Well, Gravel Jaws, Pearl Shield, Moss Mend, Thunder Needle, Blink Fold, Tick Pulse, Grave Whisper.
+- Extended free synthesized SFX to 30 OGG events (ten schools × 3 stages), updated pinned WASM CI package validation to v0.5.0.
+- Found and repaired CI regressions: unused legacy five-school COLORS symbol and an outdated authority test expecting rank-three spells to remain unimplemented. Core+Rapier tests passed on `6f4d696`; latest WASM branch build must pass before manual test package is recommended.
+- World damage/healing, interactive unlocking, real loot, multiplayer sync and saved Horizon progression remain open work; 30 successful client VFX cannot be counted as 30 finished RPG spells.
