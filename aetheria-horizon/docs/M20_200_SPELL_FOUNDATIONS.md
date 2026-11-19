@@ -40,3 +40,11 @@ Do **not** take the expanded internal `.hmod` and call it a multiplayer gameplay
 - Core portable test suite **SUCCESS** on the 200-intent branch, e.g. [run 44604619021](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44604619021), with 200 defined costs/cooldowns/cast-intent tests. The 170 DesignIntent actions are intentionally rejected by server-side world adapter.
 - Latest M21 pinned WASM compilation **SUCCESS**: [run 44605922355](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44605922355), **15/15** preview tests, complete 860-source-view diagnostic gallery and .hmod package valid. No game-world functionality was validated in Horizon.
 - 20 Ultimates now use manual large-form routines, and 5 visibly weak ones had specific source-led second-pass silhouette changes. Read [M21 art direction](M21_ULTIMATE_ART_DIRECTION.md). These remain UNAPPROVED artistically.
+
+
+## M22 added individual Awakening signatures
+
+- All **forty** role=`Awakening` (four per class) now have their own source-named 3D spatial composition in `preview-5spells-wasm/src/awakening_forms.rs`. These are **not** merely enlarged versions of the generic 110 Standard drafts. Details in `docs/M22_AWAKENING_SCULPTS.md`.
+- Current client visual mix: **30** previously bespoke spell profiles (three per class), **110** Standard *semantic rough drafts* (eleven more per class), **40** per-ID Awakening drafts and **20** per-ID Ultimate drafts = **200 identifiable locally previewable spell visual forms**. This arithmetic counts draft visual layouts, **NOT 200 polished cinematic effects**.
+- Quality review already detected overlapping template geometry for Diamondheart vs Gemheart Armor vs Crimson Aegis; adjusted the latter two to distinct actual physical forms rather than skin swaps. Eidolon Procession now depicts all five individual ghost guards with a compact triangle/box geometry budget, rather than truncating the third guard due to a huge mesh.
+- No new world mechanics and no real multiplayer claims. End-user request remains "no slop," so all added 170 must still pass individual art review plus verified engine GPU lighting before release.
