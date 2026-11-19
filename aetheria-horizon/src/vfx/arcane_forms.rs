@@ -363,10 +363,12 @@ pub fn sculpt_school(class_id:u8,elapsed_ticks:u32,quality:u8)->Option<ArcaneFor
             let mut widths=Vec::new();
             for k in 0..=25 {
                 let t=k as f32/25.;
-                path.push([(3.2*t+elapsed_ticks as f32*0.014).sin()*(1.4+0.4*t),
-                           1.4+2.5*t+0.5*(9.*t+elapsed_ticks as f32*0.02).sin(),
-                           8.*t-3.]);
-                widths.push((0.48*(1.-t)+0.12).max(0.04));
+                path.push([
+                    (3.2*t+elapsed_ticks as f32*0.014).sin()*(1.4+0.4*t)*grow,
+                    (1.4+2.5*t+0.5*(9.*t+elapsed_ticks as f32*0.02).sin())*grow,
+                    (8.*t-3.)*grow
+                ]);
+                widths.push((0.48*(1.-t)+0.12)*grow.max(0.08));
             }
             add_limb(&mut form,&path,&widths,Material::Water,fade*0.79,0.45);
             for k in (4..25).step_by(3) {
