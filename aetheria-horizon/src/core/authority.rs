@@ -183,8 +183,8 @@ mod tests{
     #[test]
     fn no_unimplemented_spell_action_can_spend_mana(){
         let mut p=AuthoritativePlayer::new(0);
-        p.magic.unlock(3);
-        p.book.equip(1,3,&p.magic).unwrap();
+        p.magic.unlock(4);
+        p.book.equip(1,4,&p.magic).unwrap();
         p.apply(req(1,PlayerCommand::Select{slot:1}),15).unwrap();
         assert_eq!(p.apply(req(2,PlayerCommand::Cast{charge:1.0}),15),
                    Err(CommandError::Cast(CastError::NotYetImplemented)));
