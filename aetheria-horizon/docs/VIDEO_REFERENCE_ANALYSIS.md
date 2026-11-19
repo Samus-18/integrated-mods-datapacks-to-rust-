@@ -20,3 +20,19 @@ Reopened all four actual uploaded videos for further frame references, sampled e
 - **Download (6), 40.10 s:** violet/blue crystalline structures appear as substantial masses against a dark world, then flare brightly. Translate to closed multi-sided ice/astral crystals with colored facet shading and staggered growth; avoid pure white overexposure.
 
 All ten class sculpture prototypes and 20 camera-intent paths use this **art direction** but do not themselves prove fidelity to those clips. Actual in-game comparatives wait until M100 per user's requested testing gate.
+
+
+## 2026-11-19 — Re-uploaded ORIGINAL videos examined again and archived
+
+The user re-uploaded all **four original MP4s**: `Download (3).mp4`, `Download (4).mp4`, `Download (5).mp4`, `Download (6).mp4`. Every file was opened and eight time-spaced frames sampled. Full files' dimensions, durations, byte sizes and SHA-256 are recorded in [original-video reference archive index](../references/original-videos/README.md). **The four byte-exact files and a 40.5 MB ZIP were saved to ChatGPT Library** at `/Aetheria Horizon/Reference Videos/`. The GitHub repo presently stores this analysis and checksum manifest only; original video binaries are not in GitHub because the available connector cannot transfer them. Do not write that the actual videos are version-controlled until their git blobs exist.
+
+New observations from the actual re-uploaded files (not inferred from their names):
+
+| Source | Sampled moments | Visible evidence | Original Aetheria rendering target |
+| --- | --- | --- | --- |
+| Download (3) | 1.7, 5.1, 8.6, 12, 18.8, 22.2, 25.7s | Aerial green/gold concentrated vertical pillar above landscape, then luminous ritual circle and violet/gold blast | World-scaled fantasy ritual cylinder; visible solid-sided beam and tapered interior, ground-based ring, subdued pale core |
+| Download (4) | 3.6, 10.9, 18.1, 25.4, 32.6, 39.9, 47.1s | Blue sky subdivided by radial cracks around a dark oval aperture, falling dark fragments, haze and large crater aftermath | Volumetric multi-ring rift rim, original crack branching and spatial rock fragments; no permanent terrain destruction in client VFX |
+| Download (5) | 9.4, 28.3, 47.1, 65.9, 84.8, 103.6, 122.5, 141.3s | Expansive landscape strikes and debris, heavy dust, bright magenta/violet circular formation and later molten light | Choreography with strong anticipation, spatial hit pulse, sustained world-scale atmospheric veil and fiery afterglow |
+| Download (6) | 2.5, 7.5, 12.5, 17.5, 22.6, 27.6, 32.6, 37.6s | Luminous tall teal/purple 3D crystal columns spreading from ground, then larger crystal field | Multi-sided solid crystals with stepped timing, non-uniform heights, surfaces shaded by orientation and low-overexposure glow |
+
+These are references, not permission to bundle third-party footage in the shipped mod or clone copyrighted visuals. Continue with original code/meshes and the existing pinned Horizon mod API; no unsupported bloom/GPU claims. Explicit user preference: no more user-performed intermediate playtesting, keep developing and compiling in GitHub.
