@@ -147,10 +147,10 @@ pub fn draw(host:&dyn ClientHost,e:&mut GuiRenderPostEvent<'_>,view:UiView) {
     // Do not replace vanilla health/armor with client-guesstimated values.
     // Real health/armor are read only for an expanded menu status line.
     if view.quick_open {
-        if let Some(player)=host.local_player() {
-            let health=player.health(host);
-            let max=player.living().max_health(host);
-            let armor=player.living().attribute_value(host,"minecraft:armor");
+        if let Some(living)=host.local_player().and_then(|p|host.living(p.entity())) {
+            let health=living.health(host);
+            let max=living.max_health(host);
+            let armor=living.attribute_value(host,"minecraft:armor");
             if let (Some(hp),Some(total),Some(defense))=(health,max,armor) {
                 if hp.is_finite()&&total.is_finite()&&defense.is_finite() {
                     let label=format!("HP {:.0}/{:.0}  ARMOR {:.0}",hp,total,defense);
