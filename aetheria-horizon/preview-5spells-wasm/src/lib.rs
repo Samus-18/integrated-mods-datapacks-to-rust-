@@ -568,9 +568,10 @@ fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
         // Draw this first so the school-wide sculpt cannot starve the magic
         // circle, physical beam, sky fracture or staggered impact of geometry.
         cinematic_beams::draw(cast,age,scene);
-        // Blink Fold is a FULL SURFACE-COMPOSED 3D spell. Do not layer the
-        // old school sculpt made from sticks/circles on top of its curtain.
-        if cast.kind==23 {return;}
+        // Gravity Thread, Blink Fold and the three Chronomancer spells
+        // are now explicitly FULL SURFACE-COMPOSED meshes, not outlines.
+        // Never overlay their old generic school rods/circles afterwards.
+        if (22..=26).contains(&cast.kind) {return;}
         // The original five large sculpts support the physical cast/impact,
         // not the anticipatory whisper or the fading afterimage.
         let filled=matches!(
