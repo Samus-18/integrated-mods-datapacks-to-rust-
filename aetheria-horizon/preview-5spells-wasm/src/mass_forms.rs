@@ -27,7 +27,6 @@ pub fn semantic_form(words:&str)->Form{
  if has(&["feather","wing","phoenix","moth","bird"]){return Form::Phoenix}
  if has(&["cord","thread","strand","tether","braid","chain","ribbon","whip","trail","twist"]){return Form::Ribbon}
  if has(&["rune","sigil","glyph","tablet","gravestone","inscription","etch","mark"]){return Form::Glyph}
- if has(&["bell","lantern","totem","idol","reliquary","altar","vessel","urn"]){return Form::Relic}
  // Specific phrases in the actual 200-entry authored mesh catalog.
  // Never silently classify an unknown source silhouette as the same canopy!
  if has(&["ash cloak","rolling avalanche","refractive veil","wind torus",
@@ -48,6 +47,7 @@ pub fn semantic_form(words:&str)->Form{
  if has(&["clock","time","hour","dial","pendulum","chron","sands","stopped"]){return Form::Time}
  if has(&["rift","portal","fracture","fractured sky","space","void","shadow tear","mirror"]) {return Form::SkyRift}
  if has(&["skull","ghost","spirit","humanoid","giant","hand","fist","gauntlet","claw"]){return Form::Avatar}
+ if has(&["bell","lantern","totem","idol","reliquary","altar","vessel","urn"]){return Form::Relic}
  if has(&["flower","bloom","root","tree","vine","canopy","petal","lily","garden","leaf","branch"]){return Form::Flora}
  if has(&["water","wave","tide","river","current","whirl","surge","crest","flow","splash","fountain"]){return Form::Wave}
  if has(&["cloud","smoke","mist","fog","hurricane","storm","vortex","tornado","funnel","cyclone","pressure"]){return Form::Cloud}
