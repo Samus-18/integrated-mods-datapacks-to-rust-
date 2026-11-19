@@ -7,6 +7,7 @@ use mod_api::{
     ClientHost, ClientTickPostEvent, ClientSetupEvent, ClientResourcesReloadedEvent,
     SubmitCustomGeometryEvent, GuiRenderPostEvent, RegisterRenderPipelinesEvent,
     RenderPipeline, RenderPipelineRef, PipelineBlend, PipelineQuad, WorldDepth,
+    MouseScrollingEvent, Flow,
     WorldQuad, Identifier, CrosshairTarget, SoundPlay, SoundSource,
 };
 use std::{f64::consts::TAU, sync::Mutex};
@@ -117,6 +118,10 @@ impl Hooks for Mod {
         if !playing {
             state.effects.clear();
             state.show_constellation=false;
+            state.local_mana=100.0;
+            state.local_cooldowns=[0;5];
+            state.quick=QuickSelector::default();
+            state.tick=0;
             return;
         }
         state.tick=state.tick.saturating_add(1);
@@ -133,7 +138,8 @@ impl Hooks for Mod {
         if toggle_constellation {
             state.show_constellation=!state.show_constellation;
         }
-        if cast_selected { pressed.push(state.quick.selected.min(4)); }
+        if state.show_constellation {pressed.clear();}
+        else if cast_selected {pressed.push(state.quick.selected.min(4));}
         state.effects.retain(|c| now.saturating_sub(c.start) <= 104);
         if let Some(cam) = camera {
             let yaw = f64::from(cam.yaw).to_radians();
@@ -148,7 +154,6 @@ impl Hooks for Mod {
                     state.local_mana-=LOCAL_COST[kind];
                     state.local_cooldowns[kind]=now.saturating_add(LOCAL_COOLDOWN[kind]);
                     state.quick.selected=kind;
-                    state.quick.open(now);
                     let center = if kind == 1 || kind == 2 {
                         ground_target.unwrap_or_else(|| {
                             let mut p = add(cam.position, scale(dir, 6.0));
@@ -181,6 +186,24 @@ impl Hooks for Mod {
                 let _=host.play_local_sound(&play,offset);
             }
         }
+    }
+
+    fn mouse_scrolling(&self, host: &dyn ClientHost, event: &mut MouseScrollingEvent<'_>) -> Flow {
+        // Real Iron-like alternative: hold R, turn the mouse wheel to select
+        // a spell, cancel the corresponding vanilla hotbar scroll only then.
+        if !host.playing() || !host.is_down(MOD_ID, "quick_picker") {
+            return Flow::Continue;
+        }
+        let steps=event.accumulated[1];
+        if steps==0 {return Flow::Continue;}
+        let mut state=self.state.lock().unwrap();
+        let slots=[Some(1_u16),Some(2),Some(3),Some(4),Some(5)];
+        let direction=if steps>0 {QuickMove::Previous}else{QuickMove::Next};
+        let now=state.tick;
+        for _ in 0..steps.unsigned_abs().min(8) {
+            state.quick.move_selection(&slots,direction,now);
+        }
+        Flow::Cancel
     }
 
     fn submit_custom_geometry(&self, _: &dyn ClientHost, event: &mut SubmitCustomGeometryEvent<'_>) {
