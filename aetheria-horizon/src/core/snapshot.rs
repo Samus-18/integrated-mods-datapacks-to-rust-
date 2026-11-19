@@ -227,6 +227,7 @@ mod tests{
                 magic::spellbook::ArcaneIngredients};
     fn full_state(class:u8)->AuthoritativePlayer{
         let mut state=AuthoritativePlayer::new(class);
+        state.book=Spellbook::new(6).unwrap();
         let second=u16::from(class)*20+2;
         state.magic.unlock(second);
         state.magic.mana=23.75;
@@ -262,7 +263,7 @@ mod tests{
             assert_eq!(q.progression.completed_trials,p.progression.completed_trials);
             assert_eq!(q.progression.supply.shards,216);
             assert_eq!(q.book.tier,3);
-            assert_eq!(q.book.capacity(),4);
+            assert_eq!(q.book.capacity(),6);
             assert_eq!(q.book.selected_spell(),Some(u16::from(class)*20+2));
             assert_eq!(q.book.selected_index(),1);
             assert!(bytes.len()<MAX_BYTES);

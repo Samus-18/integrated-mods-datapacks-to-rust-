@@ -48,8 +48,17 @@ impl InscriptionTable{
         if inventory.scrolls<cost_scrolls||inventory.crystals<cost_crystals{
             return Err(BookError::InsufficientMaterials);
         }
-        inventory.scrolls-=cost_scrolls;inventory.crystals-=cost_crystals;
-        book.tier+=1;Ok(())
+        // Tier I..V grows a standard book from 4 to 8 available spell slots.
+        // A custom larger book is never shrunk by this upgrade.
+        let next_tier=book.tier+1;
+        let next_capacity=usize::from(next_tier)+3;
+        inventory.scrolls-=cost_scrolls;
+        inventory.crystals-=cost_crystals;
+        book.tier=next_tier;
+        if book.capacity()<next_capacity {
+            book.slots.resize(next_capacity,None);
+        }
+        Ok(())
     }
 }
 #[cfg(test)]mod tests {
@@ -73,7 +82,11 @@ impl InscriptionTable{
     assert_eq!(InscriptionTable::upgrade(&mut b,&mut inv),Err(BookError::InsufficientMaterials));
     assert_eq!(b.tier,1);assert_eq!(inv.crystals,10);
     inv.scrolls=15;inv.crystals=100;
-    for target in 2..=5 {InscriptionTable::upgrade(&mut b,&mut inv).unwrap();assert_eq!(b.tier,target);}
+    for target in 2..=5 {
+        InscriptionTable::upgrade(&mut b,&mut inv).unwrap();
+        assert_eq!(b.tier,target);
+        assert_eq!(b.capacity(),usize::from(target)+3);
+    }
     assert_eq!(InscriptionTable::upgrade(&mut b,&mut inv),Err(BookError::MaxTier));
  }
 }
