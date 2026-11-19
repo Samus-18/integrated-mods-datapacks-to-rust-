@@ -8,7 +8,7 @@
 //! It is not a server plugin or completed multiplayer integration yet.
 use super::player_data::PlayerMagic;
 use crate::magic::{
-    casting::{cast,CastError,CastResult},
+    casting::{cast,world_adapter_ready,CastError,CastResult},
     progression::{PlayerProgression,LearnError},
     spellbook::{Spellbook,BookError},
 };
@@ -101,6 +101,12 @@ impl AuthoritativePlayer {
             }
             PlayerCommand::Cast{charge}=>{
                 let id=self.book.selected_spell().ok_or(CommandError::EmptySlot)?;
+                // The added 170 names have original mechanical plans and
+                // client-only cast intents, NOT server-side effects. The
+                // authoritative path must reject them before spending mana.
+                if !world_adapter_ready(id) {
+                    return Err(CommandError::Cast(CastError::NotYetImplemented));
+                }
                 let result=cast(&mut self.magic,id,tick,charge)
                     .map_err(CommandError::Cast)?;
                 Ok(CommandResult::Cast(result))
