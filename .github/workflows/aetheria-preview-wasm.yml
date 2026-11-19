@@ -1,4 +1,7 @@
-name: Aetheria five-spell PRECOMPILED WASM release
+name: Aetheria internal 3D and original SFX WASM CI
+concurrency:
+  group: aetheria-wasm-internal-main
+  cancel-in-progress: true
 on:
   push:
     paths:
@@ -18,7 +21,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - name: Install pinned Horizon mod tool
+      - name: Restore pinned mod compiler cache
+        id: cached-tool
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/cargo-horizon-mod
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: aetheria-horizon-mod-tool-dd67b76-v1-linux
+      - name: Install pinned Horizon mod tool if not cached
+        if: steps.cached-tool.outputs.cache-hit != 'true'
         run: cargo install --locked --git https://github.com/horizon-rust/horizon --rev dd67b76ff23e28c6d8e21859df600d31572f81a0 cargo-horizon-mod
       - name: Install free audio encoder (FFmpeg)
         run: |
