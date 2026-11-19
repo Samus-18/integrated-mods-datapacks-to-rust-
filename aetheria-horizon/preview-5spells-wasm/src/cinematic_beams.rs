@@ -509,6 +509,29 @@
          }
          return;
      }
+     // Four more massive 3D silhouettes also own their ENTIRE life cycle.
+     // Do not generate old generic thin telegraph rings or impact circles.
+     if (school,rank)==(7,1) || school==8 {
+         let grow=match scene_phase {
+             Stage::Telegraph=>0.18+progress*0.35,
+             Stage::Cast=>0.48+progress*0.52,
+             Stage::Impact=>1.04+0.14*progress,
+             Stage::Afterglow=>(1.0-progress).max(0.08),
+         };
+         if scene_phase==Stage::Afterglow {
+             let fade=(1.0-progress).clamp(0.,1.);
+             color=(color&0x00FF_FFFF)
+                 |((((color>>24) as f64*fade).round() as u32)<<24);
+         }
+         match (school,rank) {
+             (7,1)=>astral_lens(s,o,age,grow,color),
+             (8,0)=>time_vessel(s,o,age,grow,color),
+             (8,1)=>time_shutters(s,o,age,grow,color),
+             (8,_)=>temporal_dome(s,o,age,grow,color),
+             _=>{}
+         }
+         return;
+     }
      // All spells have a legible telegraph, a physical cast, an impact and a
      // restrained echo. Times differ according to each registry spell ID.
      match scene_phase {
