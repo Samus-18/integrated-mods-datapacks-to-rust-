@@ -32,7 +32,6 @@ const NAMES: [&str;5] = ["Fire school starter", "Frost school starter", "Druid s
 
 #[derive(Clone, Copy)]
 struct Cast { kind: usize, variant: u8, start: u64, center: [f64;3], direction: [f64;3] }
-#[derive(Default)]
 struct State {
     tick:u64,effects:Vec<Cast>,pipeline:Option<RenderPipelineRef>,
     last_cast:Option<usize>,last_variant:u8,
@@ -40,6 +39,15 @@ struct State {
     // Client-only training instance; NOT multiplayer player data or world save.
     demo_magic:Option<PlayerMagic>,
     local_mana:f32,local_cooldowns:[u64;SPELL_COUNT],
+}
+impl Default for State {
+    fn default()->Self {
+        Self{tick:0,effects:Vec::new(),pipeline:None,
+            last_cast:None,last_variant:0,
+            quick:QuickSelector::default(),show_constellation:false,
+            demo_magic:None,local_mana:100.0,
+            local_cooldowns:[0;SPELL_COUNT]}
+    }
 }
 #[derive(Default)]
 struct Mod { state: Mutex<State> }
