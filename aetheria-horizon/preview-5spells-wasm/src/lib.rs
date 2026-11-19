@@ -5,7 +5,7 @@ use mod_api::{
     ClientHost, ClientTickPostEvent, ClientSetupEvent, ClientResourcesReloadedEvent,
     SubmitCustomGeometryEvent, GuiRenderPostEvent, RegisterRenderPipelinesEvent,
     RenderPipeline, RenderPipelineRef, PipelineBlend, PipelineQuad, WorldDepth,
-    WorldQuad, Identifier, CrosshairTarget,
+    WorldQuad, Identifier, CrosshairTarget, SoundPlay, SoundSource,
 };
 use std::{f64::consts::TAU, sync::Mutex};
 
@@ -13,6 +13,14 @@ const MOD_ID: &str = "aetheria_preview";
 const IDS: [&str;5] = ["phoenix_garden", "glacier_cathedral", "worldroot", "thunder_wyrm", "astral_sunder"];
 const KEYS: [&str;5] = ["key.keyboard.z", "key.keyboard.x", "key.keyboard.c", "key.keyboard.v", "key.keyboard.b"];
 const NAMES: [&str;5] = ["Phoenix Garden", "Glacier Cathedral", "Living Worldroot", "Thunder Wyrm", "Astral Sunder"];
+// Generated original OGG stems in assets/aetheria_preview/sounds/.
+const CAST_SFX: [[&str;3];5] = [
+    ["aetheria_preview:phoenix_charge","aetheria_preview:phoenix_cast","aetheria_preview:phoenix_impact"],
+    ["aetheria_preview:glacier_charge","aetheria_preview:glacier_cast","aetheria_preview:glacier_impact"],
+    ["aetheria_preview:worldroot_charge","aetheria_preview:worldroot_cast","aetheria_preview:worldroot_impact"],
+    ["aetheria_preview:thunder_charge","aetheria_preview:thunder_cast","aetheria_preview:thunder_impact"],
+    ["aetheria_preview:astral_charge","aetheria_preview:astral_cast","aetheria_preview:astral_impact"],
+];
 const VARIANT_NAMES: [[&str;3];5] = [
     ["Phoenix Garden", "Phoenix Wings", "Ember Cyclone"],
     ["Glacier Cathedral", "Glacier Arches", "Frost Surge"],
@@ -76,6 +84,7 @@ impl Hooks for Mod {
             }
         };
         let mut state = self.state.lock().unwrap();
+        let mut queued_sounds: Vec<(usize,u8,[f64;3])> = Vec::new();
         if !playing {
             state.effects.clear();
             return;
@@ -106,7 +115,19 @@ impl Hooks for Mod {
                     state.effects.push(Cast {kind, variant, start: tick, center, direction: dir});
                     state.last_cast = Some(kind);
                     state.last_variant = variant;
+                    queued_sounds.push((kind, variant, center));
                 }
+            }
+        }
+        drop(state);
+        // Original, locally synthesized spatial audio: charge -> cast -> impact.
+        // Never emits vanilla beam sounds; only this client's player hears it.
+        for (kind,variant,origin) in queued_sounds {
+            for (i,offset) in [0_u32,9,18].into_iter().enumerate() {
+                let play=SoundPlay::at(CAST_SFX[kind][i], SoundSource::Blocks, origin)
+                    .with_volume(if i==2 {0.85} else {0.62})
+                    .with_pitch(0.96+variant as f32*0.045);
+                let _=host.play_local_sound(&play,offset);
             }
         }
     }
