@@ -256,3 +256,11 @@ User direct instruction: "tak vylepsuj a pokracuj ve vyvoji ted udelej dalsi kou
 
 ### M21 second-pass test results
 - M21 pinned SDK run `44605922355` **SUCCESS, 15 preview Rust tests and 860 CPU geometry views**. The full original 30 OGG + shader + SHA512 .hmod packaged correctly, but is not user-ready. Inspected actual updated contacts for twenty Ultimates; #079/#120/#160/#179/#180 visibly improved primary silhouette. Still obvious low-poly “starter VFX” and missing native GPU light; retain no-slop reject status until full cinematic material and integrated world gameplay.
+
+
+## M22 added individual Awakening signatures
+
+- All **forty** role=`Awakening` (four per class) now have their own source-named 3D spatial composition in `preview-5spells-wasm/src/awakening_forms.rs`. These are **not** merely enlarged versions of the generic 110 Standard drafts. Details in `docs/M22_AWAKENING_SCULPTS.md`.
+- Current client visual mix: **30** previously bespoke spell profiles (three per class), **110** Standard *semantic rough drafts* (eleven more per class), **40** per-ID Awakening drafts and **20** per-ID Ultimate drafts = **200 identifiable locally previewable spell visual forms**. This arithmetic counts draft visual layouts, **NOT 200 polished cinematic effects**.
+- Quality review already detected overlapping template geometry for Diamondheart vs Gemheart Armor vs Crimson Aegis; adjusted the latter two to distinct actual physical forms rather than skin swaps. Eidolon Procession now depicts all five individual ghost guards with a compact triangle/box geometry budget, rather than truncating the third guard due to a huge mesh.
+- No new world mechanics and no real multiplayer claims. End-user request remains "no slop," so all added 170 must still pass individual art review plus verified engine GPU lighting before release.
