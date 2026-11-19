@@ -66,3 +66,11 @@ Exact user message:
 > "ani nevim co to je nerikej mi ze delas to co jsem rikal ze hlavne nemas delat a to tycky a kruhy  obycejny jako drive to si nepamatujes ale vse jsi prost edelala jen z tycek"
 
 User saw exact generated offscreen geometry picture of Blink Fold (slot 24). The geometry had two empty circular frames, narrow beams/spikes and little volume. This is **unacceptable** even though unit tests passed and polygons were technically 3D. The correction is to prioritize substantial non-generic volumetric **filled forms** with detailed materials, kinetic shape, silhouette and stage continuity. Never assert that a numeric uniqueness/area test proves it looks beautiful. The user does not want to test another half-built mod.
+
+
+## 2026-11-19 — User demands original-video replay and current fantasy spell mod research
+
+Exact feedback:
+> "PROSTE ZNOVU  se koukni na ty videa vyhledej si i dalsi vytvori rust kouzel a uvidis sama  a klidne i normalni kouzla ale ty novy ted vychazeji uplny krasny diky claude a tak , tak to muzes taky udelat ne"
+
+Read as: compare the DIRECT source footage with more recent Minecraft magic VFX examples, including non-Rust mods as art direction; stop claiming that thin rods/rings match the reference's visual quality. User spec retains **original fantasy not sci-fi**, no copies of licensed content, no repeated user playtests before a meaningful polished version. AI tools are allowed, but authors' AI usage is not verified by the cited pages. Exact user video filenames and SHA256 remain in references/original-videos/README.md (original binaries archived in the user's Library, not falsely claimed to be git blobs). Concrete M17 code and citations documented in docs/M17_VIDEO_RESEARCH_AND_MATERIAL_PASS.md.
