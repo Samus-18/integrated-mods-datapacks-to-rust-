@@ -6,6 +6,8 @@ mod cinematic_beams;
 mod hero_vfx;
 #[cfg(test)]
 mod visual_audit;
+#[cfg(test)]
+mod shader_validation;
 use aetheria_horizon::ui::minimal_hud::QuickSelector;
 use catalog30::{SPELL_COUNT,DIRECT_SLOTS};
 use aetheria_horizon::core::player_data::PlayerMagic;
