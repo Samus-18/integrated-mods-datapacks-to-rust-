@@ -101,6 +101,118 @@
          }
      }
  }
+
+ /// Filled fantasy dimensional veil made of hundreds of shaded 3D quad faces.
+ /// NO beam(), ring(), tube() or stick scaffold for Blink Fold itself.
+ /// Two thick, asymmetrically curved sheets give the illusion of folded space.
+ /// In contrast to the older ring + small spikes, most geometry fills the
+ /// actual visual silhouette instead of tracing an empty border.
+ fn fold_veil(s:&mut Scene,o:V,side:f64,age:f64,grow:f64,color:u32){
+     let nx=8usize;let ny=10usize;
+     let time=age*0.048;
+     let tint=|u:f64,v:f64| {
+         let h=(u*2.7+time).sin()*(v*3.9-time*0.7).cos();
+         shade_argb(color,(0.46+0.23*h+0.12*(1.0-u*u)).clamp(0.25,0.86))
+     };
+     let place=|iu:usize,iv:usize,back:bool|{
+         let u=iu as f64/nx as f64*2.0-1.0;
+         let v=iv as f64/ny as f64;
+         // Broad asymmetrical draped silhouette, not a geometric ring.
+         let taper=(0.79+0.21*(v*TAU+side).sin())
+                   *(0.93+0.07*(u*TAU+time).cos());
+         let x=side*2.25+u*(1.34+0.19*(v*7.0).sin())*taper;
+         let y=0.17+v*4.9*grow+0.20*(u*4.8+time).sin()*v;
+         let z=side*1.22
+             +0.85*(1.0-u*u)*((v*TAU+time).sin())
+             +0.24*(v*11.0+time*0.67).sin()
+             +if back{-0.32-0.12*(u*TAU).cos().abs()}else{0.0};
+         p(o,x,y,z)
+     };
+     // Each side is a genuinely contiguous 3D tessellated membrane: no
+     // omitted center, no transparent portal hole, no outline-only mesh.
+     for j in 0..ny {
+         for i in 0..nx {
+             let a=place(i,j,false);
+             let b=place(i+1,j,false);
+             let c=place(i+1,j+1,false);
+             let d=place(i,j+1,false);
+             let u=(i as f64+0.5)/nx as f64*2.-1.;
+             let v=(j as f64+0.5)/ny as f64;
+             let col=tint(u,v);
+             s.quad([a,b,c,d],col);
+             let a2=place(i,j,true);
+             let b2=place(i+1,j,true);
+             let c2=place(i+1,j+1,true);
+             let d2=place(i,j+1,true);
+             s.quad([d2,c2,b2,a2],shade_argb(col,0.61));
+             // Wide moving folds across the veil itself; built as surfaces,
+             // not separate rods or tubes.
+             if (i+j)%5==0 && i+1<nx && j+1<ny {
+                 let inner=place(i,j+1,false);
+                 let middle=place(i+1,j,true);
+                 s.quad([a,middle,c,inner],shade_argb(color,0.72));
+             }
+         }
+     }
+     // Solid rim *walls* close the volume, avoiding ghostly flat billboard
+     // appearance from an oblique camera. These are quadrilateral surfaces.
+     for i in 0..nx {
+         for v in [0,ny] {
+             s.quad([
+                 place(i,v,false),place(i+1,v,false),
+                 place(i+1,v,true),place(i,v,true)
+             ],shade_argb(color,0.52));
+         }
+     }
+     for j in 0..ny {
+         for u in [0,nx] {
+             s.quad([
+                 place(u,j,false),place(u,j+1,false),
+                 place(u,j+1,true),place(u,j,true)
+             ],shade_argb(color,0.53));
+         }
+     }
+ }
+ /// A wide 3D folded-space ribbon physically bridges the two portal veils.
+ /// It sweeps across a quadrilateral surface with a thick back-side, not
+ /// four thin beam lines connecting circles.
+ fn fold_bridge(s:&mut Scene,o:V,age:f64,grow:f64,color:u32){
+     let sections=12usize;let rows=4usize;
+     let time=age*0.06;
+     let point=|i:usize,j:usize,back:bool|{
+         let t=i as f64/sections as f64;
+         let u=j as f64/rows as f64*2.0-1.0;
+         let bend=(t*TAU*0.72+time).sin();
+         let wave=(t*TAU*1.4-time*0.63).sin();
+         let width=0.55+0.62*(t*std::f64::consts::PI).sin();
+         let x=(t*4.5-2.25)+u*0.12*bend;
+         let y=(1.4+1.4*(t*std::f64::consts::PI).sin()
+              +u*width*0.68*grow+0.34*wave)*grow;
+         let z=(t*2.44-1.22)+u*width*0.78*grow+0.55*bend
+             +if back{-0.24}else{0.0};
+         p(o,x,y,z)
+     };
+     for i in 0..sections {
+         for j in 0..rows {
+             let a=point(i,j,false);
+             let b=point(i+1,j,false);
+             let c=point(i+1,j+1,false);
+             let d=point(i,j+1,false);
+             s.quad([a,b,c,d],
+                 shade_argb(color,0.58+0.25*((i+j)%3) as f64/2.0));
+             s.quad([point(i,j+1,true),point(i+1,j+1,true),
+                 point(i+1,j,true),point(i,j,true)],
+                 shade_argb(color,0.43));
+         }
+         for j in [0,rows] {
+             s.quad([
+                 point(i,j,false),point(i+1,j,false),
+                 point(i+1,j,true),point(i,j,true)
+             ],shade_argb(color,0.52));
+         }
+     }
+ }
+
  fn broken_sky(s:&mut Scene,o:V,age:f64,color:u32){
      let rise=(age/20.).clamp(0.,1.);
      let center=p(o,0.,3.8*rise,0.);
@@ -455,26 +567,13 @@
          (7,0)=>{broken_sky(s,o,age,color);}
          (7,1)=>{rune_seal(s,o,[0.3,0.7,0.2],2.4,phase,color);rune_seal(s,p(o,0.,2.3,0.),[0.2,0.7,0.7],1.6,-phase,color);}
          (7,_)=>{
-             // Blink Fold: two *doors of folded space* with raised dimensional
-             // membranes and a connected braided transit bridge, instead
-             // of a small knot of unrelated stick segments.
+             // BLINK FOLD: two filled, distorted 3D portals with a contiguous
+             // dimensional river between them. Deliberately zero rings,
+             // rods, beam primitives and stacked thin crystals here.
              for side in [-1.0,1.0] {
-                 let origin=p(o,side*2.0,1.7,side*1.2);
-                 rune_seal(s,origin,[0.25*side,0.24,1.],1.85,phase*side,color);
-                 s.solid_crystal(p(origin,0.,-1.5,0.),
-                                 p(origin,0.,1.5*stage,0.),0.38,phase,color,6);
-                 for j in 0..3 {
-                     let a=TAU*j as f64/3.+phase;
-                     let tip=p(origin,a.cos()*1.3,a.sin()*1.35,0.8*side);
-                     s.membrane(p(origin,0.,-0.9,0.),p(tip,-0.2,0.3,0.),
-                                 tip,p(tip,0.25,-0.1,-0.35),shade_argb(color,0.7));
-                 }
+                 fold_veil(s,o,side,age,stage.max(0.14),color);
              }
-             for j in 0..4 {
-                 let start=p(o,-2.0,j as f64*0.46, -1.2);
-                 let end=p(o,2.0,2.5-j as f64*0.46,1.2);
-                 beam(s,start,end,0.085,phase+j as f64*0.6,color);
-             }
+             fold_bridge(s,o,age,stage.max(0.14),color);
          }
          // Chronomancy: moving gear arcs, trailing delay disks, time pulse.
          (8,0)=>{rune_seal(s,o,[0.,0.1,1.],2.6,phase,color);beam(s,o,p(o,2.1*phase.cos(),2.1*phase.sin(),0.),0.11,phase,color);}
@@ -557,6 +656,43 @@
         assert!(visual_phase(0,f64::NAN).is_none());
         assert!(visual_phase(0,-1.).is_none());
         assert!(visual_phase(0,104.).is_none());
+    }
+
+    #[test]
+    fn blink_fold_has_dense_filled_surfaces_in_both_oblique_views(){
+        let slot=7*3+2;
+        let age=(0..104).find(|t|matches!(
+            visual_phase(slot,*t as f64),Some((Stage::Cast,p)) if p>0.55
+        )).unwrap() as f64;
+        let mut scene=Scene::new(900);
+        draw(Cast{kind:slot,variant:2,start:0,
+             center:[0.0,64.0,0.0],direction:[0.0,0.0,1.0]},age,&mut scene);
+        // Two 8x10 front/back sheets and a 12x4 dimensional bridge are
+        // genuine filled panels; previous ring+stick model did not have this.
+        assert!(scene.facets.len()>=300,"blink fold devolved to a stick outline");
+        assert!(scene.facets.len()<=900);
+        for eye in [[0.5,0.38,1.0],[-0.8,0.7,0.55]] {
+            let right=norm(cross([0.0,1.0,0.0],eye));
+            let up=norm(cross(eye,right));
+            let mut area=0.0;
+            let mut broad=0;
+            for (corners,_) in &scene.facets{
+                let q=corners.map(|p|[
+                    p.iter().zip(right).map(|(a,b)|a*b).sum::<f64>(),
+                    p.iter().zip(up).map(|(a,b)|a*b).sum::<f64>()
+                ]);
+                let mut twice=0.0;
+                for i in 0..4{
+                    let j=(i+1)%4;
+                    twice+=q[i][0]*q[j][1]-q[j][0]*q[i][1];
+                }
+                let a=twice.abs()*0.5;
+                area+=a;
+                if a>0.015{broad+=1}
+            }
+            assert!(area>9.0,"blink fold has too little filled area");
+            assert!(broad>120,"too many edge-on or degenerate strands");
+        }
     }
 
  }
