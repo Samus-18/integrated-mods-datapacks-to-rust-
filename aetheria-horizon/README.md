@@ -59,3 +59,9 @@ The user will **not** do more manual playtests of five-spell demos. The next use
 The portable core has **ten custom 3D sculpt foundations**, each with a distinct silhouette and animated construction, and **20 distinct future cinematic camera sequences** with reduced-motion settings. Current portable CI is **[53 tests passed](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44509592898)**. The precompiled WASM preview's second style for each original five spell demos has been connected to the shared volumetric meshes, pending [internal WASM CI](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44510001331).
 
 **No additional user playtest requested.** The ten 3D school scenes and 20 camera trajectories are **not** complete spells or cinematics; M100 remains 0/100 fully integrated/verified. That honesty is deliberate until actual game mechanics, animations, SFX, GUI and persistence work end to end.
+
+## M9 combat and renderer integration (under development)
+
+The internal five-spell preview now imports the **shared 3D Rust sculpt library** and converts closed triangular volumes into the Horizon world's supported quads with face shading, culling and draw limits. Portable class-learning → book equip → cast mana/cooldown validation is consolidated into \`src/core/authority.rs\` for a future authenticated server adapter. [58 Rust core tests passed](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44510503132).
+
+This is **not a public test release**. World damage/healing, acquired items, actual GUI interaction, camera cutscenes, model animations and multiplayer persistency still need real Horizon integration. The upcoming 100-spell manual playtest gate is unchanged.
