@@ -1,11 +1,11 @@
 id = "aetheria_preview"
 name = "Aetheria Horizon - Five Spells Visual Preview"
-version = "0.1.1"
+version = "0.1.2"
 api = "0.2"
 side = "client"
 description = "Native Horizon Rust visual-only test of five distinct fantasy spell effects. No entity damage, world editing or multiplayer spell syncing yet."
 authors = ["Samus-18"]
-capabilities = []
+capabilities = ["registries"]
 
 [native]
 game = "26.3"
