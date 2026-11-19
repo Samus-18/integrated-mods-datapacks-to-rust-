@@ -6,6 +6,7 @@
 //! IMPORTANT: server world blocks/entities are not modified here; integrating
 //! it into Horizon must happen via verified server-authoritative hooks.
 use rapier3d::prelude::*;
+pub mod impacts;
 const MAX_BODIES: usize = 96;
 const GROUND_HALF:f32=48.0;
 #[derive(Debug,Clone,Copy,PartialEq,Eq)]
