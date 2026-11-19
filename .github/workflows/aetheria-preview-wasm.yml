@@ -62,7 +62,7 @@ jobs:
               assert 'assets/aetheria_preview/shaders/pipeline/ethereal.wgsl' in names
               m=tomllib.loads(z.read('horizon-mod.toml').decode())
               assert m['id']=='aetheria_preview'
-              assert m['version']=='0.5.1'
+              assert m['version']=='0.5.2'
               assert 'native' not in m and 'wasm' in m
               assert hashlib.sha512(z.read('mod.wasm')).hexdigest()==m['wasm']['sha512']
               import json
@@ -76,5 +76,5 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-30Spells-WASM-v0.5.1-Internal
+          name: Aetheria-Horizon-30Spells-WASM-v0.5.2-Internal
           path: aetheria-horizon/preview-5spells-wasm/target/horizon-mod/aetheria_preview.hmod
