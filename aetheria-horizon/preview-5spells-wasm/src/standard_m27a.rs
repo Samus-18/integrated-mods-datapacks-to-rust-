@@ -49,22 +49,29 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
    body(s,at,[0.45*g,0.14*g,0.42*g],tint(c,0.59,0.86));
   }
  },
- 14=>{ // Infernal Anvil — forged raised anvil body with side-horns and impact.
-  body(s,p(o,0.,1.40*g,0.),[1.34*g,0.29*g,0.82*g],tint(c,0.56,0.98));
-  body(s,p(o,0.,0.84*g,0.),[0.60*g,0.72*g,0.56*g],tint(c,0.40,0.97));
-  body(s,p(o,0.,0.18*g,0.),[1.05*g,0.27*g,0.88*g],tint(c,0.52,0.94));
+ 14=>{ // INFERNAL ANVIL: recognizably forged, connected molten metal mass.
+  // Heavy stepped face, narrow waist, shaped horns, no radial toothpick halo.
+  body(s,p(o,0.,0.16*g,0.),[1.29*g,0.26*g,0.99*g],tint(c,0.47,0.96));
+  body(s,p(o,0.,0.77*g,0.),[0.65*g,0.56*g,0.63*g],tint(c,0.36,0.97));
+  body(s,p(o,0.,1.44*g,0.),[1.54*g,0.29*g,0.91*g],tint(c,0.61,0.96));
   for side in [-1.0,1.0]{
-   let at=p(o,side*1.05*g,1.45*g,0.);
-   crystal(s,at,p(at,side*1.02*g,0.43*g,0.),0.51*g,
-      time,tint(c,0.78,0.95));
+    let root=p(o,side*1.47*g,1.43*g,0.);
+    let tip=p(o,side*(2.56+0.13*(side+1.)/2.)*g,
+       (1.34+0.20*(side+1.)/2.)*g,0.);
+    crystal(s,root,tip,0.48*g,0.5*side,tint(c,0.72,0.96));
+    let glowing=p(o,side*0.68*g,1.75*g,0.42*g);
+    s.membrane(p(glowing,-0.34*g,0.,0.),p(glowing,0.,0.07*g,0.1*g),
+         p(glowing,0.31*g,0.,0.),p(glowing,0.,-0.08*g,0.1*g),
+         tint(c,0.95,0.92));
   }
-  for i in 0..8{
-   let a=TAU*i as f64/8.;
-   crystal(s,p(o,0.,0.45*g,0.),
-     p(o,1.9*g*a.cos(),(0.5+0.40*(i%3) as f64)*g,1.9*g*a.sin()),
-     0.12*g,a,tint(c,0.96,0.78));
+  for i in 0..7 {
+    let a=TAU*i as f64/7.;
+    let r=(1.7+0.12*(i%3) as f64)*g;
+    let at=p(o,r*a.cos(),-0.45*g,r*a.sin());
+    crystal(s,at,p(at,0.10*g*a.cos(),0.43*g,0.10*g*a.sin()),
+       0.24*g,a,tint(c,0.85,0.69));
   }
- },
+ }
  32=>{ // Icicle Rain — hanging chandelier clusters, not naked falling sticks.
   body(s,p(o,0.,4.4*g,0.),[1.62*g,0.30*g,1.25*g],tint(c,0.69,0.80));
   for i in 0..12{
@@ -106,21 +113,35 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
        0.19*g,a,tint(c,0.94,0.82));
   }
  },
- 52=>{ // Skyward Hook — a substantial curving air-stream grappling cloth.
-  let mut last=p(o,-2.25*g,0.3*g,0.);
-  for i in 0..10 {
-    let t=i as f64/9.;
-    let a=t*PI*1.18+time*0.18;
-    let next=p(o,(-2.15+4.2*t)*g,
-      (0.7+3.3*t+0.27*a.sin())*g,(0.62*a.cos())*g);
-    let mid=add(last,scale(sub(next,last),0.5));
-    s.membrane(last,p(mid,0.,0.22*g,0.36*g),next,
-        p(mid,0.,-0.22*g,-0.36*g),
-        tint(c,0.71+0.017*i as f64,0.55));
+ 52=>{ // SKYWARD HOOK: broad multi-sided flowing air fabric, not a zigzag stick.
+  let mut last=p(o,-2.2*g,0.32*g,-0.1*g);
+  for i in 0..12{
+    let u=(i+1) as f64/12.;
+    let a=u*PI*1.25+time*0.18;
+    let next=p(o,(-2.2+4.55*u)*g,
+        (0.40+3.50*u+0.26*a.sin())*g,0.90*g*a.cos());
+    // Closed thick stream-ribbon: broad front/back faces and its side walls.
+    let across=[0.43*g,0.12*g,0.73*g];
+    let half_thick=[0.12*g,0.24*g,-0.10*g];
+    let left=add(last,across);
+    let right=sub(last,across);
+    let l2=add(next,across);
+    let r2=sub(next,across);
+    s.quad([left,l2,r2,right],tint(c,0.80+0.012*i as f64,0.69));
+    s.quad([add(right,half_thick),add(r2,half_thick),
+       add(l2,half_thick),add(left,half_thick)],
+       tint(c,0.54+0.015*(i%4) as f64,0.60));
+    s.quad([left,add(left,half_thick),add(l2,half_thick),l2],
+       tint(c,0.73,0.49));
+    s.quad([r2,add(r2,half_thick),add(right,half_thick),right],
+       tint(c,0.72,0.50));
     last=next;
   }
-  crystal(s,last,p(last,-0.85*g,0.58*g,0.),0.46*g,time,tint(c,0.87,0.87));
- },
+  // A compact grappling hook silhouette *emerges from* the continuous body.
+  let tip=p(last,-0.84*g,0.67*g,0.18*g);
+  crystal(s,last,tip,0.39*g,time,tint(c,0.91,0.89));
+  wing(s,last,time+PI*0.8,1.03*g,0.76*g,tint(c,0.89,0.73));
+ }
  53=>{ // Soundbreak — filled wedge shockfront with embossed pressure waves.
   for layer in 0..3{
     let z=(1.0+0.62*layer as f64)*g;
