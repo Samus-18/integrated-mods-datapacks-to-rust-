@@ -226,11 +226,55 @@ impl Scene {
         self.quad([from,add(middle,quarter),to,sub(middle,quarter)],color);
     }
     fn leaf(&mut self,at:[f64;3],dir:[f64;3],size:f64,color:u32){
-        let tip=add(at,scale(dir,size));
-        self.shard(at,tip,size*0.28,(at[0]+at[2]).sin(),color);
+        let end=add(at,scale(dir,size));
+        let axis=norm(sub(end,at));
+        let guide=if axis[1].abs()<0.9 {[0.0,1.0,0.0]}else{[1.0,0.0,0.0]};
+        let tangent=norm(cross(axis,guide));
+        let middle=add(at,scale(dir,size*0.53));
+        let width=size*0.22;
+        self.membrane(at,add(middle,scale(tangent,width)),end,
+                      sub(middle,scale(tangent,width)),color);
     }
+    // Six-sided thin solid sheet (front, back, four edge walls), used for
+    // phoenix feathers, leaf canopies, storm wings and folded astral tears.
+    // One whole membrane fits or none; never leave half the thickness.
     fn membrane(&mut self, a:[f64;3],b:[f64;3],c0:[f64;3],d:[f64;3],color:u32){
-        self.quad([a,b,c0,d],color)
+        if self.facets.len().saturating_add(6)>self.budget {return;}
+        let normal=norm(cross(sub(b,a),sub(d,a)));
+        if length(normal)<0.1 {return;}
+        let offset=scale(normal,0.07);
+        let top=[add(a,offset),add(b,offset),add(c0,offset),add(d,offset)];
+        let bottom=[sub(a,offset),sub(b,offset),sub(c0,offset),sub(d,offset)];
+        self.quad(top,color);
+        self.quad([bottom[3],bottom[2],bottom[1],bottom[0]],shade_argb(color,0.67));
+        for i in 0..4 {
+            let j=(i+1)%4;
+            self.quad([top[i],top[j],bottom[j],bottom[i]],shade_argb(color,0.75));
+        }
+    }
+
+    // Cylindrical world-space body, not billboards: used for roots, living
+    // creepers and coiling serpent segments. Vary radius along growth.
+    fn tube(&mut self, from:[f64;3],to:[f64;3],r0:f64,r1:f64,
+            twist:f64,color:u32,sides:usize) {
+        if !(5..=8).contains(&sides) || !r0.is_finite() || !r1.is_finite()
+            || r0<=0.004 || r1<=0.004 || length(sub(to,from))<0.03
+            || self.facets.len().saturating_add(sides)>self.budget {return;}
+        let axis=norm(sub(to,from));
+        let base=if axis[1].abs()<0.91 {[0.0,1.0,0.0]}else{[1.0,0.0,0.0]};
+        let tangent=norm(cross(axis,base));
+        let normal=norm(cross(axis,tangent));
+        for i in 0..sides {
+            let a=TAU*i as f64/sides as f64+twist;
+            let b=TAU*(i+1) as f64/sides as f64+twist;
+            let radial=|ang:f64,r:f64|add(scale(tangent,ang.cos()*r),scale(normal,ang.sin()*r));
+            let p0=add(from,radial(a,r0));
+            let p1=add(from,radial(b,r0));
+            let p2=add(to,radial(b,r1));
+            let p3=add(to,radial(a,r1));
+            self.quad([p0,p1,p2,p3],
+                      shade_argb(color,match i%4{0=>0.86,1=>0.71,2=>1.0,_=>0.78}));
+        }
     }
 
     /// Closed-sided 3D crystal grown along its axis. Every side has two
@@ -358,17 +402,18 @@ fn glacier_cathedral(o:[f64;3],forward:[f64;3],age:f64,grow:f64,scene:&mut Scene
 
 /// 3: Branching organic roots, unfolding leaf clusters and bioluminescent blossoms.
 fn worldroot(o:[f64;3],age:f64,grow:f64,scene:&mut Scene){
-    for branch in 0..12 {
-        let a=TAU*branch as f64/12.0;
+    for branch in 0..9 {
+        let a=TAU*branch as f64/9.0;
         let mut p=add(o,[a.cos()*0.18, -0.8, a.sin()*0.18]);
         let sweep=3.5+0.6*(branch as f64*1.9).sin();
-        for step in 0..11 {
-            let v=step as f64/11.0;
+        for step in 0..9 {
+            let v=step as f64/9.0;
             let theta=a+v*0.8*(branch as f64*2.1).sin();
             let next=add(o,[theta.cos()*sweep*v*grow,
                 -0.8+v*(5.0+(branch%4) as f64*0.55)*grow,
                 theta.sin()*sweep*v*grow]);
-            scene.shard(p,next,(0.25*(1.0-v)+0.05)*grow,a+v,alpha(0xD66A9D45,age,103.0));
+            scene.tube(p,next,(0.25*(1.0-v)+0.05)*grow,
+               (0.25*(1.0-v*1.05)+0.05)*grow,a+v,alpha(0xD66A9D45,age,103.0),6);
             if step>2 && step%2==0 {
                 let leaf0=add(next,[0.25*theta.cos(),0.1,0.25*theta.sin()]);
                 scene.leaf(leaf0,[theta.sin(),0.6,theta.cos()],1.0+v,alpha(0xB350F7A2,age,103.0));
@@ -398,7 +443,8 @@ fn thunder_wyrm(o:[f64;3],forward:[f64;3],age:f64,grow:f64,scene:&mut Scene){
         let v=scale(up,(u*TAU*2.2+age*0.10).cos()*1.3+2.0*u);
         let path=add(o,add(add(s,v),scale(f,(3.0-12.0*u)*grow)));
         let thickness=(0.30+0.62*(1.0-u))*grow;
-        scene.shard(last,path,thickness,i as f64*0.19,alpha(if i%3==0 {0xD7FCF3FF}else{0xAE7D69F7},age,99.0));
+        scene.tube(last,path,thickness,thickness*0.94,i as f64*0.19,
+                alpha(if i%3==0 {0xD7FCF3FF}else{0xAE7D69F7},age,99.0),6);
         if i%3==0 {
             let fin=add(path,add(scale(side,((i%2) as f64*2.0-1.0)*(1.0+u)),scale(up,1.2)));
             scene.shard(path,fin,0.2*(1.0-u),i as f64,alpha(0xA9E7DBFF,age,99.0));
@@ -561,7 +607,8 @@ fn living_cage(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
             let p=add(o,[a.cos()*radius*grow,
                 (-0.6+u*6.6)*grow+0.18*(age*0.035+a).sin(),
                 a.sin()*radius*grow]);
-            scene.shard(prev,p,0.25*(1.0-u)+0.09,a+u,alpha(0xB17DB347,age,102.0));
+            scene.tube(prev,p,0.25*(1.0-u)+0.09,0.22*(1.0-u)+0.08,
+                a+u,alpha(0xB17DB347,age,102.0),5);
             if i==4 || i==8 || i==12 {
                 let leafdir=[a.cos()*0.7,0.35,a.sin()*0.7];
                 scene.leaf(p,leafdir,1.4,alpha(0xA36CD389,age,102.0));
