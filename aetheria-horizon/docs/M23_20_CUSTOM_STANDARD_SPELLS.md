@@ -42,3 +42,17 @@
 This is a first art-directed *geometry* pass: 20 more variants now have custom scripted silhouettes beyond the 30 curated, 40 Awakening and 20 Ultimate scripts. That still leaves **90 Standard semantic draft layouts** requiring dedicated art direction, plus material/lighting refinement for all 200. A mesh with different coordinates isn't automatically beautiful. Real native HDR bloom, depth-aware fog/refraction, terrain reaction, GPU timing on the user's RX 580, multiplayer and game-world functional effects are still unimplemented.
 
 **Do not distribute this as a finished 200-spell mod or ask for intermediate user testing.** Confirm pinned SDK CI run and inspect diagnostic images after compilation; a green build is only technical validation, not aesthetic approval.
+
+## Actual 20-spell contact-sheet inspection and visual correction (2026-11-19)
+
+The first full 200-spell WASM CI for the new 20 bespoke Standard compositions succeeded: [run 44609749293](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44609749293), **18/18 preview tests passed, 0 failed**, with the source-authored 860-view projection ZIP saved from artifact `Aetheria-200Spells-Visual-Audit-v0.6.0-Internal`. We **opened the actual 20 Cast SVG images** from this artifact and assembled a contact sheet. The quality check found clear remaining failures despite green CI: #025 Hail Carousel appeared as only four blank spheres because each orb consumed enough faces to exhaust the 500-quad allowance before the intended 12 hail chunks; #165 Temporal Mark appeared as a flat unreadable slab; #164 Sands of Delay looked like two smooth globes; #044 Feather Drift looked like disconnected thin sticks; #104 Briar Loop looked like a sparse cage of thorns rather than an organically interwoven structure. Some other designs are still basic geometry drafts.
+
+Manual source reworks from these observed images:
+- Hail Carousel: re-author twelve varied angular **faceted floating hail asteroid masses** from closed crystals (no blank spheres), reducing face cost.
+- Temporal Mark: an actual **open time dial** with 12 hour stones and two triangular floating sandglass wings, rather than an opaque rectangular monolith.
+- Sands of Delay: an **eight-sided two-chamber tapered sandglass body**, engraved top/bottom supports and streaming crystal sand instead of two ovals.
+- Feather Drift: wide curved solid 3D **feather membrane bodies**, not a few thin kite-shaped spikes.
+- Briar Loop: two interwoven rows of substantial living thorn roots, side leaves and a solid ground base rather than disconnected skinny spikes.
+- Ashen Veil, Vacuum Pin and Mistcloak: reduced excessive full-body curtain or sphere quads; these previously silently clipped at the exact **500 emitted-face cap**, hiding intended last detail. Reduced the overlapping curtain count, replaced water droplets with cheaper individual crystals, and strengthened the Charged test to reject exact-cap saturation.
+
+**Do not mark these artistically approved** until the latest CI artifact is reopened. This audit is real Rust CPU geometry rendered to SVG from two camera projections, not the Horizon shader's output. It cannot prove actual depth, HDR material, glowing fog, GPU performance or visual equivalence to the original four videos.
