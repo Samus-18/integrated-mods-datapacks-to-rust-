@@ -42,3 +42,14 @@ Only use a **CI-verified** `aetheria_preview.hmod` containing `mod.wasm` (not a 
 - WASM preview 0.3.0: [successful pinned SDK build and SHA validation](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44496889719), with 15 procedural forms (3 per key) and visual HUD labels. **In-game rendering of 0.3.0 still awaits user verification.**
 
 License / third-party asset redistribution: TBD. No third-party TikTok media or AI-generated paid meshes included.
+
+## M100 half-project milestone (user asked for next test only at 100/200 complete spells)
+
+The user will **not** do more manual playtests of five-spell demos. The next user-requested game test is at 100 complete spells including **real 3D solid spell geometry, cast/damage/progression, a working GUI/acquisition route, animations and original spatial SFX**. Automated Rust/CI compilation is still run regularly.
+
+- [Exact 100-spell delivery board and quality criteria](docs/M100_IMPLEMENTATION_BOARD.md)
+- [Spell acquisition and fluid GUI design / core implementation status](docs/ACQUISITION_AND_GUI.md)
+- [Original three-layer procedural sound pipeline](docs/SFX_PIPELINE.md)
+- [User screenshot reference and verbatim instruction](docs/memory/USER_LOG.md)
+
+**Current actual progress: 0/100 end-to-end integrated spells; 20 standalone Rust action intents, 5 client-only visual demonstrations, and 15 visual shape variations are not counted as finished RPG spells.** New work: 3D crystalline surface geometry in preview, transactional unlock core across all 200 IDs, 10-class constellation view model, and a generated original SFX pipeline. Do not publish another user-facing test ZIP before this milestone.
