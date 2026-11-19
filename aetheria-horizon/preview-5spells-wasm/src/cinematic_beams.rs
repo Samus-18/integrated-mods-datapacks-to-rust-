@@ -111,8 +111,20 @@
      let nx=8usize;let ny=10usize;
      let time=age*0.048;
      let tint=|u:f64,v:f64| {
-         let h=(u*2.7+time).sin()*(v*3.9-time*0.7).cos();
-         shade_argb(color,(0.46+0.23*h+0.12*(1.0-u*u)).clamp(0.25,0.86))
+         // A shifting blue-violet dimensional material, not a flat purple
+         // mesh and not relying on an unavailable HDR/bloom pipeline.
+         let wave=(u*2.7+time).sin()*(v*3.9-time*0.7).cos();
+         let turquoise=0xFF72DFDA_u32;
+         let mix=(0.16+0.32*(0.5+0.5*wave)+0.12*v).clamp(0.0,0.6);
+         let mut rgb=0_u32;
+         for shift in [0_u32,8,16] {
+             let a=((color>>shift)&255) as f64;
+             let b=((turquoise>>shift)&255) as f64;
+             let value=((1.0-mix)*a+mix*b)
+                 *(0.48+0.20*(1.0-u*u)+0.08*wave.abs());
+             rgb|=((value.clamp(0.,255.).round() as u32)<<shift);
+         }
+         (color&0xFF00_0000)|rgb
      };
      let place=|iu:usize,iv:usize,back:bool|{
          let u=iu as f64/nx as f64*2.0-1.0;
@@ -120,12 +132,12 @@
          // Broad asymmetrical draped silhouette, not a geometric ring.
          let taper=(0.79+0.21*(v*TAU+side).sin())
                    *(0.93+0.07*(u*TAU+time).cos());
-         let x=side*2.25+u*(1.34+0.19*(v*7.0).sin())*taper;
+         let x=side*2.25*grow+u*(1.34+0.19*(v*7.0).sin())*taper*grow;
          let y=0.17+v*4.9*grow+0.20*(u*4.8+time).sin()*v;
-         let z=side*1.22
+         let z=(side*1.22
              +0.85*(1.0-u*u)*((v*TAU+time).sin())
-             +0.24*(v*11.0+time*0.67).sin()
-             +if back{-0.32-0.12*(u*TAU).cos().abs()}else{0.0};
+             +0.24*(v*11.0+time*0.67).sin())*grow
+             +if back{-0.32*grow-0.12*(u*TAU).cos().abs()*grow}else{0.0};
          p(o,x,y,z)
      };
      // Each side is a genuinely contiguous 3D tessellated membrane: no
@@ -374,6 +386,28 @@
      let rank=catalog30::rank(cast.kind);
      let mut color=color(school,age);
      let o=cast.center;
+     if (school,rank)==(7,2) {
+         // Blink Fold's ENTIRE life must be a filled 3D spell, not only its
+         // Cast: skip the generic ring-based telegraph/shockwave/afterglow.
+         let grow=match scene_phase {
+             Stage::Telegraph=>0.10+progress*0.37,
+             Stage::Cast=>0.40+progress*0.60,
+             Stage::Impact=>1.0+progress*0.12,
+             Stage::Afterglow=>(1.0-progress).max(0.08),
+         };
+         if scene_phase==Stage::Afterglow {
+             let fade=(1.0-progress).clamp(0.,1.);
+             color=(color&0x00FF_FFFF)
+                 |((((color>>24) as f64*fade).round() as u32)<<24);
+         }
+         for side in [-1.0,1.0] {
+             fold_veil(s,o,side,age,grow,color);
+         }
+         if matches!(scene_phase,Stage::Cast|Stage::Impact) {
+             fold_bridge(s,o,age,grow,color);
+         }
+         return;
+     }
      // All spells have a legible telegraph, a physical cast, an impact and a
      // restrained echo. Times differ according to each registry spell ID.
      match scene_phase {
@@ -566,15 +600,6 @@
          // Astral: sky fracture, collapsing gravity lens, folded space frames.
          (7,0)=>{broken_sky(s,o,age,color);}
          (7,1)=>{rune_seal(s,o,[0.3,0.7,0.2],2.4,phase,color);rune_seal(s,p(o,0.,2.3,0.),[0.2,0.7,0.7],1.6,-phase,color);}
-         (7,_)=>{
-             // BLINK FOLD: two filled, distorted 3D portals with a contiguous
-             // dimensional river between them. Deliberately zero rings,
-             // rods, beam primitives and stacked thin crystals here.
-             for side in [-1.0,1.0] {
-                 fold_veil(s,o,side,age,stage.max(0.14),color);
-             }
-             fold_bridge(s,o,age,stage.max(0.14),color);
-         }
          // Chronomancy: moving gear arcs, trailing delay disks, time pulse.
          (8,0)=>{rune_seal(s,o,[0.,0.1,1.],2.6,phase,color);beam(s,o,p(o,2.1*phase.cos(),2.1*phase.sin(),0.),0.11,phase,color);}
          (8,1)=>{for j in 0..5{let t=j as f64/5.;ring(s,p(o,-3.*t,0.8*t,1.4*t),[0.,1.,0.],0.8+1.2*t,0.055,10,phase-t,color);}}
