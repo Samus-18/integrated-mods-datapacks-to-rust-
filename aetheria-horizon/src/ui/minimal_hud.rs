@@ -185,3 +185,26 @@ mod tests{
         assert_eq!(a,b);
     }
 }
+
+/// Only render gameplay magic overlays when the player is in a live world
+/// *and* there is no vanilla/mod GUI on top. Horizon's gui_render_post can
+/// also fire on the title screen, pause screen and key-binding screen.
+pub fn should_render_gameplay_hud(
+    playing:bool, local_player:bool, open_screen:bool,
+    gui_hidden:bool, focused:bool
+)->bool{
+    playing && local_player && !open_screen && !gui_hidden && focused
+}
+#[cfg(test)]
+mod hud_screen_gate_tests {
+    use super::should_render_gameplay_hud as visible;
+    #[test]
+    fn only_gameplay_without_open_screen_draws_hud(){
+        assert!(visible(true,true,false,false,true));
+        assert!(!visible(false,false,true,false,true)); // title screen
+        assert!(!visible(true,true,true,false,true)); // pause, inventory or settings
+        assert!(!visible(true,false,false,false,true)); // world switching
+        assert!(!visible(true,true,false,true,true)); // F1
+        assert!(!visible(true,true,false,false,false)); // focus lost
+    }
+}
