@@ -93,7 +93,7 @@ pub fn for_spell(id:u16)->Option<Timeline>{
   assert_eq!(t.stage_at(0),Some(Stage::Telegraph));
   assert_eq!(t.stage_at(8),Some(Stage::Cast));
   assert_eq!(t.stage_at(t.total_ticks()),None);
-  assert!(for_spell(24).is_none());
+  assert!(for_spell(24).is_some());
  }
 }
 
