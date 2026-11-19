@@ -1,9 +1,9 @@
 # Aetheria Horizon — first confirmed user gameplay playtest
 
 - Date: 2026-11-19
-- Video supplied: \`horizon-client_MnaFG4NG1R.mp4\`
+- Video supplied: `horizon-client_MnaFG4NG1R.mp4`
 - Duration: approximately **100.13 s** at 30 fps; display 1906×1036
-- Build being demonstrated: precompiled Rust/WebAssembly \`aetheria_preview\` v0.2.0
+- Build being demonstrated: precompiled Rust/WebAssembly `aetheria_preview` v0.2.0
 - Environment: Minecraft 26.3 / Horizon; mesa/badlands biome visible. UI overlays and F3-like diagnostics.
 - Qualitative outcome: user says effects look **better than expected** but requests better variations. No claim of external playtest or full-system gameplay completeness.
 
