@@ -32,3 +32,8 @@ The 30 client effects were mostly colored world-quad geometry with a modest per-
 ## Current honest status
 
 One user-video-inspired 3D ice spell (#6 Shard Chorus) and its surface shader are in the internal WASM branch. A separate experimental raymarch GPU calculation source is Naga-testable. **The large cinematic source-video quality, true HDR and game integration are still unfinished.** Do not ask the user to playtest intermediate builds or claim 30 complete spells.
+
+
+## 2026-11-19 — Verified M18 internal build
+
+Latest complete pinned Horizon WASM CI is [run 44586774242](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44586774242), status **SUCCESS**. Native-host preview tests: **10 passed, 0 failed**, including real `hero_vfx` grounded ice formation, 180 synthetic offscreen 3D geometry views, both the packaged per-face shader WGSL and separately authored experimental native GPU raymarch shader parsed and validated by pinned Naga 30.0.1. `.hmod` package ZIP/SHA512/30 OGG integrity passed. The new GPU shader source was validated as a standalone function but is **not** yet invoked by the Horizon game/client, nor part of that .hmod. Its actual optical beauty, world occlusion, GPU frame times and HDR effects remain **unverified in-engine**. Do not claim this build has professional in-game cinematic effects or completed 30 gameplay spells.
