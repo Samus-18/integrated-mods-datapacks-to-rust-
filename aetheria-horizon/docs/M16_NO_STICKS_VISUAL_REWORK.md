@@ -20,3 +20,15 @@ Every new spell should be designed **from a distinctive coherent primary 3D mass
 - The other 29 have not automatically passed a professional art-direction review merely because their geometry is valid. The image that prompted this correction proves the prior quality gate was too weak.
 - The diagnostics remain **CPU world-quad projections**, not Minecraft Horizon screenshots. They cannot prove real HDR bloom, refraction, occlusion, animated camera or true in-game visual fidelity. Do not ask the user to playtest until sufficiently polished.
 - Future audit must distinguish **coherent filled mass**, recognizable silhouette and material/cinematic read from simple quad count and polygon-area statistics.
+
+
+## Full four-phase correction and evidence
+
+The next source correction (commit `377fd3e039870edeb4d9b1a7e23356518ef8e5cb`) eliminated a further defect discovered in the actual M16 side-by-side image: **the Impact stage still displayed an old circular ring**, while Telegraph and Afterglow used other circular primitive fallbacks.
+
+Now the Blink Fold spell branches out **before** the generic stage-based effects; all four stages use the original thick distorted front/back tessellated sheets. The temporal growth/fade directly scales 3D X/Y/Z, not merely ring radii. The material has a restrained per-face turquoise-violet phase gradient. The underlying generic astral scaffold is disabled for this spell.
+
+- Verified pinned WASM + 30 OGG pack CI success: [run 44579075320](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44579075320).
+- Audited the latest real geometry snapshots of Blink Fold, both diagonal views, Cast/Impact/Afterglow: no circles and no wireframe at any of those stages; the primary silhouette is two thick, somewhat draped volumetric surfaces plus an intersecting dimensional flow.
+- **Artistic review still NOT passed for release.** The updated projection looks like a pair of purple-blue folded sheets, which has much more 3D mass than the old outline but is still far from the richness and atmospheric cinematic lighting of the reference videos. It lacks native HDR/bloom/refraction and compelling material texture. Do not describe it as equivalent to God Wand, a finished VFX, or a proven in-game Horizon appearance.
+- Other 29 spell visuals still require individual material and silhouette art-direction rework. Automated geometry uniqueness or projected-area increases cannot establish beauty.
