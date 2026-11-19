@@ -33,3 +33,10 @@ The user's explicit direction: **no sticks, empty outlines, a dozen recolored sc
 ## Server and compatibility gate
 
 Do **not** take the expanded internal `.hmod` and call it a multiplayer gameplay mod. No real damage, healing, teleport, world structure placement, spell-progression persistence, network authority or 200 distinct signature audio tracks. Real user-world validation for Horizon Nightly and GPU budget measurement are absent. **Do not send an incomplete test build to the user**, per their request. Record successful GitHub actions separately when complete.
+
+
+## CI status after 200-spell expansion and 20 Ultimate visual review (2026-11-19)
+
+- Core portable test suite **SUCCESS** on the 200-intent branch, e.g. [run 44604619021](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44604619021), with 200 defined costs/cooldowns/cast-intent tests. The 170 DesignIntent actions are intentionally rejected by server-side world adapter.
+- Latest M21 pinned WASM compilation **SUCCESS**: [run 44605922355](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44605922355), **15/15** preview tests, complete 860-source-view diagnostic gallery and .hmod package valid. No game-world functionality was validated in Horizon.
+- 20 Ultimates now use manual large-form routines, and 5 visibly weak ones had specific source-led second-pass silhouette changes. Read [M21 art direction](M21_ULTIMATE_ART_DIRECTION.md). These remain UNAPPROVED artistically.
