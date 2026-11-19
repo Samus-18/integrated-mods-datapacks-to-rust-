@@ -20,6 +20,10 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Install pinned Horizon mod tool
         run: cargo install --locked --git https://github.com/horizon-rust/horizon --rev dd67b76ff23e28c6d8e21859df600d31572f81a0 cargo-horizon-mod
+      - name: Generate original licensed-free spatial sound stems
+        run: |
+          ffmpeg -version | head -n 1
+          python3 tools/generate_sound_assets.py
       - name: Compile prelinked WASM module and package
         run: cargo horizon-mod build --wasm
       - name: Validate WASM package and integrity
@@ -37,12 +41,19 @@ jobs:
               assert 'assets/aetheria_preview/shaders/pipeline/ethereal.wgsl' in names
               m=tomllib.loads(z.read('horizon-mod.toml').decode())
               assert m['id']=='aetheria_preview'
-              assert m['version']=='0.3.0'
+              assert m['version']=='0.4.0'
               assert 'native' not in m and 'wasm' in m
               assert hashlib.sha512(z.read('mod.wasm')).hexdigest()==m['wasm']['sha512']
-              print('PASS: wasm .hmod, SHA512, manifest, shader, ZIP all verified')
+              import json
+              defs=json.loads(z.read('assets/aetheria_preview/sounds.json'))
+              assert len(defs)==15, '15 original SFX not packaged'
+              for event in defs:
+                  path='assets/aetheria_preview/sounds/'+event+'.ogg'
+                  assert path in names and len(z.read(path))>800
+                  assert z.read(path)[:4]==b'OggS'
+              print('PASS: wasm .hmod, SHA512, 15 original OGG SFX, shader, ZIP verified')
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-5Spells-WASM-v0.3.0
+          name: Aetheria-Horizon-5Spells-WASM-v0.4.0-Internal
           path: aetheria-horizon/preview-5spells-wasm/target/horizon-mod/aetheria_preview.hmod
