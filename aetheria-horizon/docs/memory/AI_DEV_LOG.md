@@ -84,3 +84,8 @@
 - `preview-5spells-wasm` v0.3.0: ten new geometry-specific alternatives (total **15 unique 3D visual arrangements**) cycling per key with every repeat. Added Phoenix Wings / Ember Cyclone, Glacier Arches / Frost Surge, Living Cage / Verdant Canopy, Storm Antlers / Storm Manta, Void Blossom / Fractured Stair.
 - Optional shader now uses translucent rather than additive blending; lower emitted brightness and less alpha coverage to preserve detail. VFX 900-quads-per-frame budget is fairly shared over active spells rather than first draw consuming the pool. No paid assets or orbital weapons.
 - Build status: **CI pending**. Do not claim v0.3.0 rendered correctly in the user's game until the user tries it. No new damage/mana/sound features in this phase.
+
+## M6 validation — verified 0.3.0 WASM artifact
+- CI run: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44496889719 — **SUCCESS**. Pinned Horizon Rust/WASM compilation, archive validation, manifest v0.3.0 and SHA-512 integrity all passed.
+- Verified downloaded artifact independently in container: `aetheria_preview.hmod` 2,676,063 bytes, SHA256 `24d1f1c8e9ae35e88f52cb230a161919bfdda1bffabfa409ed1126b06ba0e3bd`. Contains `mod.wasm` (WASM v1 magic), shader, source, `uses.json`; verifies SHA512 against `[wasm]`.
+- Release includes the latest variant labels in the in-game HUD. The user has **not** yet tested visual quality or FPS of 0.3.0; only 0.2.0 has user-provided in-game footage. Do not call five visual demos the completed 200 spell RPG.
