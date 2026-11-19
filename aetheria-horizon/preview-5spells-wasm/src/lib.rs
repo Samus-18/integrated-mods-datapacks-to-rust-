@@ -80,17 +80,20 @@ impl Hooks for Mod {
         self.resolve_pipeline(host);
     }
     fn client_tick_post(&self, host: &mut dyn ClientHost, _: &mut ClientTickPostEvent) {
-        let playing = host.playing();
+        let playing = host.playing() && host.local_player().is_some();
+        // Keys must not fire while inventory, pause or settings is open.
+        // We still keep the world effects alive while those screens are shown.
+        let active_gameplay = playing && host.observed_screen_id().is_none();
         let mut pressed = Vec::new();
-        if playing {
+        if active_gameplay {
             for (i, id) in IDS.iter().enumerate() {
                 if host.consume_click(MOD_ID, id) { pressed.push(DIRECT_SLOTS[i]); }
             }
         }
-        let select_previous=playing && host.consume_click(MOD_ID,"previous");
-        let select_next=playing && host.consume_click(MOD_ID,"next");
-        let cast_selected=playing && host.consume_click(MOD_ID,"cast");
-        let toggle_constellation=playing && host.consume_click(MOD_ID,"constellation");
+        let select_previous=active_gameplay && host.consume_click(MOD_ID,"previous");
+        let select_next=active_gameplay && host.consume_click(MOD_ID,"next");
+        let cast_selected=active_gameplay && host.consume_click(MOD_ID,"cast");
+        let toggle_constellation=active_gameplay && host.consume_click(MOD_ID,"constellation");
         let camera = if pressed.is_empty() && !cast_selected {None}else{host.camera()};
         // Client-side surface target: makes the ice and roots grow out of a
         // real selected block rather than floating at the player's eye level.
@@ -200,7 +203,8 @@ impl Hooks for Mod {
     fn mouse_scrolling(&self, host: &mut dyn ClientHost, event: &mut MouseScrollingEvent) -> Flow {
         // Real Iron-like alternative: hold R, turn the mouse wheel to select
         // a spell, cancel the corresponding vanilla hotbar scroll only then.
-        if !host.playing() || !host.is_down(MOD_ID, "quick_picker") {
+        if !host.playing() || host.observed_screen_id().is_some()
+            || !host.is_down(MOD_ID, "quick_picker") {
             return Flow::Continue;
         }
         let steps=event.accumulated[1];
@@ -254,7 +258,11 @@ impl Hooks for Mod {
     }
 
     fn gui_render_post(&self, host: &dyn ClientHost, event: &mut GuiRenderPostEvent<'_>) {
-        if event.gui_hidden || !event.focused {return;}
+        use aetheria_horizon::ui::minimal_hud::should_render_gameplay_hud;
+        if !should_render_gameplay_hud(
+            host.playing(), host.local_player().is_some(),
+            host.observed_screen_id().is_some(), event.gui_hidden, event.focused
+        ) {return;}
         let state=self.state.lock().unwrap();
         let chosen=state.quick.selected.min(SPELL_COUNT-1);
         let open=host.is_down(MOD_ID,"quick_picker")
@@ -537,6 +545,21 @@ fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
 }
 
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
+    // Preserve the more legible hand-authored original five-spell silhouettes
+    // for the five direct hotkeys and the corresponding first school spells.
+    // The new school sculpt is used for the remaining curated actions.
+    let school=catalog30::school(cast.kind);
+    if catalog30::rank(cast.kind)==0 {
+        let grow=(age/12.0).clamp(0.0,1.0).powf(0.66);
+        match school {
+            0=>{phoenix_garden(cast.center,age,grow,scene);return;}
+            1=>{glacier_cathedral(cast.center,cast.direction,age,grow,scene);return;}
+            5=>{worldroot(cast.center,age,grow,scene);return;}
+            6=>{thunder_wyrm(cast.center,cast.direction,age,grow,scene);return;}
+            7=>{astral_sunder(cast.center,age,(age/60.0).clamp(0.,1.5),grow,scene);return;}
+            _=>{}
+        }
+    }
     if cast.kind<SPELL_COUNT {
         // Every chosen spell draws ten-school closed volumetric geometry plus
         // a rank-specific spatial motif. Never a single recolored beam.
