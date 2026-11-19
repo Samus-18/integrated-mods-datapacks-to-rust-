@@ -94,6 +94,43 @@ fn motif(e:&mut GuiRenderPostEvent<'_>,which:usize,x:f32,y:f32,step:f32) {
         }
     }
 }
+// Hand-drawn 9×9 pixel glyphs. Every one of the 20 local spell slots gets
+// its own distinct pattern; these are not colored circles/placeholder quads.
+// Drawn by the game itself, no AI-generated sprites or copied assets.
+const GLYPHS:[&str;20]=[
+    "....#..../...#.#.../..#...#../.#.....#./#########/.#.....#./..#...#../...#.#.../....#....",
+    "......#../.....##../....###../...####../..#####../...#...../..#....../.#......./#........",
+    ".#######./.#.....#./.#.#.#.#./.#.###.#./.##...##./.#.###.#./.#.#.#.#./.#.....#./.#######.",
+    "...###.../..#...#../.#.....#./#...#...#/....#..../...###.../..#...#../.#.....#./#.......#",
+    "#.......#/##.....##/.##...##./..##.##../...###.../...###.../..##.##../.##...##./##.....##",
+    "...###.../..#####../.#######./##.....##/##..#..##/##..#..##/.#######./..#####../...###...",
+    "..##.##../.###.###./..#####../...###.../....#..../...###.../..#####../.##...##./##.....##",
+    "..#####../.##...##./##.#.#.##/##.....##/.##.#.##./..##.##../...###.../...###.../....#....",
+    "#########/#.......#/#.#####.#/#.#...#.#/#.#.#.#.#/#.#...#.#/#.#####.#/#.......#/#########",
+    "....#..../...###.../..#####../.#######./#########/...###.../...###.../..#...#../.#.....#.",
+    "###...###/.###.###./..#####../...###.../....#..../...###.../..#####../.###.###./###...###",
+    ".##...##./..##.##../...###.../....#..../#########/....#..../...###.../..##.##../.##...##.",
+    "....#..../...###.../..#####../.###.###./##..#..##/.###.###./..#####../...###.../....#....",
+    ".#.....#./.##...##./..##.##../...###.../...###.../..##.##../.##...##./.#.....#./#.......#",
+    "...###.../..#...#../.#.###.#./#.#...#.#/#.#.#.#.#/#.#...#.#/.#.###.#./..#...#../...###...",
+    ".##...##./.##...##./.##...##./..##.##../...###.../..##.##../.##...##./.##...##./.##...##.",
+    "...###.../..#####../.##.#.##./##..#..##/.##.#.##./.#######./..#...#../.#.....#./#.......#",
+    "##.....##/.##...##/..##.##../...###.../....#..../...###.../..##.##../.##...##/##.....##",
+    "#########/#..###..#/#.#...#.#/##.#.#.##/##..#..##/##.#.#.##/#.#...#.#/#..###..#/#########",
+    "...###.../..#####../.##...##./###...###/####.####/###...###/.##...##./..#####../...###...",
+];
+fn glyph(e:&mut GuiRenderPostEvent<'_>,local:usize,class:usize,x:f32,y:f32){
+    let art=GLYPHS[local%20];
+    let primary=COLORS[class.min(4)];
+    for (row,line) in art.split('/').enumerate(){
+        for (col,ch) in line.bytes().enumerate(){
+            if ch==b'#'{
+                fill(e,[x+col as f32,y+row as f32,1.,1.],primary);
+            }
+        }
+    }
+}
+
 pub fn draw(host:&dyn ClientHost,e:&mut GuiRenderPostEvent<'_>,view:UiView) {
     if e.gui_hidden||!e.focused{return;}
     let [w,h]=e.batch.size();
@@ -133,7 +170,7 @@ pub fn draw(host:&dyn ClientHost,e:&mut GuiRenderPostEvent<'_>,view:UiView) {
         if let Some(panel)=ui.expanded {
             let x=panel.x;let y=panel.y;
             frame(e,x,y,panel.w,panel.h,GOLD);
-            e.batch.text("SPELL SELECTION  [N / M]  [G] CAST",[x+8.,y+5.],WHITE,true);
+            e.batch.text("SCROLL / N-M  |  G CAST",[x+8.,y+5.],WHITE,true);
             let each=(panel.w-16.)/5.;
             for i in 0..5 {
                 let ix=x+8.+i as f32*each;
@@ -200,8 +237,9 @@ fn draw_constellation(e:&mut GuiRenderPostEvent<'_>,tick:u64,chosen:usize){
         }
         previous=Some((x,y));
         let pulse=if i==0 {(motion.pulse*3.).max(1.)}else{1.};
-        frame(e,x-5.-pulse*0.3,y-5.-pulse*0.3,
-              12.+pulse,12.+pulse,if i==0 {GOLD_L}else{EDGE});
+        frame(e,x-10.-pulse*0.3,y-10.-pulse*0.3,
+              20.+pulse,20.+pulse,if i==0 {GOLD_L}else{EDGE});
+        glyph(e,i,chosen,x-4.5,y-4.5);
         // Unique spell names are from the Rust registry, not generated strings.
         if i==0||i==5||i==10||i==15 {
             if let Some(spell)=by_id(school as u16*20+i as u16+1) {
