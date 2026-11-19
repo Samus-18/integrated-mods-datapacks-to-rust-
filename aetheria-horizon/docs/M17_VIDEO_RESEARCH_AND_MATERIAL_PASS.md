@@ -32,3 +32,14 @@ The user mentioned beautiful mods made with Claude/AI; **none of the source page
 
 ## NOT accomplished by this pass
 Real 3D world lighting, physically correct HDR/bloom, GPU volumetric fog, world-space depth refraction, real block reaction, 30 completed professional-grade distinct effects, verified user-Nightly screenshots or production multiplayer gameplay. The pinned guest renderer alone cannot supply these; study and implement a compatible native/Horizon shader-pack bridge rather than faking their existence. On RX 580, performance still requires real GPU measurements.
+
+
+## Repeated appearance audit correction
+
+Actual first M17 180-view report for Shard Chorus: 598 emitted world faces at sampled Cast, Impact and Afterglow; valid from both diagonal camera views, with spatial height ~5.77 to ~8.43 blocks over the timeline. On manually inspecting these SVG snapshots, the crystal formation was visibly stronger than previous wireframes, but the original ground haze looked like stacked transparent **horizontal plates**. Updated glacial_haze() to instead build **rising curling violet/turquoise low-alpha aurora curtains** around the large crystals, using three rotated curved 3D sheets. Subsequent CI must regenerate actual snapshots and verify coverage.
+
+## Shader test correction
+
+Existing package CI only checked that the WGSL file *existed* in .hmod, not that the shader parsed correctly. A new dev-only Naga 30.0.1 unit test parses the exact guest WGSL with a **synthetic fragment prelude** (PipelineInput UV/color, frame.time). Passing it demonstrates language validity under a matching Naga parser, **not** that a Horizon Nightly has the same runtime shader bindings, scene lighting, bloom or actual rendered look.
+
+Original request still stands: NO finished release claim until a full visual and gameplay gate.
