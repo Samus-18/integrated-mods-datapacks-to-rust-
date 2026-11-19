@@ -9,6 +9,7 @@ mod mass_forms;
 mod ultimate_forms;
 mod awakening_forms;
 mod standard_forms;
+mod charged_standard_forms;
 #[cfg(test)]
 mod visual_audit;
 #[cfg(test)]
@@ -590,6 +591,11 @@ fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
 }
 
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
+    if cast.kind<catalog200::SPELL_COUNT &&
+       charged_standard_forms::dedicated(catalog200::id(cast.kind)) {
+        charged_standard_forms::render(cast,age,scene);
+        return;
+    }
     if cast.kind<catalog200::SPELL_COUNT &&
        standard_forms::dedicated(catalog200::id(cast.kind)) {
         standard_forms::render(cast,age,scene);
