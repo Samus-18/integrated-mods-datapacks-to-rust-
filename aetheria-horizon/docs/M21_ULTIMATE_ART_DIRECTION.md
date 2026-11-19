@@ -45,3 +45,12 @@ This milestone allocates a **dedicated handwritten scene for every Ultimate** in
 ## Quality gates for next iteration
 
 Visual quality assessment is **per spell**, not merely total polygons, projected area or RGB fingerprint. Review from front, diagonal and side at charge/cast/impact/afterglow, check that main action is recognizable in 1 second, avoid thin rods/empty rings/blank boxes/spheres, preserve unique silhouettes and do not blow out to flat white. Audio/terrain and true GPU postpass should be separately verified on the exact Horizon build. No demand for user manual intermediate tests.
+
+
+## M21 second-pass visual evidence — verified, not inferred
+
+Second source commit: `af77cb63d3179a04698cb9a6092e652537180405`. Full pinned WASM build [run 44605922355](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44605922355) completed **SUCCESS**: **15/15** native-host preview Rust tests (0 failures), 200-entry registry validation, 20 individually authored Ultimate mesh tests, 860 offscreen diagnostic SVG images, complete original 30 OGG and .hmod SHA512/integrity. The matching fresh visual artifact `Aetheria-200Spells-Visual-Audit-v0.6.0-Internal` was downloaded and **20 Ultimate Cast views were actually inspected again**.
+
+Observed second pass: #079 has now a visible chair/throne backrest rather than an anonymous tiered disc; #120 reads as a cloaked humanoid forest spirit (more distinct from #119); #160 reads as thick broken lunar shards and a real dark center rather than a uniform thin hoop; #179 has a deeply recessed 13-part clock mechanism instead of a featureless brown plaque; #180 reads as a two-chamber inverted hourglass instead of a plain gold egg. This is **genuine silhouette improvement**.
+
+Still **NOT approved** on the user's cinematic beauty scale: simple polygons, uniform material class colors, weak surface shading, some Ultimates too similar (#119 tree vs. #139 thunder tree), GPU atmospheric/bloom and actual depth-aware post are not attached. Portals, wave, clouds and time bodies are still first-pass shapes. The 860 SVGs are generated from CPU worldquad geometry and NOT Horizon screenshots. No manual user playtest requested and no user-ready polished build should be sent.
