@@ -4,6 +4,11 @@ use super::registry::by_id;
 /// Portable combat intent to apply via Horizon's authoritative Host (future adapter).
 #[derive(Debug,Clone,Copy,PartialEq)]
 pub enum SpellAction {
+ /// Authored mechanical intent for one of the 170 expanded spell designs.
+ /// Exact name, mechanic, form, and cast mode are looked up by ID; engine
+ /// world effects MUST implement these rules before calling it playable.
+ DesignIntent{spell_id:u16, mechanic:&'static str, form:&'static str,
+              cast_type:&'static str, role:&'static str, intensity:f32},
  EmberDart{damage:f32,burning_ticks:u16},
  FrostSpike{damage:f32,slow_ticks:u16},
  WindPush{strength:f32,range:f32},
@@ -83,7 +88,10 @@ fn action_for_spell(id:u16,power:f32)->Option<SpellAction>{
  143=>SpellAction::BlinkFold{range:6.0*power,arrival_guard_ticks:12},
  163=>SpellAction::TickPulse{radius:5.0*power,slow_factor:0.42,duration_ticks:65},
  183=>SpellAction::GraveWhisper{lure_radius:13.0*power,duration_ticks:170,undead_only:true},
- _=>return None,
+ _=>{let spec=by_id(id)?;SpellAction::DesignIntent{
+     spell_id:id,mechanic:spec.mechanic,form:spec.mesh,
+     cast_type:spec.cast_type,role:spec.role,intensity:power
+ }},
  })
 }
 /// Calculates a spell cast without touching the world. Never charges unimplemented spells.
@@ -112,10 +120,18 @@ pub fn cast(p:&mut PlayerMagic,id:u16,tick:u64,charge:f32)->Result<CastResult,Ca
     assert_eq!(cast(&mut p,1,101,0.0),Err(CastError::Cooldown));
     assert_eq!(p.mana,90.0);
  }
- #[test]fn incomplete_spells_do_not_spend_mana(){
+ #[test]fn newly_registered_design_intent_spends_only_its_mana(){
     let mut p=PlayerMagic::new(0);p.unlock(4);
-    assert_eq!(cast(&mut p,4,100,0.0),Err(CastError::NotYetImplemented));
-    assert_eq!(p.mana,100.0);
+    let action=cast(&mut p,4,100,0.0).unwrap().action;
+    match action{
+        SpellAction::DesignIntent{spell_id,mechanic,form,..}=>{
+            assert_eq!(spell_id,4);
+            assert_eq!(mechanic,"dash leaves delayed burning footsteps");
+            assert!(form.contains("footstep"));
+        }
+        _=>panic!("no authored design intent for Furnace Step")
+    }
+    assert_eq!(p.mana,78.0);
  }
  #[test]fn class_and_resource_checks(){
     let mut p=PlayerMagic::new(0);
@@ -185,15 +201,41 @@ mod thirty_spell_tests {
         assert_eq!(action_kinds.len(),30);
     }
     #[test]
-    fn thirty_integrated_intents_only_no_premature_200_spells_claim() {
-        let count=crate::magic::registry::SPELLS.iter().filter(|s|s.core_prototype).count();
-        assert_eq!(count,30);
-        for school in 0..10u16 {
-            let mut player=PlayerMagic::new(school as u8);
-            let id=school*20+4;
-            assert!(player.unlock(id));
-            assert_eq!(cast(&mut player,id,100,1.0),Err(CastError::NotYetImplemented));
-            assert_eq!(player.mana,100.0);
+    fn all_two_hundred_spells_cast_as_identifiable_intents(){
+        use std::collections::BTreeSet;
+        let mut identities=BTreeSet::new();
+        for spec in crate::magic::registry::SPELLS {
+            let mut player=PlayerMagic::new(spec.class_id);
+            assert!(player.unlock(spec.id));
+            player.mana=100.0;
+            let result=cast(&mut player,spec.id,100,0.5).unwrap();
+            assert_eq!(result.spell_id,spec.id);
+            assert_eq!(result.mana_spent,spec.mana_cost);
+            assert!((player.mana-(100.0-spec.mana_cost)).abs()<0.001);
+            assert!(identities.insert(result.spell_id));
+            if (spec.id-1)%20>=3 {
+                match result.action {
+                    SpellAction::DesignIntent{spell_id,mechanic,form,cast_type,role,..}=>{
+                        assert_eq!(spell_id,spec.id);
+                        assert_eq!(mechanic,spec.mechanic);
+                        assert_eq!(form,spec.mesh);
+                        assert_eq!(cast_type,spec.cast_type);
+                        assert_eq!(role,spec.role);
+                    },
+                    _=>panic!("expected exact authored design action for {}",spec.id),
+                }
+            }
+            assert_eq!(cast(&mut player,spec.id,101,0.0),Err(CastError::Cooldown));
         }
+        assert_eq!(identities.len(),200);
     }
+    #[test]
+    fn wrong_class_and_locked_designs_do_not_consume_resources(){
+        let mut p=PlayerMagic::new(0);
+        assert_eq!(cast(&mut p,20,99,0.6),Err(CastError::Locked));
+        assert_eq!(cast(&mut p,22,99,0.6),Err(CastError::WrongClass));
+        assert_eq!(p.mana,100.0);
+        assert!(p.cooldown_until_tick.is_empty());
+    }
+
 }
