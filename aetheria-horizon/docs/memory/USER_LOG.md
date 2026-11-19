@@ -43,3 +43,9 @@ Exact user message (verbatim):
 > "pokracuj pohraj si v tom ale drz se ty krase jak v tych videich a originalniho promtu"
 
 Confirmed interpretation: continue implementation within this chat and their linked GitHub, no Codex/no paid asset generators, adhere to all original Aetheria requirements (200 spells, 10 classes, native Rust/Horizon when supported, solid unique 3D shapes, elaborate SFX/animations/VFX, fantasy-only, mana/progression/GUI, original videos as artistic references). Do not send test ZIP before 100 fully playable spells (user directive from preceding turn).
+
+## 2026-11-19 — Iron-style minimal HUD, animated background, actual Rapier physics (exact instruction)
+
+> nemusis mi delat obrazek tych animaci jen kdyz jses porste v tom menu pozadi se hejbe krasne a tak ui ikonky ale to herni menu dej styl iron spells wheel vyberu nebo jak to tam je ten druhy zpusob a ukazatek na manu a hp i armor to muzes tam dat upravit vanilla hud aat to udelas nemusis delat dalsi obrazek jen to udelej implementuj to a pak pokracuj v kouzlech a nasel jsem duvod prej proc jsou ty kouzla tak krasne prej tenhle github to dela[https://github.com/dimforge/rapier](https://github.com/dimforge/rapier)
+
+Interpretation: no more requested UI images; draw living menu backdrop + icons in-game. Keep gameplay view clear and HUD tiny; R+mousewheel quick spell selection inspired by Iron's Spells' alternate selection control, use no copied copyrighted UI artwork. Health and armor should come from actual vanilla player stats; do not fabricate or hide food/air. Rust/Rapier can improve physics of 3D debris and projectiles; it does **not** create attractive shaders, 3D meshes, bloom or audio by itself. Continue implementing distinctive, physical-looking 3D spells. User still declines manual testing until 100 actually integrated spells.

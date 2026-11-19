@@ -72,3 +72,9 @@ This is **not a public test release**. World damage/healing, acquired items, act
 - UI model computes fluid mana ripple, 4–8-slot radial spell wheel, cooldown wedges and ten class color palettes.
 - Arcane Inscription tiers I–V now increment actual default spellbook capacity from 4 to 8 slots, not just its title.
 - This is **portable backend logic and GUI layout data** only; Horizon server-world saves, rendered GUI and full gameplay still need engine integration. It is not a playable 100-spell milestone. No manual test build until M100.
+
+## M11 compact Iron-style picker + real Rapier3D simulation (internal)
+
+[Detailed M11 source/limits](docs/M11_HUD_RAPIER.md). The game-UI source now implements a tiny mana bar and a selected-spell tile, **hold R + mouse wheel** selection (N/M fallback), G quick cast, and a **K**-toggled moving Constellation with 20 original pixel glyphs. Never covers normal gameplay with a permanent 5–8-slot wheel. Vanilla health/armor/food/air remain visible. A *full custom skin* of the health layer awaits complete native integration. Preview MP is client-local and not gameplay-synced.
+
+An independent open-source [Rapier3D](https://github.com/dimforge/rapier) adapter creates real 3D colliders and simulated falling/ricocheting secondary spell debris, with 10 distinct school recipes and finite body budgets. **Rapier does not create nice shaders.** The latest verified tests were [72 portable core + 7 physics tests, all green](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44530777587). The in-game renderer, native health skin, world collisions, casting and complete multiplayer implementation are not finished. User-visible release remains gated on 100 integrated spells.
