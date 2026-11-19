@@ -48,7 +48,7 @@ jobs:
       - name: Compile prelinked WASM module and package
         run: cargo horizon-mod build --wasm
       - name: Test 30 unique procedural world-space meshes and phase choreography
-        run: cargo test --lib -- --nocapture
+        run: AETHERIA_VISUAL_AUDIT=1 cargo test --lib -- --nocapture
       - name: Validate WASM package and integrity
         run: |
           python3 - <<'PY'
@@ -80,3 +80,11 @@ jobs:
         with:
           name: Aetheria-Horizon-30Spells-WASM-v0.5.3-Internal
           path: aetheria-horizon/preview-5spells-wasm/target/horizon-mod/aetheria_preview.hmod
+
+      - name: Upload geometry visual contact sheets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aetheria-30Spells-Visual-Audit-v0.5.3
+          path: aetheria-horizon/preview-5spells-wasm/target/visual-audit/
+          if-no-files-found: warn
