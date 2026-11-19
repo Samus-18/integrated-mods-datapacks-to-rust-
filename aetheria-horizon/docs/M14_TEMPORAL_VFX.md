@@ -36,3 +36,10 @@ Visual references from the four user MP4s:
 - The visual architecture has **30** distinct 3D spell motifs and individualized phases, not 200 completed spells.
 - 200 registry designs remain a long-term plan. The original user's intended halfway milestone is **100 fully gameplay-integrated spells** with usable GUI, acquisition, correct 3D, SFX, persistence and safe multiplayer. None of the 30 VFX previews alone count toward that milestone.
 - **No manual user test requested**. The next user-facing preview is gated by the user's latest intent and genuine system readiness.
+
+### M14 automated validation — 2026-11-19
+
+- **WASM pinned SDK build and `cargo test --lib`: passed** — [GitHub Actions run 44565012790](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44565012790).
+- Newly enforced preview `cinematic_beams` geometry tests: **5 passed, 0 failed**, including unique full 3D meshes ignoring all RGB colors, phase signatures, finite coordinates and bounded lifetimes.
+- Validated compiled internal `Aetheria-Horizon-30Spells-WASM-v0.5.3-Internal` package, SHA-512, 30 OGG cues, WGSL and ZIP integrity. Core Rust tests also passed on commit `135b207d5c2db665469b4b0d784c38af7ccea782`: [core run 44565012649](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44565012649).
+- This does **not** prove the actual aesthetic result on the user's Horizon Nightly nor server effects, persisted world state or 100 integrated spells. No user-performed interim playtest requested.
