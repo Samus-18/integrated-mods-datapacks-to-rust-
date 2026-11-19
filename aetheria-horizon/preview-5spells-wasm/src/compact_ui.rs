@@ -12,6 +12,7 @@ use aetheria_horizon::ui::minimal_hud::{
     layout,menu_motion,CompactHudSettings,
 };
 use aetheria_horizon::magic::registry::{by_id,CLASS_NAMES};
+use crate::catalog30::{self,SPELL_COUNT,SCHOOL_COLORS};
 
 const GOLD:u32=0xFFBCA56D;
 const GOLD_L:u32=0xFFF5DBA0;
@@ -20,9 +21,6 @@ const DARK:u32=0xD8091223;
 const EDGE:u32=0xFF344A66;
 const FROST:u32=0xFF83D7F2;
 const WHITE:u32=0xFFF0F4FC;
-const NAMES:[&str;5]=["PHOENIX", "GLACIER", "WORLDROOT", "STORM WYVERN", "ASTRAL RIFT"];
-const CLASS_IDS:[u8;5]=[0,1,5,6,7];
-const COLORS:[u32;5]=[0xFFEAA56C,0xFF83D7F2,0xFF85C17A,0xFFADB9F7,0xFFAD87DA];
 
 pub struct UiView {
     pub tick:u64,
@@ -30,7 +28,7 @@ pub struct UiView {
     pub quick_open:bool,
     pub constellation:bool,
     pub mana:f32,
-    pub cooldowns:[u64;5],
+    pub cooldowns:[u64;SPELL_COUNT],
     pub cast_variant:u8,
 }
 fn fill(e:&mut GuiRenderPostEvent<'_>,rect:[f32;4],color:u32) {
@@ -156,18 +154,21 @@ pub fn draw(host:&dyn ClientHost,e:&mut GuiRenderPostEvent<'_>,view:UiView) {
     }
     e.batch.text(&format!("AETHERIA  {:03} MP",mana.round() as i32),
                  [bar.x+4.,bar.y-14.],0xFFE5E8F1,true);
-    let selected=view.chosen.min(4);
-    let boxx=(w*0.5+100.).min(w-93.);
+    let selected=view.chosen.min(SPELL_COUNT-1);
+    let boxx=(w*0.5+100.).min(w-164.);
     let boxy=bar.y-7.;
-    frame(e,boxx,boxy,88.,29.,GOLD);
-    motif(e,selected,boxx+6.,boxy+6.,1.5);
-    e.batch.text(NAMES[selected],[boxx+26.,boxy+6.],COLORS[selected],true);
+    let school=catalog30::school(selected);
+    frame(e,boxx,boxy,160.,29.,SCHOOL_COLORS[school]);
+    glyph(e,selected,school,boxx+7.,boxy+8.);
+    e.batch.text(&catalog30::short_name(selected),[boxx+24.,boxy+5.],
+                 SCHOOL_COLORS[school],true);
     let cd=view.cooldowns[selected].saturating_sub(view.tick);
+    e.batch.text(&format!("{:02}/30",selected+1),[boxx+119.,boxy+17.],LACE,false);
     if cd>0 {
         e.batch.text(&format!("{:.1}s",cd as f32/20.),
-                     [boxx+29.,boxy+16.],GOLD_L,true);
+                     [boxx+24.,boxy+16.],GOLD_L,true);
     } else {
-        e.batch.text("READY",[boxx+29.,boxy+16.],LACE,false);
+        e.batch.text("READY",[boxx+24.,boxy+16.],LACE,false);
     }
     // R held: the second Iron-style selection method; the game area remains
     // visible because this compact picker never becomes a giant modal wheel.
@@ -177,12 +178,15 @@ pub fn draw(host:&dyn ClientHost,e:&mut GuiRenderPostEvent<'_>,view:UiView) {
             frame(e,x,y,panel.w,panel.h,GOLD);
             e.batch.text("SCROLL / N-M  |  G CAST",[x+8.,y+5.],WHITE,true);
             let each=(panel.w-16.)/5.;
-            for i in 0..5 {
-                let ix=x+8.+i as f32*each;
+            for offset in 0..5 {
+                let i=(selected+SPELL_COUNT+offset-2)%SPELL_COUNT;
+                let ix=x+8.+offset as f32*each;
                 let border=if i==selected{GOLD_L}else{EDGE};
                 frame(e,ix,y+19.,each-3.,25.,border);
-                motif(e,i,ix+3.,y+22.,1.0);
-                e.batch.text(&format!("{}",i+1),[ix+each-12.,y+27.],COLORS[i],true);
+                let school=catalog30::school(i);
+                glyph(e,i,school,ix+4.,y+24.);
+                e.batch.text(&format!("{:02}",i+1),
+                    [ix+each-18.,y+27.],SCHOOL_COLORS[school],true);
             }
         }
     }
@@ -207,8 +211,8 @@ fn draw_constellation(e:&mut GuiRenderPostEvent<'_>,tick:u64,chosen:usize){
     if w<270.||h<190.{return}
     fill(e,[0.,0.,w,h],0xEA030A1B);
     frame(e,12.,12.,w-24.,h-24.,GOLD);
-    let chosen=chosen.min(4);
-    let school=CLASS_IDS[chosen];
+    let chosen=chosen.min(SPELL_COUNT-1);
+    let school=catalog30::school(chosen) as u8;
     let motion=menu_motion(tick,0.0,school as u16,false);
     // Floating deep starfield behind the constellation map.
     for i in 0..52u32{
@@ -219,8 +223,8 @@ fn draw_constellation(e:&mut GuiRenderPostEvent<'_>,tick:u64,chosen:usize){
         fill(e,[x+motion.star_x*((i%3) as f32),y+motion.star_y,sz,sz],color);
     }
     e.batch.text("AETHERIA   /   CONSTELLATION",[30.,23.],GOLD_L,true);
-    e.batch.text(CLASS_NAMES[school as usize],[30.,39.],COLORS[chosen],true);
-    e.batch.text("K: CLOSE  /  N-M: SELECT CLASS",[30.,55.],LACE,false);
+    e.batch.text(CLASS_NAMES[school as usize],[30.,39.],SCHOOL_COLORS[school as usize],true);
+    e.batch.text("K: CLOSE / N-M: 30 SPELLS (10 CLASSES)",[30.,55.],LACE,false);
     let inner_w=(w-74.).max(170.);
     let mut previous:Option<(f32,f32)>=None;
     for i in 0..20usize{
@@ -241,9 +245,9 @@ fn draw_constellation(e:&mut GuiRenderPostEvent<'_>,tick:u64,chosen:usize){
             fill(e,[px+(x-px)*p,py+(y-py)*p,2.,2.],GOLD_L);
         }
         previous=Some((x,y));
-        let pulse=if i==0 {(motion.pulse*3.).max(1.)}else{1.};
+        let pulse=if i<3 {(motion.pulse*3.).max(1.)}else{1.};
         frame(e,x-10.-pulse*0.3,y-10.-pulse*0.3,
-              20.+pulse,20.+pulse,if i==0 {GOLD_L}else{EDGE});
+              20.+pulse,20.+pulse,if i<3 {GOLD_L}else{EDGE});
         glyph(e,i,chosen,x-4.5,y-4.5);
         // Unique spell names are from the Rust registry, not generated strings.
         if i==0||i==5||i==10||i==15 {
@@ -256,6 +260,6 @@ fn draw_constellation(e:&mut GuiRenderPostEvent<'_>,tick:u64,chosen:usize){
     frame(e,24.,h-42.,w-48.,20.,GOLD);
     e.batch.text("LIVING SKY: slow parallax / node pulse / rune trails",
                  [30.,h-37.],LACE,false);
-    e.batch.text("VISUAL PREVIEW  /  SKILL UNLOCKING PENDING",
+    e.batch.text("30 CLIENT EFFECTS  /  SERVER UNLOCKS PENDING",
                  [30.,h-27.],GOLD_L,false);
 }
