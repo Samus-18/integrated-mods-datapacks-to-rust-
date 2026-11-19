@@ -37,6 +37,10 @@ impl RapierAetheria{
             RigidBodyBuilder::fixed().translation(Vector::new(0.0,-1.0,0.0)),
             ColliderBuilder::cuboid(GROUND_HALF,1.0,GROUND_HALF)
         );
+        // Rapier spatial queries require a completed collision/broadphase
+        // update after initial static collider insertion. Without this first
+        // step, the raycast sees an empty acceleration structure.
+        world.step();
         Self{world,parts:Vec::new()}
     }
     pub fn spawn(
