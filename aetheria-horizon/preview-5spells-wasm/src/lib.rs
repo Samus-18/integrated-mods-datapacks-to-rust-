@@ -13,11 +13,18 @@ const MOD_ID: &str = "aetheria_preview";
 const IDS: [&str;5] = ["phoenix_garden", "glacier_cathedral", "worldroot", "thunder_wyrm", "astral_sunder"];
 const KEYS: [&str;5] = ["key.keyboard.z", "key.keyboard.x", "key.keyboard.c", "key.keyboard.v", "key.keyboard.b"];
 const NAMES: [&str;5] = ["Phoenix Garden", "Glacier Cathedral", "Living Worldroot", "Thunder Wyrm", "Astral Sunder"];
+const VARIANT_NAMES: [[&str;3];5] = [
+    ["Phoenix Garden", "Phoenix Wings", "Ember Cyclone"],
+    ["Glacier Cathedral", "Glacier Arches", "Frost Surge"],
+    ["Living Worldroot", "Living Cage", "Verdant Canopy"],
+    ["Thunder Wyrm", "Storm Antlers", "Storm Manta"],
+    ["Astral Sunder", "Void Blossom", "Fractured Stair"],
+];
 
 #[derive(Clone, Copy)]
 struct Cast { kind: usize, variant: u8, start: u64, center: [f64;3], direction: [f64;3] }
 #[derive(Default)]
-struct State { tick: u64, effects: Vec<Cast>, pipeline: Option<RenderPipelineRef>, last_cast: Option<usize>, variant_cycle: [u8; 5] }
+struct State { tick: u64, effects: Vec<Cast>, pipeline: Option<RenderPipelineRef>, last_cast: Option<usize>, last_variant: u8, variant_cycle: [u8; 5] }
 #[derive(Default)]
 struct Mod { state: Mutex<State> }
 
@@ -81,6 +88,7 @@ impl Hooks for Mod {
                     state.variant_cycle[kind] = (variant + 1) % 3;
                     state.effects.push(Cast {kind, variant, start: tick, center, direction: dir});
                     state.last_cast = Some(kind);
+                    state.last_variant = variant;
                 }
             }
         }
@@ -127,7 +135,7 @@ impl Hooks for Mod {
             [8.0, 9.0], 0xFFC9D5E9, true);
         let state = self.state.lock().unwrap();
         if let Some(last) = state.last_cast {
-            event.batch.text(NAMES[last], [8.0, 22.0], 0xFFE8C9FF, true);
+            event.batch.text(VARIANT_NAMES[last][state.last_variant as usize], [8.0, 22.0], 0xFFE8C9FF, true);
         }
     }
 }
