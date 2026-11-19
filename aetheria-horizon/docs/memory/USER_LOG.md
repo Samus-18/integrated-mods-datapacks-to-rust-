@@ -22,8 +22,8 @@ Requirements: 10 classes, 200 spells, four ways to cast; mana, cooldown, player 
 Exact user feedback (verbatim as received):
 > "hele cekal jsem horsi ale dobry akorat lepsi variace a  no vsak vis podle originalniho promtu mela bys to vse mit na githubu to bylo v tom promtu prvim at si to ulozis tam"
 
-Evidence supplied by user: \`horizon-client_MnaFG4NG1R.mp4\` (approximately 100 seconds) — local Horizon 26.3 playtest of the precompiled Rust/WASM five-spell preview v0.2.0.
+Evidence supplied by user: `horizon-client_MnaFG4NG1R.mp4` (approximately 100 seconds) — local Horizon 26.3 playtest of the precompiled Rust/WASM five-spell preview v0.2.0.
 
 Requirements reaffirmed: visual variation must improve; retain all original master specification requirements in GitHub; keep history, decisions and spell registry updated, without Codex. Preserve fantasy only. Do not equate five early effects with 200 finished spells.
 
-The original large master prompt's full unedited byte-for-byte transcript is **not** presently in this GitHub file; the baseline above summarizes it. See \`docs/PROJECT_SPECIFICATION.md\` for a durable structured feature and delivery contract. Do not misrepresent a paraphrase as a verbatim record.
+The original large master prompt's full unedited byte-for-byte transcript is **not** presently in this GitHub file; the baseline above summarizes it. See `docs/PROJECT_SPECIFICATION.md` for a durable structured feature and delivery contract. Do not misrepresent a paraphrase as a verbatim record.
