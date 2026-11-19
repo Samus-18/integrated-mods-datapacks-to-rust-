@@ -24,8 +24,8 @@ fn shape(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
  let t=age*0.024;let r=2.7*g;
  match id{
  5=>{ // Ashen Veil: irregular charged draped smoke-cloak, not one gray cube.
-   for j in 0..7{
-    let a=j as f64*TAU/7.0+t*0.22;
+   for j in 0..4{
+    let a=j as f64*TAU/4.0+t*0.22;
     let x=a.cos()*1.32*g;
     let z=a.sin()*1.32*g;
     curtain(s,p(o,x,0.,z),r*0.68,3.9*g,age,a,
@@ -57,8 +57,8 @@ fn shape(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
    }
   },
  45=>{ // Vacuum Pin: convergent solid funnels with denser focal body.
-   for i in 0..5{
-    let a=TAU*i as f64/5.+t;
+   for i in 0..4{
+    let a=TAU*i as f64/4.+t;
     curtain(s,p(o,0.,0.,0.),(1.3+0.19*i as f64)*g,3.6*g,
       age,a,tint(c,0.58+0.025*i as f64,0.27));
    }
@@ -79,8 +79,8 @@ fn shape(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
    }
   },
  85=>{ // Mistcloak: diffuse droplet-skin silhouette, NOT thin flat rings.
-   for layer in 0..5{
-    let a=TAU*layer as f64/5.;
+   for layer in 0..3{
+    let a=TAU*layer as f64/3.;
     curtain(s,p(o,a.cos()*0.65*g,0.,a.sin()*0.65*g),
           1.6*g+0.24*layer as f64*g,3.6*g,
           age,a,tint(c,0.67,0.15+0.032*layer as f64));
@@ -89,8 +89,9 @@ fn shape(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
     let a=TAU*i as f64/13.+t;
     let h=(0.5+(i%5) as f64*0.62)*g;
     let center=p(o,1.3*g*a.cos(),h,1.3*g*a.sin());
-    orb(s,center,[0.21*g,0.31*g,0.20*g],
-        age,tint(c,0.87,0.53),0.59);
+    crystal(s,p(center,0.,-0.22*g,0.),
+       p(center,0.,0.31*g,0.),0.19*g,a,
+       tint(c,0.87,0.59));
    }
   },
  105=>{ // Firefly Veil: living motes inside a 3D verdant shield, not ring.
@@ -220,7 +221,7 @@ mod tests{
    render(Cast{kind:slot,variant:4,start:0,center:[0.,64.,0.],
             direction:[0.,0.,1.]},age,&mut scene);
    assert!(scene.facets.len()>=16,"invisible spell {id}");
-   assert!(scene.facets.len()<=500);
+   assert!(scene.facets.len()<500,"VFX geometry clipped to 500-quad budget for spell {id}");
    assert!(scene.facets.iter().all(|(q,_)|
       q.iter().flatten().all(|v|v.is_finite())));
    let shape=scene.facets.iter().flat_map(|(q,_)|
