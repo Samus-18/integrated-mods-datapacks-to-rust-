@@ -1,4 +1,4 @@
-name: Aetheria 30 spells, corrected compact UI and SFX WASM CI
+name: Aetheria 200 design-intent and visual draft WASM CI
 concurrency:
   group: aetheria-wasm-internal-main
   cancel-in-progress: true
@@ -47,7 +47,7 @@ jobs:
           python3 tools/generate_sound_assets.py
       - name: Compile prelinked WASM module and package
         run: cargo horizon-mod build --wasm
-      - name: Test 30 unique procedural world-space meshes and phase choreography
+      - name: Test 200 cast intent identities, 170 draft solid VFX and 860 geometry viewpoints
         run: AETHERIA_VISUAL_AUDIT=1 cargo test --lib -- --nocapture
       - name: Validate WASM package and integrity
         run: |
@@ -64,7 +64,7 @@ jobs:
               assert 'assets/aetheria_preview/shaders/pipeline/ethereal.wgsl' in names
               m=tomllib.loads(z.read('horizon-mod.toml').decode())
               assert m['id']=='aetheria_preview'
-              assert m['version']=='0.5.3'
+              assert m['version']=='0.6.0'
               assert 'native' not in m and 'wasm' in m
               assert hashlib.sha512(z.read('mod.wasm')).hexdigest()==m['wasm']['sha512']
               import json
@@ -78,13 +78,13 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-30Spells-WASM-v0.5.3-Internal
+          name: Aetheria-Horizon-200Spells-WASM-v0.6.0-Internal-UNPOLISHED
           path: aetheria-horizon/preview-5spells-wasm/target/horizon-mod/aetheria_preview.hmod
 
       - name: Upload geometry visual contact sheets
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-30Spells-Visual-Audit-v0.5.3
+          name: Aetheria-200Spells-Visual-Audit-v0.6.0-Internal
           path: aetheria-horizon/preview-5spells-wasm/target/visual-audit/
           if-no-files-found: warn
