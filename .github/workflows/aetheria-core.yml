@@ -19,3 +19,13 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Check portable Rust core
         run: cargo test --all-targets
+  rapier-physics-tests:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: aetheria-horizon/rapier-sim
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Verify real Rapier3D fantasy debris and collision simulations
+        run: cargo test --all-targets

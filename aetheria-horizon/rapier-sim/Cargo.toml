@@ -1,0 +1,9 @@
+[package]
+name = "aetheria-rapier-sim"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.86"
+publish = false
+
+[dependencies]
+rapier3d = "=0.36.1"
