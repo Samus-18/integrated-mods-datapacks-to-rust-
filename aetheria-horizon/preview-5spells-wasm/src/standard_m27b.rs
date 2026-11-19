@@ -310,7 +310,11 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
     crystal(s,joint,crown,0.30*g,0.27*i as f64,tint(c,0.80,0.95));
     for side in [-1.,1.]{
       let rib=p(o,x+0.42*g*side,(1.30+0.13*(i%3) as f64)*g,0.53*g);
-      crystal(s,joint,rib,0.22*g,i as f64+side,tint(c,0.91,0.93));
+      // Five-sided rounded bone arches connect into the thick column;
+      // replacing twelve sharp crystal faces per rib retains both arches
+      // without starving the final wall foundation of geometry.
+      s.tube(joint,rib,0.20*g,0.12*g,i as f64+side,
+          tint(c,0.91,0.93),5);
     }
     // Enclosing broad ossified plates connect adjacent bone columns,
     // preventing a visual row of disconnected pointy toothpicks.
@@ -364,6 +368,8 @@ mod tests{
       center:[0.,64.,0.],direction:[0.,0.,1.]},age,&mut scene);
     assert!(scene.facets.len()>=14,"not enough visible faces {id}");
     assert!(scene.facets.len()<500,"hard capped; incomplete scene {id}");
+    if id==194 {assert!(scene.facets.len()<=400,
+        "Bone Palisade exceeded M28 safety headroom: {} faces",scene.facets.len());}
     assert!(scene.facets.iter().all(|(q,_)|
       q.iter().flatten().all(|v|v.is_finite())),"not finite {id}");
     let signature=scene.facets.iter().flat_map(|(q,_)|
