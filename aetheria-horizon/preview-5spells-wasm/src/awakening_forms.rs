@@ -218,14 +218,56 @@ fn form(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32) {
       orb(s,p(o,0.,1.91*g,-1.8*g),[0.71*g,0.70*g,0.68*g],
            age,tint(c,0.88,0.89),0.85);
    },
-   96=>cascade(s,o,age,g,8,r,h,c), // Monsoon Choir: healing fountains
+   96=>{ // MONSOON CHOIR: THREE DISTINCT restorative fountains.
+      // The first draft was an overlapping single funnel, duplicating
+      // Storm Eye; three separate sources now create a visible chorus.
+      for fountain in 0..3{
+        let a=TAU*fountain as f64/3.;
+        let base=p(o,2.15*g*a.cos(),0.,2.15*g*a.sin());
+        floor_slab(s,base,0.86*g,0.18,age*0.005+a,
+                   tint(c,0.65,0.56));
+        cascade(s,base,age+fountain as f64*4.0,g*0.76,2,
+                0.80*g,4.8*g,tint(c,0.85,0.31));
+        crystal(s,p(base,0.,-0.3*g,0.),p(base,0.,3.0*g,0.),
+              0.28*g,a,tint(c,0.89,0.64));
+      }
+   },
    97=>{ // Abyssal Dome: layered submerged pressure sphere
       orb(s,p(o,0.,2.0*g,0.),[2.1*g,1.9*g,2.1*g],age,c,0.45);
       orb(s,p(o,0.,2.0*g,0.),[1.7*g,1.52*g,1.7*g],age,
           tint(c,0.53,0.56),0.65);
       crystal_garden(s,o,age,g,5,1.4*g,2.1*g,tint(c,0.92,0.79));
    },
-   98=>beast(s,o,age,g,c,2.9), // Leviathan Spiral: liquid dragon
+   98=>{ // LEVIATHAN SPIRAL: a continuous WET CRYSTAL-WATER ribbon
+      // dragon, not the same hard block skeleton as Glacial Leviathan.
+      let n=16usize;
+      let spiral=|t:f64| {
+         let a=t*TAU*2.22+age*0.022;
+         let rad=(0.65+1.52*t)*g;
+         p(o,rad*a.cos(),(0.5+4.6*t)*g,rad*a.sin())
+      };
+      for i in 0..n {
+         let t=i as f64/n as f64;
+         let u=(i+1) as f64/n as f64;
+         let mid=(t+u)*0.5;
+         let start=spiral(t);
+         let end=spiral(u);
+         let current=spiral(mid);
+         let a=mid*TAU*2.22+age*0.022;
+         let flank=[-a.sin(),0.,a.cos()];
+         let half=(0.7-0.27*t)*g;
+         s.membrane(start,p(current,flank[0]*half,-0.12*g,flank[2]*half),
+             end,p(current,-flank[0]*half,0.12*g,-flank[2]*half),
+             tint(c,0.78+0.09*(i%3) as f64,0.56));
+         if i%4==0 {
+           wing(s,current,a+0.65,(1.1-0.3*t)*g,0.95*g,
+                tint(c,0.68,0.42));
+         }
+      }
+      let head=spiral(1.0);
+      crystal(s,head,p(head,0.73*g,0.40*g,-0.12*g),
+              0.44*g,age*0.01,tint(c,0.93,0.87));
+   },
    115=>{ // Ancient Ent: stocky rooted *walking* tree guardian
       guardian(s,o,age,g,tint(c,0.53,0.91));
       crystal_garden(s,o,age,g,8,r*0.70,h*0.64,tint(c,0.79,0.86));
@@ -238,13 +280,20 @@ fn form(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32) {
       }
       body(s,p(o,0.,1.28*g,0.),[0.47*g,1.58*g,0.51*g],tint(c,0.58,0.91));
    },
-   117=>{ // Verdant Communion: blooming layered living root petals
-      floor_slab(s,o,r*0.87,0.21,age*0.005,tint(c,0.51,0.72));
-      for j in 0..12 {
-        let a=TAU*j as f64/12.;
-        wing(s,p(o,0.,0.3*g,0.),a,r*(0.57+(j%4) as f64*0.11),
-             h*(0.49+(j%3) as f64*0.1),tint(c,0.63,0.79));
+   117=>{ // VERDANT COMMUNION: a grounded unfolding medicinal FLOWER.
+      // Canopy previously looked like the same vertical green spike fan;
+      // these leaves fan horizontally across real ground and bear a heart.
+      floor_slab(s,o,r*0.87,0.23,age*0.005,tint(c,0.45,0.68));
+      for petal in 0..14 {
+        let a=TAU*petal as f64/14.;
+        let spread=r*(0.64+(petal%4) as f64*0.11);
+        wing(s,p(o,0.,0.18*g,0.),a,spread,
+            0.62*g+(petal%3) as f64*0.1*g,
+            tint(c,0.55+0.04*(petal%4) as f64,0.81));
       }
+      orb(s,p(o,0.,0.63*g,0.),[0.58*g,0.57*g,0.58*g],
+          age,tint(c,0.89,0.92),0.85);
+      crystal_garden(s,o,age,g*0.49,8,1.5*g,2.0*g,tint(c,0.62,0.56));
    },
    118=>{ // Thornheart Swarm: stout, interwoven bramble forest
       for group in 0..9{
@@ -275,17 +324,25 @@ fn form(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32) {
           tint(c,0.84,0.78));
       }
    },
-   137=>{ // Tempest Conductor: angular magical instrument/rod with large
-      // paired broad conductive fins, not only an isolated thin stick.
-      crystal(s,p(o,0.,0.0,0.),p(o,0.,h,0.),
-             0.52*g,0.19,tint(c,0.80,0.92));
+   137=>{ // TEMPEST CONDUCTOR: a striking heavy conductor staff
+      // between two faceted copper-magical capacitors. Not the blue
+      // winged-thunder elemental from spell 135.
+      body(s,p(o,0.,2.4*g,0.),[0.54*g,2.0*g,0.55*g],
+          tint(c,0.57,0.87));
       for side in [-1.,1.] {
-        for j in 0..5 {
-          wing(s,p(o,0.,1.2*g,0.),if side<0.{PI}else{0.}+side*j as f64*0.15,
-               r*(0.55+0.09*j as f64),h*(0.65+0.04*j as f64),
-               tint(c,0.68,0.65));
-        }
+         let x=side*1.1*g;
+         body(s,p(o,x,3.05*g,0.),[0.48*g,0.99*g,0.58*g],
+              tint(c,0.69,0.89));
+         crystal(s,p(o,x,3.1*g,0.),p(o,x*1.38,4.7*g,0.),
+                 0.46*g,0.3*side,tint(c,0.94,0.90));
+         for i in 0..3{
+            let y=(i as f64+1.)*1.2*g;
+            body(s,p(o,side*(0.29+0.16*i as f64)*g,y,0.),
+                [0.27*g,0.17*g,0.43*g],tint(c,0.77,0.89));
+         }
       }
+      crystal(s,p(o,0.,4.23*g,0.),p(o,0.,5.4*g,0.),
+              0.32*g,age*0.015,tint(c,0.99,0.93));
    },
    138=>{ // Heavens Rattle: heavy suspended thunder seals/fractures
       for j in 0..7{
@@ -297,13 +354,20 @@ fn form(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32) {
       orb(s,p(o,0.,2.5*g,0.),[0.87*g,1.11*g,0.97*g],
           age,tint(c,0.80,0.68),0.74);
    },
-   155=>{ // Nebula Mantle: actual deep layered star cloak, not plain orb
-      for i in 0..7{
-        curtain(s,p(o,0.,0.,0.),
-         r*(0.62+0.08*(i%4) as f64),h,age,TAU*i as f64/7.,
-         tint(c,0.58+0.045*(i%4) as f64,0.25));
+   155=>{ // NEBULA MANTLE: wide star-strewn cloak, not another vortex
+      // funnel. Nine panels spread horizontally from an astral collar.
+      let collar=p(o,0.,3.5*g,0.);
+      for i in 0..9{
+        let a=TAU*i as f64/9.+age*0.005;
+        wing(s,collar,a,r*(0.67+(i%4) as f64*0.10),
+              -(1.7+(i%3) as f64*0.29)*g,
+              tint(c,0.57+0.04*(i%5) as f64,0.43));
       }
-      crystal_garden(s,o,age,g,8,1.9*g,3.0*g,tint(c,0.72,0.78));
+      for sheet in 0..3{
+        curtain(s,o,r*(0.30+0.1*sheet as f64),h*0.84,
+              age,TAU*sheet as f64/3.,tint(c,0.72,0.17));
+      }
+      crystal_garden(s,o,age,g*0.48,7,1.4*g,2.8*g,tint(c,0.86,0.75));
    },
    156=>{ // Gravity Crown: rotating heavy tectonic orbital slabs
       orb(s,p(o,0.,2.1*g,0.),[1.08*g,1.36*g,1.1*g],age,c,0.63);
@@ -314,12 +378,13 @@ fn form(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32) {
              tint(c,0.53+0.05*(i%4) as f64,0.88));
       }
    },
-   157=>{ // Celestial Echo: two parallel crystalline reflective doppel portals
-      for side in [-1.,1.]{
-        body(s,p(o,side*1.54*g,2.24*g,0.),
-            [0.73*g,1.7*g,0.42*g],tint(c,0.59,0.50));
-        guardian(s,p(o,side*1.54*g,0.,0.58*g),age,g*0.38,
-                tint(c,0.84,0.38));
+   157=>{ // CELESTIAL ECHO: two reflective panels set BEHIND
+      // distinct full-height astral silhouettes, not just two slabs.
+      for side in [-1.,1.] {
+        body(s,p(o,side*1.60*g,2.35*g,0.72*g),
+             [0.82*g,1.77*g,0.32*g],tint(c,0.41,0.46));
+        guardian(s,p(o,side*1.55*g,0.,-0.77*g),
+                 age,g*0.58,tint(c,0.79,0.67));
       }
    },
    158=>{ // Lunar Eclipse: partial occlusion of luminous lunar sphere
@@ -329,14 +394,20 @@ fn form(s:&mut Scene,id:u16,o:V,age:f64,g:f64,c:u32) {
           tint(c,0.18,0.96),0.91);
    },
    175=>guardian(s,o,age,g,c), // Hour Guardian: large timekeeper
-   176=>{ // Stasis Lens: nested solid transparent time stoppage shells
-      orb(s,p(o,0.,2.4*g,0.),[1.8*g,1.9*g,1.8*g],age,c,0.52);
-      orb(s,p(o,0.,2.4*g,0.),[1.41*g,1.48*g,1.41*g],age,
-          tint(c,0.51,0.60),0.44);
-      for j in 0..8{
-        let a=TAU*j as f64/8.;
-        body(s,p(o,1.24*g*a.cos(),2.4*g,1.24*g*a.sin()),
-           [0.23*g,0.32*g,0.23*g],tint(c,0.76,0.82));
+   176=>{ // STASIS LENS: visible suspended projectiles inside
+      // frozen time, physically different from a simple hourglass orb.
+      orb(s,p(o,0.,2.4*g,0.),[1.8*g,1.9*g,1.8*g],age,c,0.35);
+      for j in 0..12 {
+        let a=TAU*j as f64/12.;
+        let yy=(1.7+(j%4) as f64*0.45)*g;
+        crystal(s,p(o,1.17*g*a.cos(),yy,1.17*g*a.sin()),
+             p(o,1.17*g*a.cos()-0.53*g,yy+0.28*g,
+                    1.17*g*a.sin()-0.15*g),
+             0.17*g,a,tint(c,0.92,0.93));
+      }
+      for frame in [-1.,1.] {
+         body(s,p(o,frame*1.42*g,2.4*g,0.),
+               [0.23*g,1.68*g,0.41*g],tint(c,0.64,0.79));
       }
    },
    177=>{ // Entropy Ribbon: wide disintegrating temporal cloth
