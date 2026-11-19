@@ -56,3 +56,18 @@ Manual source reworks from these observed images:
 - Ashen Veil, Vacuum Pin and Mistcloak: reduced excessive full-body curtain or sphere quads; these previously silently clipped at the exact **500 emitted-face cap**, hiding intended last detail. Reduced the overlapping curtain count, replaced water droplets with cheaper individual crystals, and strengthened the Charged test to reject exact-cap saturation.
 
 **Do not mark these artistically approved** until the latest CI artifact is reopened. This audit is real Rust CPU geometry rendered to SVG from two camera projections, not the Horizon shader's output. It cannot prove actual depth, HDR material, glowing fog, GPU performance or visual equivalence to the original four videos.
+
+
+## Final source-geometry audit and verified build
+
+Latest code commit `88096ac7279a898e402c2680218f8864bdd8fd5e` passed the full pinned Horizon SDK workflow [run 44611449822](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44611449822): **18/18 native-host preview tests passed**, all 860 source-geometry diagnostic views exported, full `.hmod` package, SHA512, 30 OGG and WGSL integrity verified. The test now rejects a **500-face clipped** scene for each of the 20 new Standard signatures.
+
+Opened the **final 20 Cast SVGs** from run artifact `Aetheria-200Spells-Visual-Audit-v0.6.0-Internal` and compared with the initial source snapshots. Actual observed changes:
+- #025 Hail Carousel now visibly shows **numerous angular floating ice chunks**, not four smooth spheres; emission **288** vs **500 clipped**.
+- #165 Temporal Mark now reads as an open 12-marker **time dial and sandglass**, not an opaque square plaque; 132 faces.
+- #164 Sands of Delay is now a recognizably tapered **glass hourglass**, not two round blobs; 388 faces.
+- #044 Feather Drift has broad leaf/feather faces, although no proper glowing downwash yet.
+- #104 Briar Loop is more dense and organic, now **436 faces** under the 500 limit rather than truncating second-layer vegetation.
+- #005 Ashen Veil now **428** faces, #045 Vacuum Pin **446**, #085 Mistcloak **396**; no truncated last effects.
+
+The final screenshot audit still shows BASIC source geometry, not the 2026 reference-video-quality light/motion that the user wants. #124 Arc Net remains too much like stacked triangle cards, some storm ribbons are plank-like, and #004 Furnace Step looks more like standing fire blades than glowing footprints. These and the other **90** uncustomized Standard silhouettes need targeted further art direction and, importantly, a real depth-aware native GPU shading bridge. No user manual test requested; no release claimed.
