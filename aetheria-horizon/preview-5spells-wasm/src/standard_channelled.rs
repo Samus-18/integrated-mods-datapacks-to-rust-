@@ -118,20 +118,40 @@ fn scene(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
               }
           }
       },
-      126=>{ // FLASHSTEP: volumetric trailing silhouettes, not a dotted line.
-          for k in 0..5 {
-              let t=k as f64/4.;
-              let x=(t-0.5)*5.4*g;
-              let z=0.28*g*(k%2) as f64;
-              let alpha=0.80-0.13*k as f64;
-              let center=p(o,x,1.45*g,z);
-              body(s,center,[0.40*g,0.85*g,0.34*g],tint(c,0.69,alpha));
-              body(s,p(center,0.,1.27*g,0.),
-                  [0.38*g,0.39*g,0.34*g],tint(c,0.85,alpha));
-              for side in [-1.,1.]{
-                  crystal(s,p(center,side*0.41*g,0.52*g,0.),
-                      p(center,side*0.83*g,-0.56*g,0.11*g),
-                      0.25*g,0.2*side,tint(c,0.72,alpha));
+      126=>{ // FLASHSTEP: four REAL HUMAN SHAPED lightning afterimages.
+          // Initial art audit: four identical blank cubes. Every figure now
+          // has a separated torso/head, two arms and a running leg stance.
+          for k in 0..4 {
+              let t=k as f64/3.;
+              let x=(t-0.5)*6.0*g;
+              let z=0.23*g*(k%2) as f64;
+              let fading=0.85-0.14*k as f64;
+              let center=p(o,x,1.72*g,z);
+              body(s,center,[0.43*g,0.65*g,0.31*g],
+                   tint(c,0.61,fading));
+              body(s,p(center,0.,1.11*g,0.),
+                   [0.35*g,0.36*g,0.33*g],
+                   tint(c,0.93,fading));
+              for side in [-1.,1.] {
+                  let shoulder=p(center,side*0.43*g,0.52*g,0.);
+                  let glove=p(center,side*0.79*g,-0.42*g,
+                      0.20*g*(if k%2==0 {1.}else{-1.}));
+                  crystal(s,shoulder,glove,0.21*g,side*0.4,
+                      tint(c,0.76,fading));
+                  let hip=p(center,side*0.23*g,-0.63*g,0.);
+                  let foot=p(center,side*0.39*g,-1.50*g,
+                            side*0.34*g*(if k%2==0{1.}else{-1.}));
+                  crystal(s,hip,foot,0.29*g,side*0.15,
+                      tint(c,0.68,fading));
+              }
+              // A broad translucent stroke between afterimages suggests
+              // rapid displacement rather than five static armor mannequins.
+              if k<3 {
+                  s.membrane(p(center,-0.32*g,0.45*g,-0.48*g),
+                      p(center,0.28*g,0.82*g,-0.43*g),
+                      p(center,1.70*g,0.18*g,-0.63*g),
+                      p(center,1.45*g,-0.53*g,-0.80*g),
+                      tint(c,0.95,fading*0.28));
               }
           }
       },
@@ -166,19 +186,33 @@ fn scene(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32){
               }
           }
       },
-      186=>{ // WRAITH STEP: a passing ghost mantle and protective floor phasing.
+      186=>{ // WRAITH STEP: FOUR PHASING HOODED GHOSTS, not columns.
           for k in 0..4 {
               let t=k as f64/3.;
               let loc=p(o,(t-0.5)*4.8*g,0.,(t*PI).sin()*0.24*g);
-              let a=0.67-0.13*k as f64;
-              body(s,p(loc,0.,1.55*g,0.),
-                    [0.60*g,1.26*g,0.42*g],tint(c,0.64,a));
-              // Four 126-face sphere heads exhaust the per-spell draw budget.
-              // Keep the full ghost group with chunky original faceted skulls.
-              body(s,p(loc,0.,2.78*g,0.),
-                  [0.43*g,0.50*g,0.36*g],tint(c,0.78,0.50));
-              wing(s,p(loc,0.,1.75*g,-0.12*g),PI*0.18,
-                   1.04*g,1.42*g,tint(c,0.72,0.35));
+              let fading=0.66-0.13*k as f64;
+              let shoulder=p(loc,0.,2.18*g,0.);
+              let left=p(loc,-0.70*g,1.63*g,-0.05*g);
+              let right=p(loc,0.74*g,1.63*g,-0.05*g);
+              let lower_left=p(loc,-1.15*g,-0.45*g,0.22*g);
+              let lower_right=p(loc,1.00*g,-0.20*g,0.35*g);
+              // Heavy connected fluttering cloak, asymmetrical ghost tails.
+              s.membrane(shoulder,left,lower_left,p(loc,0.,0.45*g,0.3*g),
+                  tint(c,0.55,fading));
+              s.membrane(shoulder,p(loc,0.,0.4*g,0.32*g),
+                         lower_right,right,tint(c,0.69,fading*0.88));
+              body(s,p(loc,0.,2.43*g,0.02*g),
+                   [0.44*g,0.51*g,0.40*g],
+                   tint(c,0.81,fading*0.89));
+              for side in [-1.,1.] {
+                  crystal(s,p(shoulder,side*0.42*g,-0.24*g,0.),
+                      p(loc,side*1.04*g,0.82*g,0.42*g),
+                      0.18*g,side*0.23,tint(c,0.78,fading*0.72));
+              }
+              // Rather than feet, their mantles dissolve into front-facing
+              // fabric triangles at distinct depths.
+              wing(s,p(loc,0.,0.38*g,0.35*g),PI*0.40+(k%2) as f64*0.29,
+                   0.72*g,0.91*g,tint(c,0.78,fading*0.58));
           }
       },
       _=>unreachable!("one of exactly ten Channeled Standard spell IDs"),
