@@ -41,6 +41,17 @@ pub fn for_spell(id:u16)->Option<Timeline>{
  162=>([1,6,2,17],[14,120,55,35]),
  181=>([5,8,5,29],[25,85,155,48]),
  182=>([7,9,4,200],[20,52,110,18]),
+ 3=>([6,11,8,39],[22,94,140,45]),    // Magma Lash: coil then crack
+ 23=>([7,13,7,54],[18,115,150,27]), // Shard Chorus: outward fan
+ 43=>([5,15,5,48],[12,90,70,24]),  // Updraft Well: ascending spiral
+ 63=>([9,9,13,45],[20,60,160,30]), // Gravel Jaws: closing strike
+ 83=>([10,18,8,83],[19,80,50,21]), // Pearl Shield: formation/absorption
+ 103=>([11,16,6,102],[24,55,80,35]), // Moss Mend: gradual growth
+ 123=>([2,7,4,25],[14,135,170,24]), // Thunder Needle: fast rupture
+ 143=>([8,10,3,54],[15,110,44,22]), // Blink Fold: open/close portal
+ 163=>([12,14,10,91],[24,75,65,30]), // Tick Pulse: temporal contraction
+ 183=>([9,17,5,80],[18,55,72,40]), // Grave Whisper: prolonged lure
+
  _=>return None,
  };
  let kinds=[Stage::Telegraph,Stage::Cast,Stage::Impact,Stage::Afterglow];
@@ -52,7 +63,7 @@ pub fn for_spell(id:u16)->Option<Timeline>{
  #[test] fn every_portable_spell_has_a_bounded_timeline(){
   use std::collections::HashSet;
   let mut signatures=HashSet::new();
-  for c in 0..10u16 {for n in [1,2]{
+  for c in 0..10u16 {for n in [1,2,3]{
    let id=c*20+n;
    let t=for_spell(id).expect("timeline missing");
    assert_eq!(t.spell_id,id);assert!(!t.mesh.is_empty());assert!(!t.shader.is_empty());
@@ -65,6 +76,30 @@ pub fn for_spell(id:u16)->Option<Timeline>{
   assert_eq!(t.stage_at(0),Some(Stage::Telegraph));
   assert_eq!(t.stage_at(8),Some(Stage::Cast));
   assert_eq!(t.stage_at(t.total_ticks()),None);
-  assert!(for_spell(23).is_none());
+  assert!(for_spell(24).is_none());
  }
+}
+
+#[cfg(test)]
+mod m14_choreography_tests {
+    use super::{for_spell, Stage};
+    #[test]
+    fn all_thirty_actions_have_complete_timeline_and_distinct_phase_speeds(){
+        let mut signatures=std::collections::BTreeSet::new();
+        for school in 0..10u16 {
+            for rank in 1..=3 {
+                let id=school*20+rank;
+                let t=for_spell(id).expect("every 30-spell action has a timeline");
+                let lengths=t.phases.map(|p|p.duration_ticks);
+                assert!(signatures.insert(lengths),"duplicated phase choreography for {id}");
+                assert!(t.total_ticks()>=12);
+                assert!(t.total_ticks()<=240);
+                assert!(t.phases.iter().all(|p|p.duration_ticks>0 && p.particle_cap<=1200));
+                assert_eq!(t.stage_at(0),Some(Stage::Telegraph));
+                assert_eq!(t.stage_at(t.total_ticks()),None);
+            }
+        }
+        assert!(for_spell(4).is_none(),"future spells must remain design only");
+        assert_eq!(signatures.len(),30);
+    }
 }
