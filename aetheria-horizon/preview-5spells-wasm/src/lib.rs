@@ -4,12 +4,14 @@ mod compact_ui;
 mod catalog30;
 mod cinematic_beams;
 mod hero_vfx;
+mod catalog200;
+mod mass_forms;
 #[cfg(test)]
 mod visual_audit;
 #[cfg(test)]
 mod shader_validation;
 use aetheria_horizon::ui::minimal_hud::QuickSelector;
-use catalog30::{SPELL_COUNT,DIRECT_SLOTS};
+use catalog200::{SPELL_COUNT,DIRECT_SLOTS};
 use aetheria_horizon::core::player_data::PlayerMagic;
 use aetheria_horizon::cast as cast_spell;
 use mod_api::{
@@ -125,11 +127,11 @@ impl Hooks for Mod {
         state.tick=state.tick.saturating_add(1);
         let now=state.tick;
         if state.demo_magic.is_none() {
-            // All 30 curated spells are deliberately enabled for the visual
+            // All 200 authored spells are deliberately enabled for the visual
             // trial. Genuine discovery/unlocks remain server-owned future work.
             let mut demo=PlayerMagic::new(0);
             for slot in 0..SPELL_COUNT {
-                demo.unlocked_nodes.insert(catalog30::id(slot));
+                demo.unlocked_nodes.insert(catalog200::id(slot));
             }
             state.demo_magic=Some(demo);
         }
@@ -159,8 +161,8 @@ impl Hooks for Mod {
                 for kind in pressed {
                     // Preview mana is client-local: NOT the future multiplayer
                     // server authority, and never unlocks real world content.
-                    let spec=catalog30::spec(kind);
-                    // One source of truth for mana, cooldown and 30 distinct
+                    let spec=catalog200::spec(kind);
+                    // One source of truth for mana, cooldown and 200 distinct
                     // action intents: the shared, tested Rust casting core.
                     let result={
                         let Some(magic)=state.demo_magic.as_mut() else {continue;};
@@ -173,7 +175,7 @@ impl Hooks for Mod {
                     }
                     state.local_cooldowns[kind]=result.next_allowed_tick;
                     state.quick.selected=kind;
-                    let center = if matches!(catalog30::school(kind),1|3|5|9) {
+                    let center = if matches!(catalog200::school(kind),1|3|5|9) {
                         ground_target.unwrap_or_else(|| {
                             let mut p = add(cam.position, scale(dir, 6.0));
                             p[1] -= 1.6;
@@ -184,8 +186,8 @@ impl Hooks for Mod {
                     };
                     if state.effects.len() >= 8 { state.effects.remove(0); }
                     let tick = state.tick;
-                    // Thirty selectable identities, three different geometry recipes per school.
-                    let variant = catalog30::rank(kind) as u8;
+                    // 200 selectable registry identities; 30 bespoke VFX + 170 original-form drafts.
+                    let variant = catalog200::rank(kind) as u8;
                     state.effects.push(Cast {kind, variant, start: tick, center, direction: dir});
                     state.last_cast = Some(kind);
                     state.last_variant = variant;
@@ -200,7 +202,7 @@ impl Hooks for Mod {
             // Charge / cast / impact sound timestamps must match each spell's
             // distinct four-stage VFX timing, never a fixed global 9/18 ticks.
             let offsets=if let Some(timeline)=
-                aetheria_horizon::vfx::timeline::for_spell(catalog30::id(kind))
+                aetheria_horizon::vfx::timeline::for_spell(catalog200::id(kind))
             {
                 let scale=104.0/timeline.total_ticks() as f64;
                 let charge=(f64::from(timeline.phases[0].duration_ticks)*scale)
@@ -213,9 +215,9 @@ impl Hooks for Mod {
                 [0,9,18] // Defensive fallback for corrupt/absent registry.
             };
             for (i,offset) in offsets.into_iter().enumerate() {
-                let play=SoundPlay::at(catalog30::SCHOOL_SFX[catalog30::school(kind)][i], SoundSource::Blocks, origin)
+                let play=SoundPlay::at(catalog200::SCHOOL_SFX[catalog200::school(kind)][i], SoundSource::Blocks, origin)
                     .with_volume(if i==2 {0.85} else {0.62})
-                    .with_pitch(0.96+variant as f32*0.045);
+                    .with_pitch(0.94+(variant%5) as f32*0.045);
                 let _=host.play_local_sound(&play,offset);
             }
         }
@@ -566,13 +568,20 @@ fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
 }
 
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
+    // Core registry and UI are global (0..199); the first 3 spells of each
+    // school map explicitly to their original 30 bespoke renderer slots.
+    let Some(old_slot)=catalog200::curated_slot(cast.kind) else {
+        mass_forms::render_expansion(cast,age,scene);
+        return;
+    };
+    let cast=Cast{kind:old_slot,..cast};
     if cast.kind==5 {
         // Independent full-bodied glacier signature — no generic ring/spike
         // backing sculpt that would undo the reference-led art direction.
         hero_vfx::render_shard_chorus(cast,age,scene);
         return;
     }
-    if cast.kind<SPELL_COUNT {
+    if cast.kind<catalog30::SPELL_COUNT {
         // Every curated ID gets its own world-space, temporal, 3D motif.
         // Draw this first so the school-wide sculpt cannot starve the magic
         // circle, physical beam, sky fracture or staggered impact of geometry.
