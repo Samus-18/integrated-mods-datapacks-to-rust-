@@ -515,4 +515,31 @@ mod tests{
     }
     assert_eq!(ids.len(),20);
  }
+ #[test]
+ fn m29_closed_sculptures_switch_tessellation_without_leaking_panels(){
+     let origin=[0.,64.,0.];let color=0xA873AAD5;
+     let mut high=Scene::with_lod(400,false);
+     orb(&mut high,origin,[1.4,2.2,1.4],24.,color,0.83);
+     assert_eq!(high.facets.len(),14*9);
+     assert!(high.group_ids.iter().all(|id|*id==high.group_ids[0]));
+     curtain(&mut high,origin,3.1,5.2,24.,0.4,color);
+     assert_eq!(high.facets.len(),14*9+8*10);
+     assert!(high.group_ids[14*9..].iter()
+         .all(|id|*id==high.group_ids[14*9]));
+     assert_ne!(high.group_ids[0],high.group_ids[14*9]);
+
+     let mut low=Scene::with_lod(400,true);
+     orb(&mut low,origin,[1.4,2.2,1.4],24.,color,0.83);
+     curtain(&mut low,origin,3.1,5.2,24.,0.4,color);
+     assert_eq!(low.facets.len(),8*6+5*7);
+     assert_eq!(low.group_ids.iter().filter(|id|**id==low.group_ids[0]).count(),8*6);
+     assert_eq!(low.group_ids.iter().filter(|id|**id==low.group_ids[8*6]).count(),5*7);
+
+     let mut limited=Scene::with_lod(40,true);
+     orb(&mut limited,origin,[1.4,2.2,1.4],24.,color,0.83);
+     assert!(limited.facets.is_empty(),"partial 48-panel sphere leaked into 40-face scene");
+     body(&mut limited,origin,[0.7,1.1,0.7],color);
+     assert_eq!(limited.facets.len(),6);
+ }
+
 }
