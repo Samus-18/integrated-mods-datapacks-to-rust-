@@ -1,6 +1,6 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - M31 GPU Magic Test"
-version = "0.7.0"
+name = "Aetheria Horizon - M31 Nightly 2026-11-20"
+version = "0.7.1"
 api = "0.2"
 side = "client"
 description = "200 authored spell identities with core cast intents, client selector and draft 3D forms (30 curated plus 170 unapproved). Local mana/SFX only; no server world mechanics or save sync."
