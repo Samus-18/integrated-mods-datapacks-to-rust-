@@ -367,3 +367,67 @@ fn m27_all_thirty_custom_standard_spells_show_mass_from_both_angles(){
     }
     assert_eq!(tested,120,"30 spell IDs × Cast/Impact × 2 cameras");
 }
+
+#[test]
+fn m29_eight_real_ultimates_and_bone_wall_remain_coherent(){
+    // Stress the *actual* authored geometry generators and the same busy
+    // 900-quad submit path as the WASM hook, not synthetic flat rectangles.
+    // Seven distinct school Ultimates plus the 194 Bone Palisade standard.
+    // Each source is shifted a little so shared vertices remain attributable.
+    let slots=[18usize,38,58,78,98,118,158,193];
+    let mut drafts=Vec::new();
+    for (i,&slot) in slots.iter().enumerate(){
+        let mut s=Scene::with_lod(500,true);
+        render_spell(Cast{
+            kind:slot,variant:0,start:0,
+            center:[i as f64*3.0-10.5,64.,0.],
+            direction:[0.,0.,1.],
+        },48.0,&mut s);
+        assert!(!s.facets.is_empty(),"busy multicasting erased spell #{}",slot+1);
+        assert!(s.facets.len()<=500);
+        assert_eq!(s.group_ids.len(),s.facets.len());
+        drafts.push(s);
+    }
+    let selected=super::fair_geometry::sample_fair(&drafts,900);
+    assert!(selected.len()<=900);
+    assert!(!selected.is_empty());
+    assert_eq!(selected,super::fair_geometry::sample_fair(&drafts,900));
+
+    // No accepted group may have only a fraction of its panels submitted.
+    // Real original scene parts include closed boxes, crystal wedges,
+    // wings, folded slabs, volume patches and a bone palisade.
+    for (i,draft) in drafts.iter().enumerate(){
+        let mut start=0;
+        let mut survivors=0;
+        while start<draft.facets.len(){
+            let gid=draft.group_ids[start];
+            let mut end=start+1;
+            while end<draft.facets.len()&&draft.group_ids[end]==gid{end+=1;}
+            let visible=draft.facets[start..end].iter()
+                .filter(|face|selected.contains(*face)).count();
+            assert!(visible==0||visible==end-start,
+                "spell #{} has a torn {}-face atomic component: {} survived",
+                slots[i]+1,end-start,visible);
+            survivors+=visible;
+            start=end;
+        }
+        assert!(survivors>0,
+            "spell #{} vanished entirely in the 8-spell stress case",slots[i]+1);
+    }
+    // Two non-parallel source projections, not fabricated in-game images.
+    let export=std::env::var_os("AETHERIA_VISUAL_AUDIT").is_some();
+    let folder=Path::new("target/visual-audit");
+    if export{fs::create_dir_all(folder).unwrap();}
+    let mut final_scene=Scene::new(900);
+    final_scene.facets=selected;
+    for (i,view) in [View::new([1.8,1.25,2.8]),
+                     View::new([-2.3,1.75,1.1])].into_iter().enumerate(){
+        let filename=format!("m29_eight_spells_view{}.svg",i+1);
+        let path=if export{folder.join(&filename)}
+            else{std::env::temp_dir().join(filename)};
+        let report=export_svg(&final_scene,view,18,Stage::Impact,48.,&path);
+        assert!(report.coverage>0.0003&&report.degenerate<0.95,
+            "M29 multi-cast projected image disappeared at view {}",i+1);
+        if !export{let _=fs::remove_file(path);}
+    }
+}
