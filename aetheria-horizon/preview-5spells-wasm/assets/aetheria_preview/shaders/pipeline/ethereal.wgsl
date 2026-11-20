@@ -63,6 +63,59 @@ fn aetheria_rift_fault(uv:vec2<f32>,t:f32)->f32 {
     let rupture=abs(sin(p.x*1.63-p.y*1.16+1.4*bending));
     return 1.0-smoothstep(0.01,0.22,rupture);
 }
+// M31 test VFX: a small genuine, bounded PROCEDURAL 3D RAY-MARCH
+// through each authored low-alpha atmosphere sheet. Unlike the old flat
+// vertex-colour noise, each fragment integrates a rotating, density-varying
+// three-dimensional medium (local UV, volume depth), not just a gradient.
+// No scene-color/depth texture exists in this guest pipeline: opacity and
+// world occlusion are handled conservatively by the actual depth-tested
+// 3D quad. This is NOT a native fullscreen HDR raymarch or global bloom.
+fn aetheria_haze_density(p:vec3<f32>,t:f32)->f32 {
+    // Folded curtains of fantasy nebula, tapering at the edge of the
+    // authored surface. High spatial frequencies are deliberately muted
+    // to keep this a luminous body instead of a sparkly wire lattice.
+    let sway=vec2<f32>(
+        0.20*sin(p.y*2.4-p.z*2.6+t*0.63),
+        0.18*cos(p.x*2.2+p.z*3.1-t*0.47));
+    let q=p.xy+sway;
+    let slow=aetheria_noise2(q*2.6+vec2<f32>(t*0.13,-t*0.17));
+    let curl=0.5+0.5*sin(q.x*6.1+q.y*2.9+p.z*8.2+t*0.81);
+    let depth_window=smoothstep(0.0,0.17,p.z)*
+        (1.0-smoothstep(0.83,1.0,p.z));
+    let lateral=1.0-smoothstep(0.65,1.1,abs(p.x));
+    return clamp((0.20+0.52*slow+0.32*curl)*
+        depth_window*lateral,0.0,1.0);
+}
+fn aetheria_integrate_haze(uv:vec2<f32>,position:vec3<f32>,
+                           t:f32)->vec4<f32> {
+    // Camera-relative position is used ONLY to select LOD. The medium
+    // itself is in UV + authored local sheet depth, so it does not
+    // swim across faces when the player moves in world coordinates.
+    let distance=length(position);
+    let steps=select(6u,10u,distance<34.0);
+    let ds=1.0/f32(steps);
+    var tr=1.0;
+    var lum=vec3<f32>(0.0);
+    let local=uv*2.0-vec2<f32>(1.0);
+    for(var i=0u;i<10u;i=i+1u) {
+        if(i>=steps){break;}
+        let z=(f32(i)+0.5)*ds;
+        let p=vec3<f32>(local*vec2<f32>(1.1,1.55),z);
+        let dens=aetheria_haze_density(p,t);
+        let optical=1.0-exp(-dens*ds*1.72);
+        let contribution=tr*optical;
+        // A soft inner light near its folded centre: coloured by the
+        // *spell's own pigment* later, not a hard-coded ice tint.
+        let hot=exp(-dot(local,local)*0.72)*
+            (0.70+0.30*sin(t*0.74+z*4.6));
+        lum+=vec3<f32>(0.63+0.40*hot,0.74+0.20*hot,
+                       0.89+0.16*hot)*contribution;
+        tr*=1.0-optical;
+        if(tr<0.03){break;}
+    }
+    let opacity=clamp(1.0-tr,0.0,1.0);
+    return vec4<f32>(lum,opacity);
+}
 fn pipeline_fragment(input:PipelineInput)->vec4<f32> {
     let uv=input.uv;
     let t=frame.time;
@@ -131,5 +184,18 @@ fn pipeline_fragment(input:PipelineInput)->vec4<f32> {
         ember_color+ice_color+sap_color+storm_color+rift_color,
         vec3<f32>(1.14));
     let a=clamp(input.color.a*(0.94+0.055*faceted),0.0,0.88);
+    // Transparent atmospheric sheets use an actual local 3D density
+    // integral; solid crystal facets keep their face-resolved material.
+    // These surfaces already pass Horizon's WorldDepth::Tested so nearer
+    // blocks suppress their coverage, instead of bogus ThroughWalls.
+    if(input.color.a>0.005 && input.color.a<0.22) {
+        let volume=aetheria_integrate_haze(input.uv,input.position,t);
+        let haze_color=min(c*(0.58+1.62*volume.rgb)+
+            0.045*vec3<f32>(c.b,c.g,c.r)*volume.a,
+            vec3<f32>(1.14));
+        let haze_alpha=clamp(input.color.a*
+            (0.48+1.30*volume.a),0.0,0.31);
+        return vec4<f32>(haze_color,haze_alpha);
+    }
     return vec4<f32>(max(color,vec3<f32>(0.0)),a);
 }
