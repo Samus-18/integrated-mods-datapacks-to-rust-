@@ -190,11 +190,25 @@ fn pipeline_fragment(input:PipelineInput)->vec4<f32> {
     // blocks suppress their coverage, instead of bogus ThroughWalls.
     if(input.color.a>0.005 && input.color.a<0.22) {
         let volume=aetheria_integrate_haze(input.uv,input.position,t);
-        let haze_color=min(c*(0.58+1.62*volume.rgb)+
-            0.045*vec3<f32>(c.b,c.g,c.r)*volume.a,
+        // M32.2: no more flat rectangular card edges. Each live
+        // atmosphere surface becomes a genuinely torn, fading 3D curtain:
+        // density drives opacity, with a feathered and broken silhouette.
+        // The previous "+0.48" minimum opacity drew visible rectangles.
+        let edge_x=smoothstep(0.0,0.19,uv.x)*
+            (1.0-smoothstep(0.79,1.0,uv.x));
+        let edge_y=smoothstep(0.0,0.14,uv.y)*
+            (1.0-smoothstep(0.83,1.0,uv.y));
+        let filament=0.52+0.48*aetheria_noise2(
+            uv*vec2<f32>(5.4,3.2)+
+            vec2<f32>(t*0.17,-t*0.09));
+        let cutouts=smoothstep(0.14,0.58,
+            0.54*edge_x*edge_y+0.40*filament);
+        let veil_mask=clamp(edge_x*edge_y*cutouts,0.0,1.0);
+        let haze_color=min(c*(0.36+2.2*volume.rgb)+
+            0.065*vec3<f32>(c.b,c.g,c.r)*volume.a,
             vec3<f32>(1.14));
         let haze_alpha=clamp(input.color.a*
-            (0.48+1.30*volume.a),0.0,0.31);
+            volume.a*2.25*veil_mask,0.0,0.31);
         return vec4<f32>(haze_color,haze_alpha);
     }
     return vec4<f32>(max(color,vec3<f32>(0.0)),a);
