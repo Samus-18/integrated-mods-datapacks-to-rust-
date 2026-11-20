@@ -70,3 +70,10 @@ The new shader runs through the mod's **existing actual Horizon WGSL PipelineBle
 - Workflow: host-side Rust test suite, Naga WGSL source validation, package checks, 30 OGG VFX audio cues, and geometry projections pass. **38/38 tests PASS, 0 failed**, independently confirmed from exact GitHub Actions run 44763204220 job logs; shader material and standalone native prototype Naga parser tests passed.
 - Real shader now calls `aetheria_integrate_haze` on low-alpha original 3D scene sheets. **6/10 samples per pixel** by camera-relative distance, with explicit max 10 iterations and coherent low-detail sheet geometry. World depth testing at submitted atmospheric surfaces is available. No engine scene-depth texture is read by this WASM shader.
 - **Not verified:** actually running the game on the user's Windows GPU and Nightly, HDR bloom, genuine fullscreen depth-limited volume compositing, performance/FPS, 200 true gameplay mechanics. Do not call this the final 200-spell RPG release; 170 core mechanics remain `DesignIntent`.
+
+### M33 source-authored Frost Needle / 2026-11-20
+- Original v2 Blender source exported; closed 3-part mesh, 2 actual preview renders and GLB/OBJ integrity PASS. Initial look rejected, taper and solid shoulder silhouette improved. No model copied from internet.
+- Offline exact OBJ SHA256 -> Rust 130-vertex / 124-quad generator PASS; no topology loss through source conversion.
+- Actual WASM client `render_spell` routes canonical Cryomancer Frost Needle (#021) to 4-phase mesh renderer; atomic 124-facet 3D groups protect silhouette under fair 900-world-quad budget. All other 199 render paths still experimental draft scenes.
+- `validate_source.py` PASS on user's machine. WASM pinned SDK CI result pending actual run verification, not reported as success in advance.
+- Real Horizon in-game visual, GPU HDR/depth/refraction and world-game mechanics NOT VERIFIED. See docs/M33_SHARP_PROJECTILE_REAL_BLENDER_RUNTIME.md.

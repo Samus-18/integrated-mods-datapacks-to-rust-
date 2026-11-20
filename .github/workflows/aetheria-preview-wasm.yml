@@ -1,4 +1,4 @@
-name: Aetheria M32 no-wire VFX + two-key UI Nightly 2026-11-20
+name: Aetheria M33 original 3D Frost Needle + Horizon SDK Nightly 2026-11-20
 concurrency:
   group: aetheria-wasm-internal-main
   cancel-in-progress: true
@@ -45,6 +45,8 @@ jobs:
         run: |
           python3 -c 'import imageio_ffmpeg; print(imageio_ffmpeg.get_ffmpeg_exe())'
           python3 tools/generate_sound_assets.py
+      - name: Verify original Blender source geometry and active Rust dispatch
+        run: python3 ../asset-pipeline/sharp-projectile-v2/validate_source.py
       - name: Compile prelinked WASM module and package
         run: cargo horizon-mod build --wasm
       - name: Test 200 cast intent identities, 170 draft solid VFX and 860 geometry viewpoints
@@ -75,7 +77,8 @@ jobs:
               ui=z.read('src/compact_ui.rs').decode()
               lib=z.read('src/lib.rs').decode()
               assert 'draw_constellation' not in ui, 'old massive menu still packaged'
-              assert 'volumetric_forms::render(cast,age,scene)' in lib, 'old wire source still active'
+              assert 'volumetric_forms::render(cast,age,scene)' in lib, 'M32 fallback missing'
+              assert 'sharp_projectile::render(cast,age,scene)' in lib, 'M33 authored Frost Needle not wired'
               assert lib.count('KeyRegistration::new(')==1, 'old debug key mappings active'
               assert 'mod volumetric_forms;' in lib, 'M32 volume shader geometry missing'
               import json
@@ -108,7 +111,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-M32-ART-REBUILD-Nightly-2026-11-20-v0.8.1
+          name: Aetheria-Horizon-M33-INTERNAL-Source-Mesh-Nightly-2026-11-20
           path: aetheria-horizon/preview-5spells-wasm/target/m31-gpu-test/
 
       - name: Upload geometry visual contact sheets
