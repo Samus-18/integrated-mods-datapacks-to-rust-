@@ -21,4 +21,6 @@ This is functional WASM guest **material code** and connected source geometry, n
 
 ## Verification
 
-M29 baseline: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44754956222 — 37/37 tests, original WASM package. M30 CI must be checked separately for the exact latest source commit before claiming its shader is syntactically valid in the pinned build.
+M29 baseline: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44754956222 — 37/37 tests, original WASM package. **M30 pinned Horizon WASM CI run 44758785121: SUCCESS — 38/38 preview Rust tests passed** (0 failed). Real pinned-sdk WASM .hmod compiled; 30 original OGG audio cues, validated WGSL/Naga shaders, ZIP manifest and SHA512 checks all passed. The added frozen haze high/low atomic-component test and actual M30 new material syntax test both passed. This tests the procedural material source language and module packaging, **NOT** actual Windows on-screen shader quality, physically correct HDR bloom or GPU FPS. Source commit: a3baa351ecfbcbfaa824b3ba6b40aac48b216137.
+
+CI: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44758785121
