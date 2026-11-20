@@ -298,35 +298,50 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
          0.27*g,a,tint(c,0.77,0.80));
    }
  },
- 194=>{ // BONE PALISADE: joined substantial organic bone WALL.
-  let mut previous=p(o,-3.2*g,0.7*g,-0.1*g);
-  for i in 0..9{
-    let x=(i as f64-4.)*0.79*g;
-    let y=(1.95+0.22*(i%4) as f64)*g;
-    let root=p(o,x,-0.52*g,0.);
-    let joint=p(o,x,0.59*y,0.24*g*((i%3) as f64-1.));
-    let crown=p(o,x+0.19*g,y,0.12*g);
-    crystal(s,root,joint,0.35*g,0.21*i as f64,tint(c,0.63,0.96));
-    crystal(s,joint,crown,0.30*g,0.27*i as f64,tint(c,0.80,0.95));
-    for side in [-1.,1.]{
-      let rib=p(o,x+0.42*g*side,(1.30+0.13*(i%3) as f64)*g,0.53*g);
-      // Five-sided rounded bone arches connect into the thick column;
-      // replacing twelve sharp crystal faces per rib retains both arches
-      // without starving the final wall foundation of geometry.
-      s.tube(joint,rib,0.20*g,0.12*g,i as f64+side,
-          tint(c,0.91,0.93),5);
-    }
-    // Enclosing broad ossified plates connect adjacent bone columns,
-    // preventing a visual row of disconnected pointy toothpicks.
-    if i>0{
-      s.membrane(previous,p(previous,0.,0.82*g,0.15*g),
-         p(joint,0.,0.34*g,0.17*g),joint,
-         tint(c,0.67+0.028*(i%4) as f64,0.72));
-    }
-    previous=joint;
+ 194=>{ // BONE PALISADE: overlapping ribcage bastion, NOT nine bare pickets.
+   // The old CPU projection showed a generic fence. Seven broad overlapping
+   // ossicle shields now sit on a thick continuous backbone, with hooked
+   // shoulder bones and irregular cranial crests at the rim.
+   body(s,p(o,0.,0.76*g,-0.26*g),[3.82*g,1.04*g,0.71*g],tint(c,0.55,0.94));
+   for i in 0..7{
+     let x=(i as f64-3.)*1.05*g;
+     let shift=0.13*g*((i%3) as f64-1.);
+     let peak=(2.25+0.18*(i%4) as f64)*g;
+     let front=(0.64+0.05*(i%3) as f64)*g;
+     body(s,p(o,x,0.88*g,-0.08*g+shift),
+       [0.56*g,0.93*g,0.49*g],tint(c,0.56+0.04*(i%4) as f64,0.95));
+     body(s,p(o,x,1.46*g,0.13*g+shift),
+       [0.51*g,0.35*g,0.42*g],tint(c,0.72+0.03*(i%3) as f64,0.90));
+     // Front-and-back solid plated shield, not a gap between narrow posts.
+     s.membrane(
+       p(o,x-0.57*g,0.23*g,front),
+       p(o,x-0.42*g,1.65*g,front+0.18*g),
+       p(o,x+0.13*g,peak,front+0.25*g),
+       p(o,x+0.57*g,0.27*g,front),
+       tint(c,0.71+0.035*(i%3) as f64,0.93));
+     crystal(s,p(o,x-0.06*g,0.72*g,front+0.08*g),
+       p(o,x+0.13*g,peak+0.17*g,front+0.20*g),
+       0.31*g,0.14*i as f64,tint(c,0.86,0.97));
+     for side in [-1.,1.]{
+       s.membrane(
+         p(o,x+side*0.36*g,0.54*g,front-0.24*g),
+         p(o,x+side*0.63*g,1.42*g,front-0.02*g),
+         p(o,x+side*0.47*g,1.81*g,front-0.45*g),
+         p(o,x+side*0.12*g,0.83*g,front-0.60*g),
+         tint(c,0.60+0.05*((i+1)%3) as f64,0.89));
+     }
+   }
+   // Four asymmetric broad crown horns protrude from the solid rampart.
+   for i in 0..4{
+     let x=(i as f64-1.5)*1.78*g;
+     let lean=(if i%2==0{-0.23}else{0.23})*g;
+     crystal(s,p(o,x,1.48*g,-0.14*g),
+       p(o,x+lean,(2.58+0.14*(i%3) as f64)*g,-0.46*g),
+       0.38*g,i as f64*0.39,tint(c,0.83,0.95));
+   }
+   body(s,p(o,0.,-0.38*g,-0.07*g),
+     [3.94*g,0.28*g,0.82*g],tint(c,0.50,0.94));
   }
-  body(s,p(o,0.,-0.43*g,0.),[3.72*g,0.27*g,0.55*g],tint(c,0.51,0.94));
- }
  _=>unreachable!("M27B only accepts fifteen ID-specific scenes")
  }
 }
