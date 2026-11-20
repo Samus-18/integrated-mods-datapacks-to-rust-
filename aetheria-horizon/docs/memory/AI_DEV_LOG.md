@@ -328,3 +328,28 @@ User direct instruction: "tak vylepsuj a pokracuj ve vyvoji ted udelej dalsi kou
 - Downloaded and **opened six real CPU-source SVG projections** (not fabricated screenshots): two combined 8-cast views and four Bone Palisade Cast/Impact views. Eight-effect frame filled 897/900 world quads, 25.3/20.3-block spans from the two views, complete panels, **but remained art-direction clutter/slop** compared with the user's high-quality video references. Bone Palisade (#194) still looked like a bare picket fence with linear spikes despite M28 headroom improvements, from both views.
 - Replaced #194's fence silhouette with seven thick overlapping folded ossicle shields mounted on a continuous broad bastion and asymmetrical curved crest horns (`standard_m27b.rs`); kept under M28's 400-face safety gate. Corrected combined SVG's misleading single-spell caption. Follow-up pinned CI run [44753597607](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44753597607) was still building at the point this log entry was written; **its new bone-sculpt result must be visually reinspected and must not be claimed green until complete**.
 - LIMITATIONS: Current output is original CPU-quad sculpture drafts with fair budgets, not spectacular finished magic VFX, no actual GPU/HDR material depth or FPS measurement. Some old direct raw-face emitters remain ungrouped, inter-segment discontinuities and crowded overlap remain. The user-requested **200 genuinely beautiful and playable spell effects are not complete**; 170 action types remain server-rejected DesignIntent; 0/100 end-to-end accepted; no early game ZIP. See `docs/M29_COHERENT_SCULPTURE_LOD.md` for exact scope.
+
+
+### M29 post-CI final source-art check (2026-11-20)
+
+- Actual post-second-pass CI source view was opened. The earlier art correction
+  made Bone Palisade #194 a **huge rectangular slab** and failed the user's
+  stated visual standard even while 36 unit tests passed. This was not
+  misreported as successful art.
+- Replaced it again with an **irregular 7-part relief on both front/back**,
+  390 faceted source quads including complete solid bone spines and broad
+  plated/crest elements, no featureless tall rectangular wall. An explicit
+  test now checks that both depths contain detailed panels, source facets
+  stay within budget and no covering giant wall face is emitted.
+- [**Latest pinned Horizon WASM run 44754956222: SUCCESS**](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44754956222);
+  **37/37 preview tests**, pinned SDK wasm .hmod, 30 OGG, Naga shader
+  and ZIP/SHA512 checks verified by job logs. Downloaded and opened real
+  Cast/Impact SVG source outputs from two camera angles, compared the old
+  blank wall and the revised crowded jagged sculpt. Visually a substantial
+  improvement, although still stiff low-poly facets versus original
+  cinematic videos. No claim of in-world screenshots or actual GPU FPS.
+- Overall completion remains **200/200 identifiable client draft visual
+  routes, 0/100 fully integrated world/server RPG spells**, with native
+  depth-aware shader, 170 world-action DesignIntent, networking,
+  acquisition, saving and 200 individual soundscapes still outstanding.
+  No incomplete download ZIP.
