@@ -7,6 +7,9 @@ from collections import Counter
 import hashlib, math
 root=Path(__file__).resolve().parents[2]
 src=root/"asset-pipeline/sharp-projectile-v2/export/frost_needle_v2.obj"
+# Git on Windows may check out text OBJ as CRLF; canonical source hash
+# must describe the same geometry on Linux and Windows.
+source_bytes=src.read_bytes().replace(b"\r\n",b"\n")
 dst=root/"preview-5spells-wasm/src/sharp_projectile_mesh_generated.rs"
 vertices=[]
 faces=[]
@@ -43,7 +46,7 @@ assert len(vertices)==130 and len(quads)==124,(len(vertices),len(quads))
 lines=[
 "// GENERATED FROM OUR ORIGINAL BLENDER FROST NEEDLE. DO NOT EDIT BY HAND.",
 "// Rebuild using asset-pipeline/sharp-projectile/export_mesh_to_rust.py.",
-f'// SOURCE OBJ SHA256: {hashlib.sha256(src.read_bytes()).hexdigest()}',
+f'// SOURCE OBJ SHA256: {hashlib.sha256(source_bytes).hexdigest()}',
 "// Planar 6/10-gon caps are split into intact quad fans.",
 f"pub(super) const VERTICES: [[f64;3];{len(vertices)}] = [",
 ]
@@ -55,4 +58,4 @@ lines += [f"    ([{','.join(map(str,ids))}], {mat})," for ids,mat in quads]
 lines += ["];",""]
 dst.write_text("\n".join(lines),encoding="utf-8",newline="\n")
 print(f"FROST_OBJ_BUILT {len(vertices)} verts {len(quads)} independent 4-sided faces material counts {dict(Counter(x[1] for x in quads))}")
-print(f"OBJ_SHA256 {hashlib.sha256(src.read_bytes()).hexdigest()} source {src.name}")
+print(f"OBJ_SHA256 {hashlib.sha256(source_bytes).hexdigest()} source {src.name}")

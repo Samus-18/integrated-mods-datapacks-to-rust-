@@ -12,7 +12,7 @@ hero=root/"preview-5spells-wasm/src/sharp_projectile.rs"
 lib=root/"preview-5spells-wasm/src/lib.rs"
 assert obj.is_file() and glb.stat().st_size>1000 and blend.stat().st_size>10000
 s=rust.read_text(encoding="utf-8")
-assert hashlib.sha256(obj.read_bytes()).hexdigest() in s
+assert hashlib.sha256(obj.read_bytes().replace(b'\r\n',b'\n')).hexdigest() in s
 assert "pub(super) const VERTICES: [[f64;3];130]" in s
 assert "pub(super) const QUADS: [([usize;4],u8);124]" in s
 assert s.count("([" )>=124
