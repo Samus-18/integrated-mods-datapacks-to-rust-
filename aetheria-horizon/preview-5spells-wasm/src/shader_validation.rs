@@ -57,7 +57,8 @@ mod tests {
         for name in [
             "pipeline_fragment","aetheria_ember_flow",
             "aetheria_glacier_cleavage","aetheria_living_sap",
-            "aetheria_lightning_branches","aetheria_rift_fault"
+            "aetheria_lightning_branches","aetheria_rift_fault",
+            "aetheria_haze_density","aetheria_integrate_haze"
         ] {
             assert!(parsed.functions.iter().any(|(_,f)|
                 f.name.as_deref()==Some(name)
@@ -65,6 +66,15 @@ mod tests {
         }
         assert!(actual.contains("input.position"),
             "M30 must use the documented camera-relative world position");
+        assert!(actual.contains("let steps=select(6u,10u,distance<34.0);"),
+            "M31 fog raymarch must have distance LOD 6 or 10 steps");
+        assert!(actual.contains("for(var i=0u;i<10u;i=i+1u)"),
+            "M31 raymarch samples MUST remain bounded for older Radeon GPUs");
+        assert!(actual.contains("if(input.color.a>0.005 && input.color.a<0.22)"),
+            "M31 fog must shade transparent atmosphere, not opaque crystals");
+        assert!(actual.contains("input.uv,input.position,t"),
+            "M31 fog must use actual local face UV and camera-relative distance");
+
         assert!(actual.contains("1.14"),
             "M30 light energy must remain capped instead of white-out");
         assert!(!actual.contains("textureSample(") && !actual.contains("discard;"),
