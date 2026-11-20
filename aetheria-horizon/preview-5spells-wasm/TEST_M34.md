@@ -28,8 +28,8 @@ volume face normals, canonical OBJ checksum -> exact source quads ->
 test of *real Rust renderer* across 4 phases and RX580 quad budgets.
 
 - Frost Needle M33: 3 sealed pieces, 124 full source quads.
-- Rime Bridge M34: 7 distinct sealed sculpted slabs + 2 deep
-  glacial buttresses, 380 full source quads.
+- Rime Bridge M34: 8 distinct sealed sculpted slabs + 2 deep
+  glacial buttresses, 436 full source quads.
 - Pin M34 WASM CI must finish before compiling this an installation candidate.
 - Guest post material is limited to Horizon world-space geometry plus
   depth-tested optional WGSL. Full fullscreen HDR bloom requires

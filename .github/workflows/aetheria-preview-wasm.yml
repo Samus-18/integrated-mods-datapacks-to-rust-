@@ -6,6 +6,7 @@ on:
   push:
     paths:
       - 'aetheria-horizon/preview-5spells-wasm/**'
+      - 'aetheria-horizon/asset-pipeline/**'
       - '.github/workflows/aetheria-preview-wasm.yml'
   workflow_dispatch:
 jobs:
@@ -49,7 +50,7 @@ jobs:
         run: python3 ../asset-pipeline/sharp-projectile-v2/validate_normals.py
       - name: Verify original Blender source geometry and active Rust dispatch
         run: python3 ../asset-pipeline/sharp-projectile-v2/validate_source.py
-      - name: Verify 9-part sculpted Rime Bridge original Blender mesh and live dispatch
+      - name: Verify 10-part sculpted Rime Bridge original Blender mesh and live dispatch
         run: python3 ../asset-pipeline/rime-bridge/validate_bridge.py
       - name: Compile prelinked WASM module and package
         run: cargo horizon-mod build --wasm
@@ -84,7 +85,7 @@ jobs:
               assert 'volumetric_forms::render(cast,age,scene)' in lib, 'M32 fallback missing'
               assert 'sharp_projectile::render(cast,age,scene)' in lib, 'M33 authored Frost Needle not wired'
               assert 'rime_bridge::render(cast,age,scene)' in lib, 'M34 authored Rime Bridge not wired'
-              assert 'src/rime_bridge_mesh_generated.rs' in names, 'original 380-quad Rime Bridge source missing'
+              assert 'src/rime_bridge_mesh_generated.rs' in names, 'original 436-quad Rime Bridge source missing'
               assert lib.count('KeyRegistration::new(')==1, 'old debug key mappings active'
               assert 'mod volumetric_forms;' in lib, 'M32 volume shader geometry missing'
               import json

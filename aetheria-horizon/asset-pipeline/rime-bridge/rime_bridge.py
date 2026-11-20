@@ -68,7 +68,7 @@ def octagon(cx,cy,w,l,corner):
 def ice_plate(index):
     # Seven *distinct* geometry meshes: all subtly cambered and asymmetric.
     # Spaces between plates can be read as crystal seams, not accidental holes.
-    center_y=(index-3)*1.39
+    center_y=(index-3.5)*1.39
     center_x=0.11*sin(index*1.87)
     width=2.38+0.19*cos(index*1.31)
     length=1.34 # 0.05m visible seam, no randomly fused blocks
@@ -103,10 +103,10 @@ def long_frost_wing(sign):
     """A true thick, closed, continuous glacial side buttress.
     Sweeps below the flagstones with changing height and curvature;
     neither a thin rod nor an empty frame."""
-    total=12
+    total=14
     verts=[];faces=[];ids=[]
     for i in range(total+1):
-        y=-4.68+9.36*i/total
+        y=-5.47+10.94*i/total
         arc=math.sin(math.pi*i/total)
         x=sign*(1.19+.07*math.sin(i*.9+sign))
         drop=.41+.80*arc+.09*math.sin(4.1*i/total*math.pi)
@@ -130,7 +130,7 @@ def long_frost_wing(sign):
     faces.append(tuple(total*n+j for j in range(n)));ids.append(0)
     return build("Rime_Bridge_Glacier_Buttress_"+("L" if sign<0 else "R"),
         verts,faces,ids)
-objects=[ice_plate(i) for i in range(7)]
+objects=[ice_plate(i) for i in range(8)]
 objects.extend([long_frost_wing(-1),long_frost_wing(1)])
 # Studio ground-like lighting, only source geometry (no generated mockup).
 bpy.ops.object.select_all(action="DESELECT")
@@ -164,7 +164,7 @@ for name,pos,size in [
     assert Path(scene.render.filepath).stat().st_size>40_000
 report={"vertices":sum(len(o.data.vertices) for o in objects),
 "polygons":sum(len(o.data.polygons) for o in objects),
-"independent_closed_parts":len(objects),"floor_plates":7,"glacial_buttresses":2,
+"independent_closed_parts":len(objects),"floor_plates":8,"glacial_buttresses":2,
 "two_actual_blender_renders":True,
 "in_game_tested":False}
 (OUT/"rime_bridge_QA.json").write_text(json.dumps(report,indent=2),encoding="utf8")

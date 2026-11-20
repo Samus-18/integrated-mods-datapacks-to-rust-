@@ -1,5 +1,5 @@
 //! M34 Rime Bridge: ORIGINAL independent Blender-authored cryomancy geometry.
-//! Seven individually sculpted watertight ice flagstones and two deep
+//! Eight individually sculpted watertight ice flagstones and two deep
 //! glacial buttresses, staged to grow from the targeted ground point.
 //! CLIENT VFX ONLY: no fake collision/platform or server world blocks.
 //! Does not borrow the Frost Needle mesh, scale a rod, or reuse ring cards.
@@ -42,7 +42,7 @@ fn draw_part(
     let (first,count)=original_mesh::PARTS[part];
     let Some(previous)=scene.begin_component(count) else{return false;};
     let (forward,right,up)=frame(cast.direction);
-    let plate=part<7;
+    let plate=part<8;
     let lift=if plate {
         -0.82*(1.0-progress)
     }else{
@@ -76,7 +76,7 @@ pub(super) fn render(cast:Cast,age:f64,scene:&mut Scene)->bool{
     if cast.kind!=SPELL_SLOT{return false;}
     if !age.is_finite() || !(0.0..104.0).contains(&age){return true;}
     if !cast.center.iter().chain(cast.direction.iter()).all(|v|v.is_finite()){return true;}
-    for i in 0..7 {
+    for i in 0..8 {
         let born=4.0+i as f64*5.1;
         if age<born {continue;}
         let progress=ease((age-born)/9.2);
@@ -84,8 +84,8 @@ pub(super) fn render(cast:Cast,age:f64,scene:&mut Scene)->bool{
         let opacity=0.66+0.28*progress;
         let _=draw_part(scene,i,cast,age,progress,opacity);
     }
-    for i in 7..9 {
-        let born=27.0+(i-7) as f64*7.4;
+    for i in 8..10 {
+        let born=29.0+(i-8) as f64*7.4;
         if age<born {continue;}
         let progress=ease((age-born)/18.0);
         if progress<0.01 {continue;}
@@ -104,16 +104,16 @@ mod tests{
     }}
     #[test]
     fn original_bridge_has_nine_distinct_closed_mesh_components(){
-        assert_eq!(original_mesh::PARTS.len(),9);
-        assert_eq!(original_mesh::VERTICES.len(),398);
-        assert_eq!(original_mesh::QUADS.len(),380);
+        assert_eq!(original_mesh::PARTS.len(),10);
+        assert_eq!(original_mesh::VERTICES.len(),456);
+        assert_eq!(original_mesh::QUADS.len(),436);
         let mut end=0;
         for (i,(first,n)) in original_mesh::PARTS.iter().enumerate(){
             assert_eq!(*first,end);
-            assert_eq!(*n,if i<7 {32}else{78});
+            assert_eq!(*n,if i<8 {32}else{90});
             end+=n;
         }
-        assert_eq!(end,380);
+        assert_eq!(end,436);
         assert!(original_mesh::VERTICES.iter().flatten().all(|v|v.is_finite()));
         for (ids,mat) in original_mesh::QUADS {
             assert!((mat as usize)<3);
@@ -127,7 +127,7 @@ mod tests{
             let mut s=Scene::with_lod(900,false);
             assert!(render(cast(),age,&mut s));
             assert!(!s.facets.is_empty());
-            assert!(s.facets.len()<=380);
+            assert!(s.facets.len()<=436);
             assert_eq!(s.facets.len(),s.group_ids.len());
             // Every source mesh stays wholly rendered; zero lopped-off faces.
             let mut groups=std::collections::BTreeMap::new();
@@ -135,7 +135,7 @@ mod tests{
                 *groups.entry(id).or_insert(0usize)+=1;
             }
             for (_,n) in groups {
-                assert!(n==32||n==78,"Unexpected partial Blender mesh {n}");
+                assert!(n==32||n==90,"Unexpected partial Blender mesh {n}");
             }
             counts.push(s.facets.len());
         }
@@ -156,7 +156,7 @@ mod tests{
                     assert!(*color>0);
                     *groups.entry(id).or_insert(0usize)+=1;
                 }
-                assert!(groups.values().all(|n|*n==32||*n==78));
+                assert!(groups.values().all(|n|*n==32||*n==90));
             }
         }
     }

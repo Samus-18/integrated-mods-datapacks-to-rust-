@@ -14,11 +14,11 @@ Blender body to Horizon's actual client world-geometry draw path. M34 deliberate
 chooses a **different shape and gameplay role** for original spell #022:
 Rime Bridge, a geometrically substantial suspended ice walkway.
 
-Blender 5.2 generated 7 independently closed eight-sided faceted slabs with
+Blender 5.2 generated eight independently closed eight-sided faceted slabs with
 colored ice crown bevels. First two-view Blender renders were inspected and
-**rejected as seven bland disconnected white blocks**. Revised the SAME source
+**rejected as plain disconnected white blocks**. Revised the SAME source
 to add TWO sweeping, thick, deeply curved and watertight support buttresses
-beneath the walkway: **9 independent sculpted solids total**, without circles,
+beneath the walkway: **10 independent sculpted solids total**, without circles,
 cylindrical rods, empty rings or crossed billboard planes. The second
 three-quarter and side Blender renders were inspected. It now clearly looks
 like a sculpted bridge, although it remains relatively low-poly and lacks
@@ -30,7 +30,7 @@ cinematic refraction/lighting. **Do not claim beauty user approval.**
   structured per-material faces and per-plate asymmetry; each entire source
   piece validated for closed edge manifold and **positive signed volume**
   *inside Blender before export*, preventing M33 inward-normal regression.
-- Editable 9-solid `export/rime_bridge.blend`, 3D `.glb`, `.obj`, two
+- Editable 10-solid `export/rime_bridge.blend`, 3D `.glb`, `.obj`, two
   genuine Blender Eevee images. Original art, no copyrighted external assets.
 - `asset-pipeline/mesh_to_rust.py`: reusable deterministic OBJ→Horizon quad
   converter (next spells can reuse it). Validates every complete closed
@@ -39,12 +39,12 @@ cinematic refraction/lighting. **Do not claim beauty user approval.**
   finite coordinates. Splits convex 6/8/10/12-sided caps into whole quads,
   never removes the top/bottom shell.
 - Generated `src/rime_bridge_mesh_generated.rs` contains
-  **398 generated vertices / 380 preserved 3D quads**,
-  nine individually addressable atomic full-body component ranges
-  (7 × 32 plate quads; 2 × 78 support quads).
+  **456 generated vertices / 436 preserved 3D quads**,
+  ten individually addressable atomic full-body component ranges
+  (8 × 32 plate quads; 2 × 90 support quads).
 - `src/rime_bridge.rs`: original **4-phase** visual: ice plates
-  rise/grow sequentially outward (ages 4–44), long structural buttresses
-  unfurl and hold (ages 27–80), both dissolve by 104 ticks. Local
+  rise/grow sequentially outward (ages 4–49), long structural buttresses
+  unfurl and hold (ages 29–80), both dissolve by 104 ticks. Local
   cast-facing horizontal orientation, stable if aiming vertically down,
   exact physical mesh source faces (not fake GLB loader), material per face,
   finite safeguards and all-or-nothing component LOD.
@@ -90,8 +90,8 @@ server API.
   rejected, second structural model accepted as a more substantial **source
   experiment**, NOT final art quality.
 - `python asset-pipeline/rime-bridge/validate_bridge.py` passed locally:
-  9 GLB meshes / 3 materials, exact source SHA, two Blender renders,
-  all 9 closed outward normals, source Rust generator reproducible.
+  10 GLB meshes / 3 materials, exact source SHA, two Blender renders,
+  all 10 closed outward normals, source Rust generator reproducible.
 - Separate Rust CI compiles the **same** `src/rime_bridge.rs` against the
   source shape of `Scene` and tests component geometry, four stages,
   finite values, horizontal facing and hard quad budget. Pin to SDK
@@ -105,3 +105,8 @@ server API.
 Keep M34 in a draft branch, not a false completed mod. Preserve
 `Skyfall-Lost-Islands` untouched (Roblox project stopped). M34 video and
 code tests are source/CI, not proof of in-game aesthetic quality.
+
+### M34.1 consistency and cross-platform reproducibility correction
+First pinned CI [run 44835909385](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44835909385) **FAILED** on a reproducible source check on Linux (fresh converter result != committed .rs), before WASM compilation. Separate Rust 9/9 source renderer + 78/78 core tests and Rapier succeeded in [run 44835909286](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44835909286). This failure is not hidden or a shader pass. Generalized OBJ tool now derives vertices, signed volumes and ngon cap centers using **exact decimal arithmetic**, giving a deterministic fixed-eight-decimal Rust source independent of binary floating-point rounding differences. Fresh pinned CI still required to confirm.
+
+A source/core consistency pass found the canonical server-side `SpellAction::RimeBridge` plans **8 plates**, while the initial M34 art draft had only 7. Regenerated the Blender sculpt as **8 original plates + 2 curved buttresses** (ten watertight components) aligned to the future action. New figures: **436 source OBJ vertices / 380 original faces, 456 Rust vertices / 436 full world quads, 10 atomic components** (8×32 / 2×90). Added a core test ensuring action `plates=8`, spacing and expiry remain consistent. Still no actual collision or world block edits; everything here is a visual and portable-rule QA change.

@@ -1,9 +1,9 @@
 {
-    "vertices":  380,
-    "polygons":  330,
-    "independent_closed_parts":  9,
-    "floor_plates":  7,
-    "glacial_buttresses":  2,
-    "two_actual_blender_renders":  true,
-    "in_game_tested":  false
+  "vertices": 436,
+  "polygons": 380,
+  "independent_closed_parts": 10,
+  "floor_plates": 8,
+  "glacial_buttresses": 2,
+  "two_actual_blender_renders": true,
+  "in_game_tested": false
 }
