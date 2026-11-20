@@ -364,3 +364,12 @@ User direct instruction: "tak vylepsuj a pokracuj ve vyvoji ted udelej dalsi kou
 - **Pinned Horizon WASM CI [44758785121](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44758785121) SUCCESS: 38/38 preview unit tests**, including exact new live WGSL material parsed and validated by pinned Naga 30.0.1 and complete glacial haze LOD test. Real WASM .hmod compiled, 30 OGG, shader asset package, ZIP/SHA512 verified. No user manual playtest or image generated. These checks don't prove the same look as the reference videos, native scene depth, real HDR/GPU bloom or frame-rate.
 - **Still missing:** native GPU depth-aware post bridge, true server authoritative gameplay (170 DesignIntent actions rejected), 200 spell-specific soundsets, player save/network/unlock and real Nightly visual/FPS checks. 200 visual scene routes remain authoring drafts, **0/100** fully integrated RPG spells. No partial ZIP.
 
+
+
+## 2026-11-20 — M31 first installable GPU shader test
+
+After user explicitly requested to develop using the techniques researched in Orbital Laser and *deliver a test version*, built the first new bounded volumetric test using the **real Horizon WASM guest shader path** (not an invented native bridge). The existing original M30 moving flame/ice/plant/storm/astral materials remain. The semi-transparent 3D curved atmosphere sheets now run a ten-step maximum integration of original animated 3D medium density; beyond 34 blocks use six samples to save fill rate on RX580. Cast-specific lifetime still comes from the existing Rust 3D scene authoring; no global screen-space post/depth access is claimed.
+
+Updated package `aetheria_preview` to v0.7.0, workflow to publish a **real user-installable TEST** `Aetheria-Horizon-M31-GPU-Test-v0.7.0` with compiled `.hmod`, `README-TEST.md`, and a SHA256 manifest. Validated downloaded ZIP locally, nested `.hmod` ZIP, Horizon manifest, packaged shader function and OGG sample files. Compilation, packaging and the entire workflow [44763204220](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44763204220) **SUCCESS** on source `fe4c235a7fecf6c16b17e765ad75230dafcb398b`.
+
+**Remaining:** user test in pinned Nightly, true native post GPU bridge with color+depth scene reading, legitimate HDR bloom, GPU timing, production art fidelity, gameplay/server integration for 170 DesignIntent. No claim of final VFX quality from synthetic SVG or mock shaders.
