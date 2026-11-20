@@ -116,3 +116,14 @@ The complete registry is **30 curated + 110 Standard + 40 Awakening + 20 Ultimat
 [Full M29 implementation and source-image review](docs/M29_COHERENT_SCULPTURE_LOD.md). The original M28 sparse-quad scheduler could punch holes through closed 3D sculptures under crowded spellcasting. The actual Rust Horizon WASM preview now tags complete solid components, selects them atomically under its existing 900-world-quad global cap, fairly redistributes spare headroom and generates lower-density **but complete** orb/veil/time/portal surfaces. Grouped sources include crystals, wings, membranes, boxes, ribs and terrain shells; a further visual pass replaced the fence-like Bone Palisade (#194) with overlapping broad bone armor panels.
 
 [Verified first M29 pinned WASM CI: 36/36 preview tests, artifact and OGG/WGSL/SHA512 checks](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44752358562). A later Bone Palisade art revision needs its own CI and updated two-view image review before aesthetic approval. The reviewed first M29 **real-source** eight-spell SVG projection had **897/900** submitted quads and all atomic panels intact, but still looked overlapped and visually rough; CPU metrics are not an artistic pass or game screenshot. Authentic HDR/depth/native GPU rendering, 170 rejected `DesignIntent` world mechanics, real network/save/unlocks and 200 unique original SFX remain unimplemented. **0/100 complete Horizon-gameplay-verified spells; no user test/release ZIP.**
+
+
+**M29 final review:** [Pinned Horizon WASM run 44754956222 succeeded
+with 37/37 preview Rust tests](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44754956222),
+30 original OGG cues, WGSL/Naga and signed manifest/ZIP integrity. The
+follow-up Bone Palisade art revision removes the ugly covering rectangle
+and adds 390-source-face, double-sided, articulated osseous shields.
+Its actual Cast/Impact source SVG projections were compared in **both
+camera views**; they show an improved jagged sculpt, but are still
+first-pass faceted CPU visuals rather than approved cinematic Horizon
+GPU imagery. **No world/server mechanics or release gate improved.**
