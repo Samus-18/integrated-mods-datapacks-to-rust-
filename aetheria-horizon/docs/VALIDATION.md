@@ -60,3 +60,13 @@ This section supersedes the old validation ledger's broad 'not yet compiled' sta
 | M30 Horizon WASM + shaders | **38/38 preview tests PASS**; the 5 animated material families validate with pinned Naga and actual `PipelineInput.position` mock; glacier volumetric-like haze has coherent 3-sheet LOD; pinned `.hmod` compiles, 30 OGG, ZIP/SHA512 valid | [CI 44758785121](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44758785121) | In-game GPU output, true HDR/volumetric scene depth, reference-video visual fidelity and RX580 frame-times |
 
 The new shader runs through the mod's **existing actual Horizon WGSL PipelineBlend::Translucent + WorldDepth::Tested** world quad path, not the unattached native post prototype. Source: [M30 visual materials](M30_LIVE_SHADER_MATERIALS.md). Pinned Horizon doc confirms 3D camera-relative `input.position`, linear `input.color` and `frame.time`. This does not change the **0/100 end-to-end gameplay verified** count: 170 gameplay `DesignIntent` actions are still unimplemented in a real world adapter.
+
+
+## M31 — direct downloadable Horizon GPU haze test v0.7.0 (2026-11-20)
+
+**Playable test archive** [Aetheria-Horizon-M31-GPU-Test-v0.7.0 (GitHub Actions 44763204220)](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44763204220) was produced by a **SUCCESS** pinned-SDK WASM workflow from source SHA `fe4c235a7fecf6c16b17e765ad75230dafcb398b`.
+
+- Actual compiled `aetheria_preview.hmod` v0.7.0 (3,197,329 bytes) independently downloaded from workflow artifact `14642372974`, ZIP and `mod.wasm` SHA512 validated again. Download artifact ZIP contains `README-TEST.md` and matching `SHA256.txt`. `.hmod` SHA256: `c7edaa1fa8eee91057aed80c2b88aeecd0f99fff008dad7baf0fc37dd5cb1efe`.
+- Workflow: host-side Rust test suite, Naga WGSL source validation, package checks, 30 OGG VFX audio cues, and geometry projections pass. **38/38 tests** expected (verify logged line separately if used in status reporting).
+- Real shader now calls `aetheria_integrate_haze` on low-alpha original 3D scene sheets. **6/10 samples per pixel** by camera-relative distance, with explicit max 10 iterations and coherent low-detail sheet geometry. World depth testing at submitted atmospheric surfaces is available. No engine scene-depth texture is read by this WASM shader.
+- **Not verified:** actually running the game on the user's Windows GPU and Nightly, HDR bloom, genuine fullscreen depth-limited volume compositing, performance/FPS, 200 true gameplay mechanics. Do not call this the final 200-spell RPG release; 170 core mechanics remain `DesignIntent`.
