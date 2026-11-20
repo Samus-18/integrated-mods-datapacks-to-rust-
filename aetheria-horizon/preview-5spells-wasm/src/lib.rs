@@ -40,16 +40,13 @@ use std::{f64::consts::TAU, sync::Mutex};
 use aetheria_horizon::vfx::arcane_forms::{sculpt_school,Material as ArcaneMaterial};
 
 const MOD_ID: &str = "aetheria_preview";
-const IDS: [&str;5] = ["phoenix_garden", "glacier_cathedral", "worldroot", "thunder_wyrm", "astral_sunder"];
-const KEYS: [&str;5] = ["key.keyboard.z", "key.keyboard.x", "key.keyboard.c", "key.keyboard.v", "key.keyboard.b"];
-const NAMES: [&str;5] = ["Fire school starter", "Frost school starter", "Druid school starter", "Storm school starter", "Astral school starter"];
 
 #[derive(Clone, Copy)]
 struct Cast { kind: usize, variant: u8, start: u64, center: [f64;3], direction: [f64;3] }
 struct State {
     tick:u64,effects:Vec<Cast>,pipeline:Option<RenderPipelineRef>,
     last_cast:Option<usize>,last_variant:u8,
-    quick:QuickSelector,show_constellation:bool,
+    quick:QuickSelector,picker_was_down:bool,picker_scrolled:bool,
     // Client-only training instance; NOT multiplayer player data or world save.
     demo_magic:Option<PlayerMagic>,
     local_mana:f32,local_cooldowns:[u64;SPELL_COUNT],
@@ -58,7 +55,7 @@ impl Default for State {
     fn default()->Self {
         Self{tick:0,effects:Vec::new(),pipeline:None,
             last_cast:None,last_variant:0,
-            quick:QuickSelector::default(),show_constellation:false,
+            quick:QuickSelector::default(),picker_was_down:false,picker_scrolled:false,
             demo_magic:None,local_mana:100.0,
             local_cooldowns:[0;SPELL_COUNT]}
     }
@@ -69,22 +66,11 @@ struct Mod { state: Mutex<State> }
 #[mod_api::horizon_mod]
 impl Hooks for Mod {
     fn register(&self, registrar: &mut dyn Registrar, _: &RegistrationContext) {
-        for i in 0..5 {
-            registrar.register_key_mapping(
-                KeyRegistration::new(IDS[i], KEYS[i])
-                    .context(KeyConflictContext::InGame)
-                    .label(NAMES[i])
-                    .category("Aetheria magic")
-            );
-        }
+        // Two controls: tap R next school; hold R and scroll one of its 20
+        // spells; G casts. Old debug shortcuts are not registered.
         for (id,key,label) in [
-            ("quick_picker","key.keyboard.r","Show compact spell picker"),
-            ("previous","key.keyboard.n","Previous Aetheria spell"),
-            ("next","key.keyboard.m","Next Aetheria spell"),
-            ("cast","key.keyboard.g","Cast selected Aetheria spell"),
-            ("constellation","key.keyboard.k","Open constellation preview"),
-            ("previous_school","key.keyboard.j","Previous magic school"),
-            ("next_school","key.keyboard.l","Next magic school"),
+            ("quick_picker","key.keyboard.r","Tap: next school | Hold + wheel: spells"),
+            ("cast","key.keyboard.g","Cast selected magic spell"),
         ] {
             registrar.register_key_mapping(
                 KeyRegistration::new(id,key)
@@ -117,17 +103,8 @@ impl Hooks for Mod {
         // We still keep the world effects alive while those screens are shown.
         let active_gameplay = playing && host.observed_screen_id().is_none();
         let mut pressed = Vec::new();
-        if active_gameplay {
-            for (i, id) in IDS.iter().enumerate() {
-                if host.consume_click(MOD_ID, id) { pressed.push(DIRECT_SLOTS[i]); }
-            }
-        }
-        let select_previous=active_gameplay && host.consume_click(MOD_ID,"previous");
-        let select_next=active_gameplay && host.consume_click(MOD_ID,"next");
         let cast_selected=active_gameplay && host.consume_click(MOD_ID,"cast");
-        let toggle_constellation=active_gameplay && host.consume_click(MOD_ID,"constellation");
-        let previous_school=active_gameplay && host.consume_click(MOD_ID,"previous_school");
-        let next_school=active_gameplay && host.consume_click(MOD_ID,"next_school");
+        let picker_down=active_gameplay && host.is_down(MOD_ID,"quick_picker");
         let camera = if pressed.is_empty() && !cast_selected {None}else{host.camera()};
         // Client-side surface target: makes the ice and roots grow out of a
         // real selected block rather than floating at the player's eye level.
@@ -142,7 +119,8 @@ impl Hooks for Mod {
         let mut queued_sounds: Vec<(usize,u8,[f64;3])> = Vec::new();
         if !playing {
             state.effects.clear();
-            state.show_constellation=false;
+            state.picker_was_down=false;
+            state.picker_scrolled=false;
             state.local_mana=100.0;
             state.local_cooldowns=[0;SPELL_COUNT];
             state.demo_magic=None;
@@ -165,26 +143,18 @@ impl Hooks for Mod {
             demo.regenerate(1);
             state.local_mana=demo.mana;
         }
-        if select_previous {
-            state.quick.selected=(state.quick.selected+SPELL_COUNT-1)%SPELL_COUNT;
-            state.quick.visible_until_tick=now.saturating_add(55);
-        }
-        if select_next {
-            state.quick.selected=(state.quick.selected+1)%SPELL_COUNT;
-            state.quick.visible_until_tick=now.saturating_add(55);
-        }
-        if previous_school||next_school {
-            let old=catalog200::school(state.quick.selected);
+        // R short tap cycles schools, holding R+wheel browses within a
+        // class. A scroll marks the gesture so release does NOT change school.
+        if !picker_down && state.picker_was_down && !state.picker_scrolled {
+            let school=(catalog200::school(state.quick.selected)+1)%10;
             let rank=catalog200::rank(state.quick.selected);
-            let next=if next_school {(old+1)%10}else{(old+9)%10};
-            state.quick.selected=next*20+rank;
-            state.quick.visible_until_tick=now.saturating_add(65);
+            state.quick.selected=school*20+rank;
+            state.quick.visible_until_tick=now.saturating_add(36);
         }
-        if toggle_constellation {
-            state.show_constellation=!state.show_constellation;
-        }
-        if state.show_constellation {pressed.clear();}
-        else if cast_selected {pressed.push(state.quick.selected.min(SPELL_COUNT-1));}
+        if picker_down && !state.picker_was_down {state.picker_scrolled=false;}
+        if !picker_down {state.picker_scrolled=false;}
+        state.picker_was_down=picker_down;
+        if cast_selected {pressed.push(state.quick.selected.min(SPELL_COUNT-1));}
         state.effects.retain(|c| now.saturating_sub(c.start) <= 104);
         if let Some(cam) = camera {
             let yaw = f64::from(cam.yaw).to_radians();
@@ -268,13 +238,13 @@ impl Hooks for Mod {
         let mut state=self.state.lock().unwrap();
         let now=state.tick;
         for _ in 0..steps.unsigned_abs().min(8) {
-            if steps>0 {
-                state.quick.selected=(state.quick.selected+SPELL_COUNT-1)%SPELL_COUNT;
-            } else {
-                state.quick.selected=(state.quick.selected+1)%SPELL_COUNT;
-            }
+            let school=catalog200::school(state.quick.selected);
+            let rank=catalog200::rank(state.quick.selected);
+            state.quick.selected=school*20+
+                if steps>0 {(rank+19)%20}else{(rank+1)%20};
         }
-        state.quick.visible_until_tick=now.saturating_add(55);
+        state.picker_scrolled=true;
+        state.quick.visible_until_tick=now.saturating_add(36);
         Flow::Cancel
     }
 
@@ -338,7 +308,6 @@ impl Hooks for Mod {
             tick:state.tick,
             chosen,
             quick_open:open,
-            constellation:state.show_constellation,
             mana:state.local_mana,
             cooldowns:state.local_cooldowns,
             cast_variant:state.last_variant,
