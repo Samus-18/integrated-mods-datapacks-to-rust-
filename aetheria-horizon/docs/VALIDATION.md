@@ -51,3 +51,12 @@ This section supersedes the old validation ledger's broad 'not yet compiled' sta
 | M29 third sculptural bone-wall revision | **37/37 preview Rust tests**, new two-sided relief anti-box regression, pinned .hmod/OGG/WGSL/Naga/ZIP/SHA512 passed. Actual Cast/Impact source SVG reviewed from two cameras and visibly improved over blank cuboid | [Actions 44754956222](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44754956222), source commit `5201c64d8171bcfb984fb059e494211ebebdcee6` | Faceted proxy shapes still lack cinematic GPU materials; no Horizon world/server game test, no 170 spell mechanics |
 
 **Actual source image review is not a game screenshot:** M29 showed an 8-cast combined CPU projection (897/900 submitted quads, all atomic panels intact) that remained visually cluttered and source-art rough; the first Bone Palisade looked like separated fence posts; the second revision looked like an oversized featureless wall. Third revision needs fresh art review. The 900-world-quad scheduler and 200 route table do NOT implement actual GPU volumetric effects, 170 DesignIntent world spell mechanics, server saving, networking, or verified finished 100-spell RPG gameplay. **0/100 fully integrated/verified; no test ZIP.**
+
+
+## M30 — live procedural surface materials (2026-11-20)
+
+| Check | Verified | Evidence | Not yet validated |
+| --- | --- | --- | --- |
+| M30 Horizon WASM + shaders | **38/38 preview tests PASS**; the 5 animated material families validate with pinned Naga and actual `PipelineInput.position` mock; glacier volumetric-like haze has coherent 3-sheet LOD; pinned `.hmod` compiles, 30 OGG, ZIP/SHA512 valid | [CI 44758785121](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44758785121) | In-game GPU output, true HDR/volumetric scene depth, reference-video visual fidelity and RX580 frame-times |
+
+The new shader runs through the mod's **existing actual Horizon WGSL PipelineBlend::Translucent + WorldDepth::Tested** world quad path, not the unattached native post prototype. Source: [M30 visual materials](M30_LIVE_SHADER_MATERIALS.md). Pinned Horizon doc confirms 3D camera-relative `input.position`, linear `input.color` and `frame.time`. This does not change the **0/100 end-to-end gameplay verified** count: 170 gameplay `DesignIntent` actions are still unimplemented in a real world adapter.
