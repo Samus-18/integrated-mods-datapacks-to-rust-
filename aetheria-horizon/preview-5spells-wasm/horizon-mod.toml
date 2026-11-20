@@ -1,6 +1,6 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - M32 Volume Art Test"
-version = "0.8.0"
+name = "Aetheria Horizon - M32.1 Collision-Free QA Test"
+version = "0.8.1"
 api = "0.2"
 side = "client"
 description = "200 spell IDs; M32 fully overhauled broad mass-and-volume GPU preview, two-key R/G navigation; all art experimental. Client mana/SFX only; no server effects or saving."
