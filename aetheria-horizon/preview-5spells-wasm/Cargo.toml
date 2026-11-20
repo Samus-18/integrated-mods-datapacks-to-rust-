@@ -1,6 +1,6 @@
 [package]
 name = "aetheria-preview"
-version = "0.7.0"
+version = "0.7.1"
 edition = "2024"
 publish = false
 
@@ -18,6 +18,6 @@ horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
 naga = { version = "=30.0.1", features = ["wgsl-in"] }
 
 [package.metadata.horizon]
-sdk = "dd67b76ff23e28c6d8e21859df600d31572f81a0"
+sdk = "0a875da91dbb0fdcb7ba8c42c11341aa229af51a"
 
 [workspace]
