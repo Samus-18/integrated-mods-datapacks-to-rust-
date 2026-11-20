@@ -73,6 +73,18 @@ fn pipeline_fragment(input:PipelineInput)->vec4<f32> {
     let p=uv+0.036*vec2<f32>(
         sin(pos.y*1.31+t*0.22),cos(pos.x*1.17-t*0.18));
     let c=clamp(input.color.rgb,vec3<f32>(0.0),vec3<f32>(1.0));
+
+    // Geometric facet normals are recovered FROM THE DRAWN 3D SURFACE in
+    // fragment derivatives, not fake 2D circle outlines. The absolute
+    // facing term supports both sides of crystals, wings and fog sheets.
+    let dx=dpdx(input.position);
+    let dy=dpdy(input.position);
+    let face_normal=normalize(cross(dx,dy)+vec3<f32>(0.00001,0.00002,0.00003));
+    let view_dir=normalize(-input.position+vec3<f32>(0.00001));
+    let angle=abs(dot(face_normal,view_dir));
+    let rim=pow(clamp(1.0-angle,0.0,1.0),3.0);
+    let facet_light=0.45+0.55*abs(dot(
+        face_normal,normalize(vec3<f32>(0.39,0.85,0.35))));
     let r=c.r;let g=c.g;let b=c.b;
 
     // Unnormalised weights: each magical material contributes based on
@@ -98,7 +110,8 @@ fn pipeline_fragment(input:PipelineInput)->vec4<f32> {
 
     // Large opaque volume surfaces remain readable; only the material's
     // local energy veins are brighter. Never white-out the whole quad.
-    let brightness=0.66+0.22*faceted+
+    let brightness=0.53+0.17*facet_light+0.18*faceted+
+        0.10*rim*(frost+astral+lightning)+
         0.25*fire*embers+
         0.16*frost*glacial+
         0.18*life*sap+
@@ -106,7 +119,8 @@ fn pipeline_fragment(input:PipelineInput)->vec4<f32> {
         0.12*astral*fracture+
         0.09*mass;
     let ember_color=vec3<f32>(0.25,0.046,0.004)*fire*embers;
-    let ice_color=vec3<f32>(0.009,0.16,0.23)*frost*glacial;
+    let ice_color=vec3<f32>(0.009,0.16,0.23)*frost*glacial+
+        vec3<f32>(0.03,0.10,0.17)*rim*frost;
     let sap_color=vec3<f32>(0.035,0.12,0.012)*life*sap;
     let storm_color=vec3<f32>(0.10,0.18,0.29)*lightning*voltage;
     let rift_color=vec3<f32>(0.07,0.018,0.16)*astral*fracture;
