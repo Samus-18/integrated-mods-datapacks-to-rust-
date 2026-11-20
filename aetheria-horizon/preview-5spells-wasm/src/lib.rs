@@ -8,6 +8,7 @@ mod hero_vfx;
 mod volumetric_forms;
 mod sharp_projectile;
 mod rime_bridge;
+mod procedural_fx;
 mod catalog200;
 mod mass_forms;
 mod ultimate_forms;
@@ -278,9 +279,16 @@ impl Hooks for Mod {
         // assembling crowded source scenes. Removing individual world quads
         // from a closed 3D surface would otherwise punch visible holes.
         let reduced_detail=live.len()>=4 || total_budget/live.len()<180;
+        // M35: soft particles are GPU-MATERIAL QUADS, not opaque world cards.
+        // Only submit them when the verified optional guest WGSL pipeline is
+        // resolved; never leak the raw rectangle geometry into the fallback.
+        let mask_pipeline_available=pipeline.is_some();
         let mut drafts=Vec::with_capacity(live.len());
-        for (cast,age) in live {
+        for (cast,age) in live.iter().copied() {
             let mut spell=Scene::with_lod(source_budget,reduced_detail);
+            if mask_pipeline_available {
+                procedural_fx::render(cast,age,camera,&mut spell);
+            }
             render_spell(cast,age,&mut spell);
             drafts.push(spell);
         }
@@ -291,8 +299,21 @@ impl Hooks for Mod {
                 PipelineQuad::spanning(*corners, *color)).collect();
             if event.draw.pipeline_quads(pipeline, &quads).is_ok() { return; }
         }
-        // Fallback on plain geometry if optional shader could not compile or resolve.
-        let quads: Vec<WorldQuad> = scene.facets.iter().map(|(corners,color)|
+        // Shader missing or pipeline_quads returned an error: regenerate ONLY
+        // existing solid VFX. Without the WGSL alpha mask, soft particles
+        // would become the same ugly opaque rectangles the user rejected.
+        let plain_facets=if mask_pipeline_available {
+            let mut clean=Vec::with_capacity(live.len());
+            for (cast,age) in live {
+                let mut spell=Scene::with_lod(source_budget,reduced_detail);
+                render_spell(cast,age,&mut spell);
+                clean.push(spell);
+            }
+            fair_geometry::sample_fair(&clean,total_budget)
+        }else{
+            scene.facets
+        };
+        let quads: Vec<WorldQuad> = plain_facets.iter().map(|(corners,color)|
             WorldQuad::new(*corners, *color, WorldDepth::Tested)).collect();
         let _ = event.draw.quads(&quads);
     }
