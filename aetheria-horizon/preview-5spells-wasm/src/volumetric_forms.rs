@@ -203,6 +203,10 @@ fn monumental_plate(
     }
     scene.end_component(previous);
 }
+/// M32.1: 18 genuinely different silhouettes selected from the authored
+/// registry mesh meaning. A central sphere is now ALLOWED ONLY when that
+/// spell actually calls for an orb/beast/cloud: no more same generic oval
+/// across 10 classes. No line/ring/tube primitives run here.
 pub(super) fn render(cast:Cast,age:f64,scene:&mut Scene){
     if !(0.0..104.0).contains(&age)||!age.is_finite(){return;}
     let slot=cast.kind.min(199);
@@ -212,50 +216,245 @@ pub(super) fn render(cast:Cast,age:f64,scene:&mut Scene){
     let seed=(slot+1) as f64;
     let grow=(0.49+0.51*(age/15.0).clamp(0.,1.)).min(1.0);
     let fade=((104.0-age)/19.0).clamp(0.,1.);
-    let reach=2.65+0.22*(rank%6) as f64;
-    let height=(4.9+0.26*(rank%5) as f64)*
-        if rank>=18 {1.42}else if rank>=14 {1.23}else{1.0};
-    let field=match form {
-        Form::Crystal|Form::Boulder|Form::Architecture|Form::Armor|
-        Form::Glyph|Form::Relic|Form::Blade=>true,
-        _=>false
-    };
-    // All visible schools start with an authored MASS, never a wire ring.
-    // Each semantic chooses one of two drastically different bodies.
-    if field {
-        let slabs=if rank>=18 {6}else{4};
-        for i in 0..slabs{
-            let az=TAU*i as f64/slabs as f64+seed*0.23;
-            let radius=0.9+i as f64*0.32;
-            let at=p(cast.center,az.cos()*radius,0.0,az.sin()*radius);
-            monumental_plate(scene,at,az+0.3,
-                (2.2+0.3*(i%3) as f64)*grow,
-                height*(0.52+0.13*((i+rank)%4) as f64)*grow,
-                0.55+0.12*(i%3) as f64,fade*0.83,
-                if i%3==0 {GLOW[school]}else{SOLID[school]},
-                seed+i as f64);
+    let reach=(2.65+0.19*(rank%7) as f64)*grow;
+    let height=(4.65+0.22*(rank%6) as f64)*
+        if rank>=18 {1.37}else if rank>=14 {1.18}else{1.0}*grow;
+    let center=cast.center;
+    let front=SOLID[school];
+    let glow=GLOW[school];
+    // Volumes are deliberately used in different compositions according
+    // to the spell's original mesh description, NOT school-wide recolours.
+    match form {
+        Form::Crystal=>{
+            // Asymmetric broad glacial fault. The ice wall is the hero;
+            // translucent air hangs BETWEEN whole cliffs, never around rods.
+            for i in 0..7 {
+                let x=(i as f64-3.0)*0.93;
+                let z=(i as f64*1.73+seed).sin()*1.06;
+                monumental_plate(scene,p(center,x,0.,z),
+                    0.25+(i as f64*0.8+seed*0.12).sin()*0.37,
+                    (1.8+0.6*(i%3) as f64)*grow,
+                    height*(0.47+0.08*(i%4) as f64),
+                    0.59,fade*0.91,
+                    if i%4==0{glow}else{front},seed+i as f64);
+            }
+            curtain(scene,center,school,form,1,age,seed,
+                reach*1.10,height*0.66,fade*0.72);
         }
-    } else {
-        let radius=if school==6 {3.1}else{2.15};
-        ellipsoid(scene,p(cast.center,0.0,height*0.43,0.0),
-            [radius*grow,height*0.46*grow,radius*0.82*grow],
-            age,seed,SOLID[school],fade*0.55);
-    }
-    // Volume integration is evaluated IN THE ACTUAL LIVE WGSL SHADER
-    // on these wide front/back surfaces. It adds depth/curl, not rings.
-    let sheets=if field {3}else{4};
-    for i in 0..sheets{
-        curtain(scene,cast.center,school,form,i,age,seed,
-            (reach+0.17*(i%2) as f64)*grow,
-            height*(0.78+0.09*(i%3) as f64)*grow,
-            fade);
-    }
-    // Some dense central bodies are transparent themselves: shader-side
-    // volume only on 0<alpha<.22, facets/rocks stay physically opaque.
-    if !field && rank>=18{
-        ellipsoid(scene,p(cast.center,0.0,height*0.47,0.0),
-            [1.3*grow,height*0.53*grow,1.3*grow],
-            age,seed+6.0,GLOW[school],fade*0.18);
+        Form::Boulder=>{
+            // Tectonic tumbling chunks; not a vertical palisade.
+            for i in 0..9{
+                let a=TAU*(i as f64/9.0)+seed*0.25;
+                let r=0.95+0.43*(i%4) as f64;
+                monumental_plate(scene,
+                    p(center,a.cos()*r,(i%3) as f64*0.47,a.sin()*r),
+                    a+0.56,2.4*grow,1.8*grow+height*0.16,
+                    0.68,fade*0.86,if i%3==0{glow}else{front},
+                    seed+i as f64*1.12);
+            }
+            curtain(scene,center,school,form,0,age,seed,
+                reach*1.18,height*0.70,fade*0.72);
+        }
+        Form::Architecture=>{
+            // Flying broad walls and fractured vaults, large void between.
+            for i in 0..6{
+                let sign=if i%2==0 {-1.0}else{1.0};
+                let tier=i/2;
+                monumental_plate(scene,p(center,
+                    sign*(2.7-0.6*tier as f64),
+                    0.50*tier as f64,0.30*(tier as f64-1.0)),
+                    0.11*sign+seed*0.015,2.7*grow,
+                    height*(0.48+0.07*tier as f64),0.66,
+                    fade*0.91,if i==4{glow}else{front},seed+i as f64);
+            }
+            // One heavy stone lintel spans the tall architecture.
+            monumental_plate(scene,p(center,0.,height*0.63,0.),
+                PI*0.5,reach*1.8,1.24*grow,0.95,
+                fade*0.89,front,seed+19.0);
+            curtain(scene,center,school,form,2,age,seed,
+                reach,height*0.62,fade*0.48);
+        }
+        Form::Blade=>{
+            // Broad sweeping physical blade body, NOT a needle.
+            for i in 0..4{
+                let az=-0.52+i as f64*0.34;
+                monumental_plate(scene,p(center,
+                    (i as f64-1.5)*0.85,(i%2) as f64*0.35,
+                    0.4*(i as f64).sin()),az+seed*0.01,
+                    (2.8+0.3*(i%2) as f64)*grow,
+                    height*(0.55+0.07*i as f64),0.54,
+                    fade*0.86,if i==1{glow}else{front},
+                    seed+i as f64);
+            }
+            curtain(scene,center,school,form,1,age,seed,
+                reach*1.35,height*0.78,fade*0.65);
+            curtain(scene,center,school,form,3,age,seed,
+                reach*0.78,height*0.61,fade*0.52);
+        }
+        Form::Armor=>{
+            // Four angled closed armor shields make a protective shell;
+            // the middle is OPEN, no generic filled egg.
+            for i in 0..6{
+                let a=TAU*i as f64/6.0;
+                monumental_plate(scene,p(center,a.cos()*1.63,
+                    (i%3) as f64*0.43,a.sin()*1.63),
+                    a+0.53,2.65*grow,height*0.52,0.66,
+                    fade*0.77,if i%3==0{glow}else{front},
+                    seed+i as f64);
+            }
+            curtain(scene,center,school,form,1,age,seed,
+                reach*0.94,height*0.73,fade*0.54);
+        }
+        Form::Glyph=>{
+            // Monumental occult TABLET with inset facets, not a rune ring.
+            monumental_plate(scene,p(center,0.,height*0.10,0.),
+                0.10+seed*0.01,reach*2.0,height*0.92,0.83,
+                fade*0.87,front,seed);
+            for i in 0..6 {
+                let x=((i%3) as f64-1.0)*reach*0.48;
+                let y=(i/3) as f64*height*0.41+height*0.13;
+                monumental_plate(scene,p(center,x,y,-0.90),
+                    0.05,reach*0.38,height*0.27,0.19,
+                    fade*0.79,glow,seed+i as f64);
+            }
+            curtain(scene,center,school,form,1,age,seed,
+                reach*1.3,height*0.95,fade*0.45);
+        }
+        Form::Relic=>{
+            // Dense hovering relic + fractured engraving plates.
+            monumental_plate(scene,p(center,0.,height*0.29,0.),
+                PI*0.25,reach*1.12,height*0.48,1.02,
+                fade*0.85,front,seed);
+            for i in 0..5{
+                let a=TAU*i as f64/5.0;
+                monumental_plate(scene,p(center,2.1*a.cos(),
+                    height*0.50+0.26*(i%3) as f64,2.1*a.sin()),
+                    a+0.45,1.4*grow,height*0.33,0.53,
+                    fade*0.80,if i%2==0{glow}else{front},
+                    seed+i as f64);
+            }
+            curtain(scene,center,school,form,2,age,seed,
+                reach,height*0.9,fade*0.46);
+        }
+        Form::SkyRift=>{
+            // A jagged empty dark sky opening: broad offset curtains on
+            // opposing planes, plus solid torn slabs at its edges. No ring.
+            curtain(scene,p(center,-0.9,0.,0.),school,form,0,age,seed,
+                reach*1.44,height*1.22,fade*0.94);
+            curtain(scene,p(center,0.7,0.,0.8),school,form,2,age,seed,
+                reach*1.15,height*1.16,fade*0.68);
+            for i in 0..4{
+                let sign=if i%2==0 {-1.0}else{1.0};
+                monumental_plate(scene,p(center,sign*reach*0.91,
+                    (i/2) as f64*height*0.44,0.33*sign),
+                    -0.25*sign,1.5*grow,height*0.43,0.36,
+                    fade*0.57,front,seed+i as f64);
+            }
+        }
+        Form::Flora|Form::Canopy|Form::Phoenix=>{
+            // Huge, connected translucent LEAVES/WINGS, not twigs.
+            // Different canopy styles arise from registry semantic class
+            // and school-specific fold dynamics in curtain_point.
+            for i in 0..4{
+                curtain(scene,center,school,form,i,age,seed,
+                    reach*(1.12+0.13*(i%2) as f64),
+                    height*(0.69+0.12*(i%3) as f64),fade*0.96);
+            }
+        }
+        Form::Wave=>{
+            // Multi-layer breaking water curtains, horizontal not oval.
+            for i in 0..4{
+                curtain(scene,p(center,
+                    (i as f64-1.5)*0.54,0.,i as f64*0.42),
+                    school,form,i,age,seed,
+                    reach*(1.55-0.12*i as f64),
+                    height*(0.60+0.12*(i%2) as f64),fade*0.84);
+            }
+        }
+        Form::Ribbon=>{
+            // Woven broad vortex sheets with negative space in the middle.
+            for i in 0..4{
+                curtain(scene,p(center,
+                    0.4*(i as f64).sin(),0.,0.65*(i as f64).cos()),
+                    school,form,i,age,seed,
+                    reach*(0.89+0.10*i as f64),
+                    height*(0.75+0.07*i as f64),fade*0.90);
+            }
+        }
+        Form::Time=>{
+            // Two offset walls of temporal glass / sandglass. NO circles.
+            for i in 0..6 {
+                let sign=if i%2==0{-1.0}else{1.0};
+                monumental_plate(scene,p(center,sign*(1.1+0.5*(i/2) as f64),
+                    height*0.21*(i/2) as f64,0.47*(i as f64).sin()),
+                    sign*0.36,1.5*grow,height*0.37,0.43,
+                    fade*0.58,if i%3==0{glow}else{front},seed+i as f64);
+            }
+            curtain(scene,center,school,form,0,age,seed,
+                reach*1.02,height,fade*0.78);
+            curtain(scene,center,school,form,2,age,seed,
+                reach*1.22,height*0.90,fade*0.63);
+        }
+        Form::Avatar=>{
+            // Massive shoulder/chest silhouette assembled from broad
+            // sculpted armored slabs, NOT a pencil-limb skeleton.
+            monumental_plate(scene,p(center,0.,height*0.12,0.),0.22,
+                reach*1.32,height*0.63,0.72,fade*0.84,front,seed);
+            for i in 0..4{
+                let sign=if i%2==0{-1.0}else{1.0};
+                monumental_plate(scene,p(center,
+                    sign*(1.12+0.62*(i/2) as f64),
+                    height*(0.2+0.37*(i/2) as f64),0.4),
+                    sign*(0.35+0.2*(i/2) as f64),
+                    1.5*grow,height*0.30,0.47,fade*0.70,
+                    if i%3==0{glow}else{front},seed+i as f64);
+            }
+            curtain(scene,center,school,form,3,age,seed,
+                reach*1.06,height*0.90,fade*0.46);
+        }
+        Form::Cloud=>{
+            // TWO staggered billowing storm masses and a low broad shadow
+            // veil. Real cores are appropriate only for cloud semantics.
+            ellipsoid(scene,p(center,-0.6,height*0.53,-0.3),
+                [2.80*grow,height*0.36,1.93*grow],
+                age,seed,front,fade*0.52);
+            ellipsoid(scene,p(center,1.1,height*0.42,0.48),
+                [2.46*grow,height*0.29,2.17*grow],
+                age,seed+3.0,glow,fade*0.39);
+            curtain(scene,center,school,form,1,age,seed,
+                reach*1.43,height*0.65,fade*0.79);
+        }
+        Form::Beast=>{
+            // Big bodily creature mass, angular armor and broad wings;
+            // NOT a coiling straw with rings.
+            ellipsoid(scene,p(center,-0.78,height*0.43,0.0),
+                [2.40*grow,height*0.32,1.39*grow],
+                age,seed,front,fade*0.70);
+            monumental_plate(scene,p(center,1.20,height*0.36,0.0),
+                0.34,1.8*grow,height*0.47,0.55,
+                fade*0.77,glow,seed+2.0);
+            curtain(scene,center,school,form,1,age,seed,
+                reach*1.43,height*0.84,fade*0.80);
+            curtain(scene,center,school,form,3,age,seed,
+                reach*1.46,height*0.80,fade*0.79);
+        }
+        Form::Artifact=>{
+            // Bright 3D orb only where the source actually calls for one.
+            ellipsoid(scene,p(center,0.,height*0.50,0.),
+                [2.08*grow,height*0.38,1.97*grow],
+                age,seed,glow,fade*0.73);
+            for i in 0..4{
+                let a=TAU*i as f64/4.0;
+                monumental_plate(scene,
+                    p(center,2.0*a.cos(),height*0.36,
+                        2.0*a.sin()),a+0.57,
+                    1.45*grow,height*0.34,0.43,
+                    fade*0.73,front,seed+i as f64);
+            }
+            curtain(scene,center,school,form,1,age,seed,
+                reach*0.96,height*0.77,fade*0.48);
+        }
+        // A few mesh names are abstract Canopy; already handled above.
     }
 }
 
