@@ -38,6 +38,7 @@ mod tests {
             struct PipelineInput {
                 uv: vec2<f32>,
                 color: vec4<f32>,
+                position: vec3<f32>,
             };
             struct AetheriaTestFrame {
                 time: f32,
@@ -50,9 +51,24 @@ mod tests {
                 "M17 cinematic material WGSL parse error:\n{}",
                 error.emit_to_string(&source)
             ));
-        assert!(parsed.functions.iter().any(|(_,f)|
-            f.name.as_deref()==Some("pipeline_fragment")
-        ));
+        // Names of the ORIGINAL source-shaped material motions. Parsing
+        // against the real pinned PipelineInput.position and time contract
+        // is more useful than a pure text-check for "pretty shader".
+        for name in [
+            "pipeline_fragment","aetheria_ember_flow",
+            "aetheria_glacier_cleavage","aetheria_living_sap",
+            "aetheria_lightning_branches","aetheria_rift_fault"
+        ] {
+            assert!(parsed.functions.iter().any(|(_,f)|
+                f.name.as_deref()==Some(name)
+            ),"missing M30 material expression: {name}");
+        }
+        assert!(actual.contains("input.position"),
+            "M30 must use the documented camera-relative world position");
+        assert!(actual.contains("1.14"),
+            "M30 light energy must remain capped instead of white-out");
+        assert!(!actual.contains("textureSample(") && !actual.contains("discard;"),
+            "Guest pipeline has no scene depth/texture; do not fake refraction");
         let mut validator=naga::valid::Validator::new(
             naga::valid::ValidationFlags::all(),
             naga::valid::Capabilities::all()
