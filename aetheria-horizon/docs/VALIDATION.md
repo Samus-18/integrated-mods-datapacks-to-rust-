@@ -40,3 +40,14 @@ This section supersedes the old validation ledger's broad 'not yet compiled' sta
 | M28 portable Rust + Rapier | Both jobs completed SUCCESS | [Actions 44632013002](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44632013002) | Collision physics wired to Horizon block/entity world |
 
 **Counting policy:** 200/200 authored client scene identities are complete as renderer routes; 0/100 user-accepted fully integrated RPG spells are verified. Shader Naga compilation and 860 CPU SVG geometry snapshots are not Minecraft in-game screenshots or aesthetic sign-off. Final user-facing package is withheld.
+
+
+## M29 — component-aware world-quads and real geometry-source QA (2026-11-20)
+
+| Milestone | Verified | Evidence | Still unverified |
+| --- | --- | --- | --- |
+| M29 first atomic-geometry pass | **36/36 Rust WASM preview tests**, exact 8-spell concurrent 900-quad model-ownership test, closed shell high/low tessellation tests, 2-view combined stress SVG, pinned Horizon WASM `.hmod` build, 30 OGG, WGSL/Naga, ZIP/SHA512 | [Actions 44752358562](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44752358562) | Horizon Nightly in-world screenshots, actual HDR/occlusion/fps, visual artistic quality |
+| M29 second bone-wall art pass | **36/36 Rust preview tests**, WASM package and integrity checks passed; downloaded actual two-camera before/after SVGs | [Actions 44753597607](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44753597607) | The 2nd draft introduced a large plain box: it **fails user visual quality** despite source geometry/tests passing |
+| M29 third sculptural bone-wall revision | Code now explicitly generates irregular continuous 3D spines and raised double-sided shield relief; new dedicated test rejects giant wall faces | [Pending pinned WASM action after commit `5201c64d8171bcfb984fb059e494211ebebdcee6`](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44754956222) | **Do not claim this newest artistic revision is accepted before checking both test logs and generated source imagery.** |
+
+**Actual source image review is not a game screenshot:** M29 showed an 8-cast combined CPU projection (897/900 submitted quads, all atomic panels intact) that remained visually cluttered and source-art rough; the first Bone Palisade looked like separated fence posts; the second revision looked like an oversized featureless wall. Third revision needs fresh art review. The 900-world-quad scheduler and 200 route table do NOT implement actual GPU volumetric effects, 170 DesignIntent world spell mechanics, server saving, networking, or verified finished 100-spell RPG gameplay. **0/100 fully integrated/verified; no test ZIP.**
