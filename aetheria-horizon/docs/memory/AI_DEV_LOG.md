@@ -353,3 +353,14 @@ User direct instruction: "tak vylepsuj a pokracuj ve vyvoji ted udelej dalsi kou
   depth-aware shader, 170 world-action DesignIntent, networking,
   acquisition, saving and 200 individual soundscapes still outstanding.
   No incomplete download ZIP.
+
+
+## 2026-11-20 — M30: directly connected 3D surface materials and intact glacial atmosphere
+
+- The owner requested short updates, no Codex; continue Rust directly on GitHub and match the original four high-quality fantasy VFX videos. Checked the **exact pinned Horizon SDK** `dd67b76ff23e28c6d8e21859df600d31572f81a0` docs/modding/src/how-to/client/render-pipelines.md. Its current guest WGSL `PipelineInput` has UV, linear RGBA, **camera-relative 3D world position** and smooth frame time. It cannot read native scene color/depth; don't fake full HDR volumetric lighting. The native-only `horizon-mod-render::WorldDrawn` provides GPU depth/color via a separate trusted native mod route, pending implementation.
+- Changed the **actual packaged runtime shader** `preview-5spells-wasm/assets/aetheria_preview/shaders/pipeline/ethereal.wgsl`: five distinct original material animation fields for ember tongues, fractured glacial seams, organic growing sap, forked storm discharges and astral faults. Added screen-space derivative normals of real 3D submitted facets for angle-sensitive rim highlights, not full-screen sprite images. Respects the source faces' hue/alpha; max 1.14 linear brightness and alpha 0.88 to reduce whiteout. No copied third-party shader code.
+- Changed `hero_vfx::glacial_haze` to emit three **complete atomic curved 3D fog surfaces**, with 10×8 near/full density or **6×5 per-sheet LOD** when crowded. M29 sampler now retains whole sheets, not torn fragments. Added Rust test for each full contiguous sheet group.
+- Corrected a mistake in the nested test path from `super::fair_geometry` to `crate::fair_geometry` after the first CI compilation reported E0433. Retested complete latest source successfully.
+- **Pinned Horizon WASM CI [44758785121](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44758785121) SUCCESS: 38/38 preview unit tests**, including exact new live WGSL material parsed and validated by pinned Naga 30.0.1 and complete glacial haze LOD test. Real WASM .hmod compiled, 30 OGG, shader asset package, ZIP/SHA512 verified. No user manual playtest or image generated. These checks don't prove the same look as the reference videos, native scene depth, real HDR/GPU bloom or frame-rate.
+- **Still missing:** native GPU depth-aware post bridge, true server authoritative gameplay (170 DesignIntent actions rejected), 200 spell-specific soundsets, player save/network/unlock and real Nightly visual/FPS checks. 200 visual scene routes remain authoring drafts, **0/100** fully integrated RPG spells. No partial ZIP.
+
