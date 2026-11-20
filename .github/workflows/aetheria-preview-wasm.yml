@@ -1,4 +1,4 @@
-name: Aetheria M34 original 3D Ice Bridge + Frost Needle Nightly 2026-11-20
+name: Aetheria M35 procedural GPU particle materials and 200-slot emitters (internal)
 concurrency:
   group: aetheria-wasm-internal-main
   cancel-in-progress: true
@@ -69,6 +69,7 @@ jobs:
               assert 'horizon-mod.toml' in names
               assert 'Cargo.toml' in names
               assert 'assets/aetheria_preview/shaders/pipeline/ethereal.wgsl' in names
+              assert 'assets/aetheria_preview/shaders/pipeline/soft_particle.wgsl' in names, 'M35 masked particle shader absent'
               m=tomllib.loads(z.read('horizon-mod.toml').decode())
               assert m['id']=='aetheria_preview'
               assert m['version']=='0.8.2'
@@ -85,6 +86,8 @@ jobs:
               assert 'volumetric_forms::render(cast,age,scene)' in lib, 'M32 fallback missing'
               assert 'sharp_projectile::render(cast,age,scene)' in lib, 'M33 authored Frost Needle not wired'
               assert 'rime_bridge::render(cast,age,scene)' in lib, 'M34 authored Rime Bridge not wired'
+              assert 'mod procedural_fx;' in lib and 'procedural_fx::render(cast,age,camera,&mut fx)' in lib, 'M35 live CPU emitter missing'
+              assert 'aetheria_preview:soft_particle' in lib, 'M35 separate optional shader not registered'
               assert 'src/rime_bridge_mesh_generated.rs' in names, 'original 436-quad Rime Bridge source missing'
               assert lib.count('KeyRegistration::new(')==1, 'old debug key mappings active'
               assert 'mod volumetric_forms;' in lib, 'M32 volume shader geometry missing'
@@ -118,13 +121,13 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-M34-INTERNAL-Two-Original-Blender-Spells-Nightly-2026-11-20
+          name: Aetheria-Horizon-M35-INTERNAL-Procedural-VFX-Nightly-2026-11-20
           path: aetheria-horizon/preview-5spells-wasm/target/m31-gpu-test/
 
       - name: Upload geometry visual contact sheets
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-M34-Visual-Audit-v0.8.2-Internal
+          name: Aetheria-M35-Visual-Audit-Internal
           path: aetheria-horizon/preview-5spells-wasm/target/visual-audit/
           if-no-files-found: warn
