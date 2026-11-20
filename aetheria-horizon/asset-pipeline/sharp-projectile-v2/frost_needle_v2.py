@@ -19,7 +19,12 @@ def mat(name,rgb,emission):
  return m
 mats=[mat("01_Faceted_deep_ice",(.03,.19,.36),.16),mat("02_Sharp_blue_glass",(.14,.49,.79),.32),mat("03_HDR_mint_emitter",(.19,.82,.82),.55)]
 def mesh(name,verts,faces,ids):
- m=bpy.data.meshes.new(name);m.from_pydata(verts,[],faces);m.update()
+ # Imported source must have OUTWARD winding in the engine, unlike the
+ # early test sculpt which looked fine double-sided in Blender but had
+ # inward normals on all three closed shells.
+ m=bpy.data.meshes.new(name)
+ m.from_pydata(verts,[],[tuple(reversed(face)) for face in faces])
+ m.update()
  o=bpy.data.objects.new(name,m);bpy.context.collection.objects.link(o)
  for material in mats:m.materials.append(material)
  uv=m.uv_layers.new(name="UV0")

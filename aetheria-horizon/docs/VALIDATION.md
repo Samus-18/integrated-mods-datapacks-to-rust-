@@ -77,3 +77,5 @@ The new shader runs through the mod's **existing actual Horizon WGSL PipelineBle
 - Actual WASM client `render_spell` routes canonical Cryomancer Frost Needle (#021) to 4-phase mesh renderer; atomic 124-facet 3D groups protect silhouette under fair 900-world-quad budget. All other 199 render paths still experimental draft scenes.
 - `validate_source.py` PASS on user's machine. WASM pinned SDK CI result pending actual run verification, not reported as success in advance.
 - Real Horizon in-game visual, GPU HDR/depth/refraction and world-game mechanics NOT VERIFIED. See docs/M33_SHARP_PROJECTILE_REAL_BLENDER_RUNTIME.md.
+
+**M33 geometry normal regression (new):** independent signed-volume OBJ audit caught all 108/108 reversed faces on first Blender v2 pass (despite appearing normal in Blender). Regenerated from corrected winding; all 3 closed parts now positive signed volume and **108/108 exterior faces point outward**. Reproduced on fresh Git Windows checkout, source SHA canonicalized LF/CRLF, Python source test re-passed. The pinned CI job must additionally pass `validate_normals.py`. Does not certify in-game shader/backface behavior.

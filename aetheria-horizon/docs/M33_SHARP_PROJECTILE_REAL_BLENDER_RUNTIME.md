@@ -50,3 +50,6 @@ The user's 2026-11-20 real Horizon video rejected the old generic thin rods, emp
 5. Gate in-game visual beauty and RX 580 FPS on recorded actual Horizon gameplay once a meaningful feature milestone exists.
 
 **Current acceptance gate still 0/100 fully integrated-and-game-verified spells.**
+
+### Critical independent normal-winding repair
+A fresh OBJ signed-volume and outward-face-normal inspection exposed an actual error the original Blender two-camera renders could not show: **all 108 faces across all 3 v2 solids faced INWARD**. This can make models disappear under Horizon's back-face culling, as previously observed in Roblox. Fixed the original Blender generator by reversing face vertex order before export and rebuilt GLB/OBJ/Blender source/renders and generated Rust faces from the corrected source. New `validate_normals.py` tests all three components have strictly POSITIVE signed volume and that all face normals point outward. Observed core volume +6.24761, two fins +0.65005 each; 108/108 outward faces. Added this as a required CI gate. Shader screens and GPU in-game quality remain unverified.
