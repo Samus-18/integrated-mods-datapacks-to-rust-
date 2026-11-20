@@ -71,7 +71,7 @@ impl Hooks for Mod {
         // spells; G casts. Old debug shortcuts are not registered.
         for (id,key,label) in [
             ("quick_picker","key.keyboard.r","Tap: next school | Hold + wheel: spells"),
-            ("cast","key.keyboard.g","Cast selected magic spell"),
+            ("cast","key.keyboard.z","Cast selected magic spell"),
         ] {
             registrar.register_key_mapping(
                 KeyRegistration::new(id,key)
