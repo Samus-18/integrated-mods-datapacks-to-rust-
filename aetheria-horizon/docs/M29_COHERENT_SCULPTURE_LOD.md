@@ -125,3 +125,38 @@ Do not present a source-only visual test as a finished spell.
 - Corrected the two eight-cast SVG captions: they previously mislabeled
   the entire test as one unrelated curated spell; now identify
   "M29: 8 SIMULTANEOUS MAGIC SCULPTURES".
+
+
+## M29 final reviewed source revision (2026-11-20)
+
+- A second visual before/after review of the actually generated SVGs found
+  the initial "thick wall" art correction was a **nearly featureless
+  rectangular block**, worse than the old fence silhouette in terms of
+  visual interest. That variant is **rejected** despite green Rust tests.
+- Authored a third #194 source layout: 7 broad interlocking, irregular
+  3D ossicle shields with raised ornament on **both positive and negative
+  depth faces**; each spine and crystalline crest is a full multi-face
+  geometry component; the giant vertical rectangular body was removed,
+  leaving only low structural stone/bone anchoring. No new rods/rings
+  were used as the primary silhouette.
+- Added a regression test
+  `bone_palisade_m29_has_double_sided_relieved_armor_not_featureless_wall`
+  checking side relief, no single giant covering face, component metadata
+  and a <401 quad source budget. Source Impact uses **390 quads**.
+- [**Pinned Horizon WASM run 44754956222 — SUCCESS**](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44754956222):
+  independently checked job/logs: **37/37 Rust preview tests passed**,
+  Horizon pinned .hmod compiled, 30 original OGG clips validated,
+  shader Naga, package ZIP/SHA512 passed. Two extra combined 8-cast
+  source view SVGs exist alongside 860 regular audit SVG views.
+- Downloaded the new CI-generated bone-wall Cast/Impact SVGs and **actually
+  compared them side-by-side in both diagonal camera views** to the earlier
+  rectangular wall: the new shape has visible full bone wedge masses,
+  unequal height silhouette and relieved guards from both views. The
+  change is a genuine improvement over the featureless rectangle.
+  However this remains faceted simplified CPU geometry, still potentially
+  too angular and repetitive relative to the original user videos. **It
+  is not a final artistic sign-off or in-game screenshot.**
+- Source commits: `0d381289594ee2ddd007e1b7ca23aa0ce84739a4` art,
+  `5201c64d8171bcfb984fb059e494211ebebdcee6` regression.
+  Keep 200/200 visual routes separate from 0/100 fully integrated
+  Horizon world gameplay. No user-facing test build.
