@@ -64,7 +64,7 @@ jobs:
               assert 'assets/aetheria_preview/shaders/pipeline/ethereal.wgsl' in names
               m=tomllib.loads(z.read('horizon-mod.toml').decode())
               assert m['id']=='aetheria_preview'
-              assert m['version']=='0.8.0'
+              assert m['version']=='0.8.1'
               assert 'native' not in m and 'wasm' in m
               assert hashlib.sha512(z.read('mod.wasm')).hexdigest()==m['wasm']['sha512']
               wasm=z.read('mod.wasm')
@@ -108,13 +108,13 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-M32-ART-REBUILD-Nightly-2026-11-20-v0.8.0
+          name: Aetheria-Horizon-M32-ART-REBUILD-Nightly-2026-11-20-v0.8.1
           path: aetheria-horizon/preview-5spells-wasm/target/m31-gpu-test/
 
       - name: Upload geometry visual contact sheets
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-M32-Visual-Audit-v0.8.0-Internal
+          name: Aetheria-M32-Visual-Audit-v0.8.1-Internal
           path: aetheria-horizon/preview-5spells-wasm/target/visual-audit/
           if-no-files-found: warn
