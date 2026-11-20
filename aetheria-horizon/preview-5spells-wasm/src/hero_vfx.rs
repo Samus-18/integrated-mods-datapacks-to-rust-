@@ -205,7 +205,7 @@ mod tests {
             let ids=&low.group_ids[sheet*30..(sheet+1)*30];
             assert!(ids.iter().all(|id|*id==ids[0]));
         }
-        let crowded=super::fair_geometry::sample_fair(
+        let crowded=crate::fair_geometry::sample_fair(
             &[low,Scene::new(0)],65);
         assert!(crowded.len()==30||crowded.len()==60,
             "each 30-face ice sheet must remain a continuous surface");
