@@ -58,7 +58,18 @@ module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 with tempfile.TemporaryDirectory() as tmp:
     output=Path(tmp)/"replica.rs"
     module.convert(OBJ,output)
-    assert output.read_bytes().replace(b"\r\n",b"\n")==RUST.read_bytes().replace(b"\r\n",b"\n")
+    expected=RUST.read_text(encoding="utf8").splitlines()
+    got=output.read_text(encoding="utf8").splitlines()
+    if expected!=got:
+        from itertools import zip_longest
+        print("CROSS-PLATFORM SOURCE DIFF (first 12 mismatched lines):")
+        n=0
+        for i,(e,g) in enumerate(zip_longest(expected,got),start=1):
+            if e!=g:
+                print(f"LINE {i}: stored={e!r} regenerated={g!r}")
+                n+=1
+                if n>=12:break
+    assert expected==got,"OBJ -> Rust output differs from committed source"
 print("M34 PASS: real Blender 9 meshes, 3 materials, 2 source renders, watertight and all outward")
 print("M34 PASS: 398 Rust vertices, 380 complete quads, 9 atomic component ranges")
 print("M34 PASS: source digest, reproducibility, live Horizon spell #022 dispatch")
