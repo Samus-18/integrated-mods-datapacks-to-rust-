@@ -1,67 +1,121 @@
-// Aetheria M17: flowing fantasy-material surface shader for procedural 3D
-// geometry. Based on actual reference video motion and material layering,
-// not copied artwork. The pinned Horizon guest PipelineInput currently has
-// only UV + per-vertex color and frame.time: this DOES NOT add real HDR,
-// scene-space refraction, bloom, world-space lighting or shadow casting.
-// Crucially, the spell mesh supplies its own original silhouette and colors.
-fn aetheria_hash(p: vec2<f32>) -> f32 {
-    return fract(sin(dot(p, vec2<f32>(127.1, 311.7))) * 43758.5453);
+// Aetheria M30 — original animated MATERIAL on the real Horizon world
+// sculpture renderer (NOT a fullscreen shader pack or fake raymarch).
+// Verified pinned Horizon PipelineInput has uv, linear color, camera-relative
+// position (world blocks), and frame.time (seconds). No depth texture or
+// camera matrices are exposed to this guest fragment: world occlusion comes
+// from RenderPipeline::WorldDepth::Tested instead. No HDR/bloom claim.
+// Real 3D mass comes from each Rust source scene, not drawn rods/rings here.
+//
+// Material goal: DIFFERENT physical motion for fire, frost, organic roots,
+// storm and astral void. Each pigment responds to distinct original motion
+// fields rather than a single moving noise + re-color. Avoid pure-white glare.
+fn aetheria_hash2(p:vec2<f32>)->f32 {
+    return fract(sin(dot(p,vec2<f32>(127.1,311.7)))*43758.5453);
 }
-fn aetheria_noise(p: vec2<f32>) -> f32 {
-    let i = floor(p);
-    let f = fract(p);
-    let u = f * f * (vec2<f32>(3.0) - 2.0 * f);
-    let a = aetheria_hash(i);
-    let b = aetheria_hash(i + vec2<f32>(1.0, 0.0));
-    let c = aetheria_hash(i + vec2<f32>(0.0, 1.0));
-    let d = aetheria_hash(i + vec2<f32>(1.0, 1.0));
-    return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+fn aetheria_noise2(p:vec2<f32>)->f32 {
+    let cell=floor(p);
+    let v=fract(p);
+    let u=v*v*(vec2<f32>(3.0)-2.0*v);
+    let h00=aetheria_hash2(cell);
+    let h10=aetheria_hash2(cell+vec2<f32>(1.0,0.0));
+    let h01=aetheria_hash2(cell+vec2<f32>(0.0,1.0));
+    let h11=aetheria_hash2(cell+vec2<f32>(1.0,1.0));
+    return mix(mix(h00,h10,u.x),mix(h01,h11,u.x),u.y);
 }
-fn pipeline_fragment(input: PipelineInput) -> vec4<f32> {
-    let uv = input.uv * 2.0 - vec2<f32>(1.0);
-    let t = frame.time;
+fn aetheria_facet_wave(p:vec2<f32>,t:f32)->f32 {
+    // Wide, coherent moving foliation across a full solid face.
+    let fold=sin(p.x*5.4+p.y*3.1+t*0.54);
+    let shear=sin(p.x*2.6-p.y*6.7-t*0.37);
+    return 0.5+0.25*fold+0.25*shear;
+}
+fn aetheria_ember_flow(uv:vec2<f32>,t:f32)->f32 {
+    let lift=vec2<f32>(uv.x*4.1,uv.y*4.3-t*1.67);
+    let curl=vec2<f32>(
+        0.27*sin(lift.y*1.7+t*0.35),
+        0.19*sin(lift.x*2.1-t*0.21));
+    let heat=aetheria_noise2(lift+curl);
+    let tongue=0.5+0.5*sin((uv.x+0.2*heat)*11.0-uv.y*5.4+t*3.9);
+    return smoothstep(0.40,0.94,0.62*heat+0.38*tongue);
+}
+fn aetheria_glacier_cleavage(uv:vec2<f32>,t:f32)->f32 {
+    let p=uv*vec2<f32>(8.0,6.4);
+    let split=abs(sin(p.x*0.96+p.y*1.43+0.38*sin(p.y*1.9-t*0.21)));
+    let stress=abs(sin(p.y*1.18-p.x*0.47+t*0.19));
+    return (1.0-smoothstep(0.80,0.992,split*0.63+stress*0.37));
+}
+fn aetheria_living_sap(uv:vec2<f32>,t:f32)->f32 {
+    let p=uv*vec2<f32>(5.2,8.1);
+    let growth=sin(p.y*0.76+sin(p.x*1.2+t*0.26)*1.52);
+    let branching=sin(p.x*2.74+p.y*1.89+0.54*sin(t*0.19+p.y));
+    return smoothstep(0.49,0.96,0.5+0.26*growth+0.24*branching);
+}
+fn aetheria_lightning_branches(uv:vec2<f32>,t:f32)->f32 {
+    let p=uv*vec2<f32>(7.2,5.1);
+    let jitter=aetheria_noise2(p*0.7+vec2<f32>(t*0.61,-t*0.17));
+    let bolt=abs(sin(p.x*2.2+p.y*0.81+2.1*jitter+t*2.4));
+    let fork=abs(sin(p.y*3.2-p.x*0.44+jitter*3.0-t*1.1));
+    return (1.0-smoothstep(0.04,0.24,min(bolt,fork)))*
+        (0.54+0.46*sin(t*9.1+p.y*1.7)*sin(t*9.1+p.y*1.7));
+}
+fn aetheria_rift_fault(uv:vec2<f32>,t:f32)->f32 {
+    let p=uv*vec2<f32>(6.8,8.5);
+    let bending=sin(p.x*0.7+p.y*0.51+t*0.18);
+    let rupture=abs(sin(p.x*1.63-p.y*1.16+1.4*bending));
+    return 1.0-smoothstep(0.01,0.22,rupture);
+}
+fn pipeline_fragment(input:PipelineInput)->vec4<f32> {
+    let uv=input.uv;
+    let t=frame.time;
+    // UV keeps detail attached to authored 3D face while the small 3D term
+    // adds spatial variation without sampling the world or hiding the model.
+    // PipelineInput.position is camera-relative (NOT an absolute UV anchor).
+    let pos=input.position*0.16;
+    let p=uv+0.036*vec2<f32>(
+        sin(pos.y*1.31+t*0.22),cos(pos.x*1.17-t*0.18));
+    let c=clamp(input.color.rgb,vec3<f32>(0.0),vec3<f32>(1.0));
+    let r=c.r;let g=c.g;let b=c.b;
 
-    // Kinetic material layers: one broad slow fold, one fast moving vein,
-    // one carefully bounded local shimmer. Never a grid of flat rods/rings.
-    let distorted = uv + vec2<f32>(
-        0.052 * sin(uv.y * 8.5 + t * 1.17),
-        0.048 * cos(uv.x * 7.2 - t * 0.83)
-    );
-    let drift = distorted * 3.6 + vec2<f32>(t * 0.19, -t * 0.26);
-    let broad = aetheria_noise(drift);
-    let micro = aetheria_noise(drift * 2.3 + vec2<f32>(t * 0.21, 0.0));
-    let veining = abs(sin(
-        (distorted.x * 9.7 - distorted.y * 7.1) +
-        2.4 * broad + t * 1.7
-    ));
-    let frostEdges = smoothstep(0.76, 0.97, veining);
-    let fireMotion = sin(distorted.x * 12.0 + distorted.y * 4.5 - t * 5.2);
+    // Unnormalised weights: each magical material contributes based on
+    // actual authored per-face pigments, never a slot hash or school ID.
+    // These are continuous so alternate violet/teal ice faces shimmer too.
+    let fire=smoothstep(0.12,0.49,r-b)*
+             smoothstep(-0.09,0.28,r-g);
+    let frost=smoothstep(0.07,0.38,b-r)*
+              smoothstep(-0.05,0.26,g-r);
+    let life=smoothstep(0.08,0.38,g-max(r,b));
+    let lightning=smoothstep(0.07,0.29,b-r)*
+                  smoothstep(-0.01,0.23,b-g);
+    let astral=smoothstep(0.04,0.31,b-g)*
+               smoothstep(-0.03,0.20,r-g);
+    let mass=max(0.0,1.0-max(max(fire,frost),max(life,max(lightning,astral))));
 
-    // The renderer provides per-face fantasy palettes: respect their hue.
-    // Different pigments get subtly different temporal treatment, not
-    // the SAME washed-out white gradient across all ten schools.
-    let c = clamp(input.color.rgb, vec3<f32>(0.0), vec3<f32>(1.0));
-    let icy = smoothstep(0.02, 0.37, c.b - c.r) *
-              smoothstep(-0.10, 0.25, c.g - c.r);
-    let fiery = smoothstep(0.10, 0.50, c.r - c.b);
-    let arcane = smoothstep(0.06, 0.33, c.b - c.g);
-    let pulse = 0.5 + 0.5 * sin(t * 2.3 + broad * 6.28);
-    let base = 0.71 + 0.14 * broad + 0.08 * micro
-                    + 0.07 * pulse + 0.05 * fireMotion * fiery;
-    let spectral = vec3<f32>(
-        0.01 * icy + 0.05 * fiery + 0.04 * arcane,
-        0.07 * icy + 0.008 * fiery + 0.01 * arcane,
-        0.05 * icy + 0.008 * fiery + 0.07 * arcane
-    );
-    let blueVeins = (0.04 + 0.13 * frostEdges) * (icy + arcane);
-    let innerGlow = vec3<f32>(0.28, 0.56, 0.70) * blueVeins;
-    let color = clamp(c * (base + 0.08 * frostEdges) +
-                        spectral + innerGlow,
-                        vec3<f32>(0.0), vec3<f32>(0.98));
-    // Airy translucent faces stay airy. Filled crystals do not turn into
-    // fully transparent glass. Preserve conservative color alpha; never
-    // fabricate bright opaque sheets out of low-alpha atmosphere.
-    let a = clamp(input.color.a * (0.90 + 0.07 * broad) *
-                  (0.95 + 0.045 * pulse), 0.0, 0.88);
-    return vec4<f32>(color, a);
+    let faceted=aetheria_facet_wave(p*1.4,t);
+    let embers=aetheria_ember_flow(p,t);
+    let glacial=aetheria_glacier_cleavage(p,t);
+    let sap=aetheria_living_sap(p,t);
+    let voltage=aetheria_lightning_branches(p,t);
+    let fracture=aetheria_rift_fault(p,t);
+
+    // Large opaque volume surfaces remain readable; only the material's
+    // local energy veins are brighter. Never white-out the whole quad.
+    let brightness=0.66+0.22*faceted+
+        0.25*fire*embers+
+        0.16*frost*glacial+
+        0.18*life*sap+
+        0.17*lightning*voltage+
+        0.12*astral*fracture+
+        0.09*mass;
+    let ember_color=vec3<f32>(0.25,0.046,0.004)*fire*embers;
+    let ice_color=vec3<f32>(0.009,0.16,0.23)*frost*glacial;
+    let sap_color=vec3<f32>(0.035,0.12,0.012)*life*sap;
+    let storm_color=vec3<f32>(0.10,0.18,0.29)*lightning*voltage;
+    let rift_color=vec3<f32>(0.07,0.018,0.16)*astral*fracture;
+
+    // 1.14 linear cap: small saturated highlights where supported, no
+    // uncontrolled white flash, always preserve the base spell pigment.
+    let color=min(c*brightness+
+        ember_color+ice_color+sap_color+storm_color+rift_color,
+        vec3<f32>(1.14));
+    let a=clamp(input.color.a*(0.94+0.055*faceted),0.0,0.88);
+    return vec4<f32>(max(color,vec3<f32>(0.0)),a);
 }
