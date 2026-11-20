@@ -72,6 +72,12 @@ mod tests {
             "M31 raymarch samples MUST remain bounded for older Radeon GPUs");
         assert!(actual.contains("if(input.color.a>0.005 && input.color.a<0.22)"),
             "M31 fog must shade transparent atmosphere, not opaque crystals");
+        assert!(actual.contains("let veil_mask="),
+            "M32.2 gas curtains must fade to zero at surface boundaries");
+        assert!(actual.contains("volume.a*2.25*veil_mask"),
+            "M32.2 atmosphere must use volume density as opacity");
+        assert!(!actual.contains("0.48+1.30*volume.a"),
+            "old fake-opacity rectangle must never come back");
         assert!(actual.contains("input.uv,input.position,t"),
             "M31 fog must use actual local face UV and camera-relative distance");
 
