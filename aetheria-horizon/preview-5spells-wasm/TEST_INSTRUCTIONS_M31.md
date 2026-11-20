@@ -1,4 +1,4 @@
-# Aetheria Horizon — M31 GPU test v0.7.0
+# Aetheria Horizon — M31 GPU test v0.7.1
 20. 11. 2026 | Horizon Rust | TEST, nikoliv hotovy mod
 
 ## Instalace
@@ -7,7 +7,7 @@
 3. Soubor aetheria_preview.hmod vloz do slozky horizon-mods prislusne instance Horizonu.
 4. V nastaveni modu aktivuj aetheria_preview a spust kreativni testovaci svet.
 
-Test je postaveny pro Horizon SDK dd67b76ff23e28c6d8e21859df600d31572f81a0 (Nightly 2026-11-18).
+Test je postaveny pro Horizon SDK 0a875da91dbb0fdcb7ba8c42c11341aa229af51a (Nightly 2026-11-20).
 U jinych Nightly buildu neni kompatibilita overena. Nepouziva Iris, OptiFine ani C++.
 
 ## Ovladani
@@ -41,3 +41,6 @@ Bez screenshotu ani GPU mereni ve hre nemuzeme potvrdit profesionalni vizualni k
 Zpetna vazba po instalaci: hlavne GPU svetlo/LEDOVA MLHA, FPS a chybove logy.
 
 Repo: https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/tree/aetheria-30-spell-test/aetheria-horizon
+
+## Nightly 2026-11-20 API fix
+Version 0.7.0 was built for an older transport ABI; Nightly 2026-11-20 refuses it. Version 0.7.1 is rebuilt with SDK 0a875da. The launcher cannot automatically recompile an already bundled WASM executable. Remove the old .hmod and install the updated one. Confirm that the in-game status is LOADED (not only launcher READY).
