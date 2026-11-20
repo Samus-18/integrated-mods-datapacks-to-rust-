@@ -1,9 +1,9 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - M31 Nightly 2026-11-20"
-version = "0.7.1"
+name = "Aetheria Horizon - M32 Volume Art Test"
+version = "0.8.0"
 api = "0.2"
 side = "client"
-description = "200 authored spell identities with core cast intents, client selector and draft 3D forms (30 curated plus 170 unapproved). Local mana/SFX only; no server world mechanics or save sync."
+description = "200 spell IDs; M32 fully overhauled broad mass-and-volume GPU preview, two-key R/G navigation; all art experimental. Client mana/SFX only; no server effects or saving."
 authors = ["Samus-18"]
 capabilities = ["registries"]
 
