@@ -74,6 +74,7 @@ fn phase(id:u16,age:f64)->Option<(Stage,f64)>{
 }
 /// Closed faceted boulder in arbitrary axes, not a double-crossed sprite.
 fn solid(scene:&mut Scene,o:P,size:P,spin:f64,c:u32) {
+ let Some(previous)=scene.begin_component(6) else{return;};
  let cs=spin.cos();let sn=spin.sin();
  let corner=|i:usize|->P{
    let k=[[-1.,-1.,-1.],[1.,-1.,-1.],[1.,1.,-1.],[-1.,1.,-1.],
@@ -85,6 +86,7 @@ fn solid(scene:&mut Scene,o:P,size:P,spin:f64,c:u32) {
                  [3,2,6,7],[1,5,6,2],[0,3,7,4]].into_iter().enumerate(){
     scene.quad(idx.map(corner),shade_argb(c,0.62+0.07*(n%4) as f64));
  }
+ scene.end_component(previous);
 }
 /// A broad faceted curved leaf with FRONT, BACK and edge walls.
 fn petal(scene:&mut Scene,o:P,a:f64,reach:f64,height:f64,width:f64,c:u32){
@@ -253,6 +255,7 @@ fn signature(scene:&mut Scene,form:Form,o:P,id:u16,age:f64,g:f64,c:u32){
  Form::SkyRift=>{
     // Two coherent warped overlapping crystal curtains separated in depth.
     for sheet in 0..2 {
+      let Some(previous)=scene.begin_component(49) else{continue;};
       let z=(sheet as f64-0.5)*0.7;
       let columns=7;
       for row in 0..7 {
@@ -269,11 +272,13 @@ fn signature(scene:&mut Scene,form:Form,o:P,id:u16,age:f64,g:f64,c:u32){
               color(c,0.45+0.13*sheet as f64,0.7+0.15*t));
         }
       }
+      scene.end_component(previous);
     }
  }
  Form::Time=>{
    // Hourglass-shaped faceted body with actual broad faces.
    let sides=10;
+   let Some(previous)=scene.begin_component(70) else{return;};
    for seg in 0..7{
      let v=seg as f64/7.;
      let w=(seg+1) as f64/7.;
@@ -288,6 +293,7 @@ fn signature(scene:&mut Scene,form:Form,o:P,id:u16,age:f64,g:f64,c:u32){
            color(c,0.7,0.63+0.09*(i%3) as f64));
      }
    }
+   scene.end_component(previous);
  }
  Form::Blade=>{
     let apex=pos(o,0.,height*1.15,extent*0.25);
@@ -332,6 +338,7 @@ fn signature(scene:&mut Scene,form:Form,o:P,id:u16,age:f64,g:f64,c:u32){
  }
  Form::Artifact=>{
    let rings=8;let sides=10;
+   let Some(previous)=scene.begin_component(rings*sides) else{return;};
    for j in 0..rings {
       let aa=PI*j as f64/rings as f64;
       let bb=PI*(j+1) as f64/rings as f64;
@@ -346,6 +353,7 @@ fn signature(scene:&mut Scene,form:Form,o:P,id:u16,age:f64,g:f64,c:u32){
            sphere(bb,b),sphere(bb,a)],color(c,0.58,0.66+0.04*(i%5) as f64));
       }
    }
+   scene.end_component(previous);
  }
 }
 }
