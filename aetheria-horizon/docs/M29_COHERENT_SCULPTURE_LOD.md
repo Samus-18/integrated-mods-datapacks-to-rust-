@@ -89,3 +89,39 @@ Next work: inspect all busy 3D projections and actual frame-time limits,
 tighten semantic grouping in remaining per-ID curved surfaces, then
 advance the true server/world adapter and playable action inventory.
 Do not present a source-only visual test as a finished spell.
+
+
+## First M29 CI and manual source-image inspection
+
+- **Pinned SDK run [44752358562](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44752358562): SUCCESS**. Logs independently verified:
+  **36/36 preview Rust tests passed** (0 failed), including the new
+  8-cast atomic grouped-geometry/two-view projection and high/low
+  orb/curtain tessellation tests. Horizon WASM `.hmod` compiled;
+  30 original OGG assets and Naga-validated WGSL were packaged;
+  ZIP manifest/SHA512 checks passed.
+- Downloaded the **actual CI-generated source projection artifact** and
+  converted these six original SVGs into an internal visual contact sheet:
+  `m29_eight_spells_view1.svg`, `m29_eight_spells_view2.svg`,
+  and `extended/spell_194_{Cast,Impact}_view{1,2}.svg`.
+  This was a visual inspection of real generated Rust geometry,
+  **not** AI screenshots or a Horizon in-game render.
+- Eight-effect combined frame: **897/900 submitted world quads**,
+  spanning **25.3 blocks** from camera 1 and **20.3 blocks** from camera
+  2. Individual closed panels survived the quota. However, substantial
+  masses overlap into a cluttered, visually weak colored cluster;
+  no GPU light/material or cinematic presentation is validated. Passing
+  a geometry integrity test does **not** pass the artistic quality gate.
+- Bone Palisade (#194) pre-second-pass geometry had 360 original
+  source quads; Cast spans around 5.0 / 4.4 blocks in the two views
+  (Impact 7.3 / 6.4). The reviewed original image still looked like a
+  generic spiked fence, which violates the user's explicit no-rod/no-slop
+  rule despite its complete component topology.
+- A targeted second source-art pass `standard_m27b.rs` replaced this
+  fence with **seven overlapping thick ossicle shields**, front/back
+  folded bone plates, a continuous heavy base/backbone and four
+  asymmetrical crest horns (approximately 354 authored faces at full
+  growth). A further pinned CI / **updated image inspection** is
+  required to determine whether the visual criticism is actually fixed.
+- Corrected the two eight-cast SVG captions: they previously mislabeled
+  the entire test as one unrelated curated spell; now identify
+  "M29: 8 SIMULTANEOUS MAGIC SCULPTURES".
