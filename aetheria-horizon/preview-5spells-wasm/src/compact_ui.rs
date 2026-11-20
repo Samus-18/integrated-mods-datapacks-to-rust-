@@ -99,7 +99,7 @@ pub fn draw(host:&dyn ClientHost,e:&mut GuiRenderPostEvent<'_>,view:UiView) {
         [x+27.,y+17.],MUTED,false);
     e.batch.text(&format!("{} MP",mana.round() as u16),
         [x+226.,y+5.],MUTED,false);
-    let ready=if cd==0 {"G CAST".to_string()}else{
+    let ready=if cd==0 {"Z CAST".to_string()}else{
         format!("{:.1}s",cd as f32/20.0)
     };
     e.batch.text(&ready,[x+226.,y+17.],
@@ -111,7 +111,7 @@ pub fn draw(host:&dyn ClientHost,e:&mut GuiRenderPostEvent<'_>,view:UiView) {
         let px=(w-300.)*0.5;
         let py=(y-58.).max(8.);
         soft_box(e,px,py,300.,53.,0xE209121E);
-        e.batch.text("R: SCHOOL    HOLD R + WHEEL: SPELL    G: CAST",
+        e.batch.text("R: SCHOOL    HOLD R + WHEEL: SPELL    Z: CAST",
             [px+8.,py+4.],WHITE,false);
         e.batch.text(SCHOOL_TAGS[school],[px+8.,py+16.],accent,true);
         for offset in 0..3 {
