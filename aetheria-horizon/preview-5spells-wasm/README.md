@@ -1,9 +1,13 @@
-# Aetheria Horizon — 30-spell test build v0.6.0 (Rust → WASM)
+# Aetheria Horizon — M31 GPU volumetric VFX test v0.7.0 (Rust → WASM)
 
-**Experimental, not a finished RPG release.** This builds on the previously game-verified 5-spell Horizon client renderer and expands the client selector to **30 distinct registry IDs** (three from each of ten classes). The portable Rust gameplay core has **30 different action intents**, but the server-facing world adapter has not yet been implemented: spells do **not** damage mobs, heal players, place blocks, unlock from loot or persist progression. Effects/costs are client-local; do not confuse them with server-authoritative gameplay.
+**Experimental, not a finished RPG release.** This builds on the previously game-verified 5-spell Horizon client renderer and expands the client selector to **200 draft identities** (20 from each of ten classes). The portable Rust gameplay core has **30 different action intents**, but the server-facing world adapter has not yet been implemented: spells do **not** damage mobs, heal players, place blocks, unlock from loot or persist progression. Effects/costs are client-local; do not confuse them with server-authoritative gameplay.
+
+## M31 v0.7.0 — installable bounded shader-side volume integration (2026-11-20)
+
+**This test pack is for the user to try, unlike earlier internal-only M29/M30 artifacts.** Use GitHub Actions artifact `Aetheria-Horizon-M31-GPU-Test-v0.7.0`, which contains a compiled `aetheria_preview.hmod`, `README-TEST.md` and `SHA256.txt`. Shard Chorus's three closed low-alpha curved atmosphere sheets are now shaded by a real *shader-side 3D density integration*, with each visible pixel integrating 10 close/6 far samples of folded fantasy vapor. The material remains anchored in the actual authored faces (UV + local depth); world occlusion comes from Horizon's standard tested depth at those faces, not independent scene depth reads. Material also gives crystal faces normal-sensitive rim shading. Requires native GPU shading, but is still packaged as a normal WASM `.hmod` because the guest shader is resource-loaded by Horizon's own GPU. **Not** the native post-process / HDR bloom from Orbital Laser: that requires a separate trusted native render bridge, which isn't in this test build. No claims of real light casts or gameplay spells. Refer to `TEST_INSTRUCTIONS_M31.md`.
 
 ## Install
-1. Download the compiled **Aetheria-Horizon-30Spells-WASM-v0.6.0-Internal** artifact from this branch's successful GitHub Actions WASM workflow, extract its `aetheria_preview.hmod`. **Never use source ZIP or a build whose CI failed**.
+1. Download the compiled **Aetheria-Horizon-M31-GPU-Test-v0.7.0** artifact from this branch's successful GitHub Actions WASM workflow, extract its `aetheria_preview.hmod`. **Never use source ZIP or a build whose CI failed**.
 2. Remove any old `aetheria_preview.hmod` from `horizon-native-mods/` and `horizon-mods/`.
 3. Put the compiled .hmod in the game instance's `horizon-mods/` and enable `aetheria_preview`.
 4. Start **Play** normally, not Launcher Build. You need a Horizon Nightly compatible with the pinned SDK.
