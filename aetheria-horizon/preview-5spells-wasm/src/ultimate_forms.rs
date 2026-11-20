@@ -14,6 +14,7 @@ pub(super) fn tint(c:u32,b:f64,a:f64)->u32{
   (x&0x00FF_FFFF)|(((a.clamp(0.,1.)*255.).round() as u32)<<24)
 }
 pub(super) fn body(s:&mut Scene,origin:P,half:P,c:u32){
+  let Some(previous)=s.begin_component(6) else{return;};
   let pts=[
     p(origin,-half[0],-half[1],-half[2]),p(origin,half[0],-half[1],-half[2]),
     p(origin,half[0],half[1],-half[2]),p(origin,-half[0],half[1],-half[2]),
@@ -24,6 +25,7 @@ pub(super) fn body(s:&mut Scene,origin:P,half:P,c:u32){
                    [3,2,6,7],[1,5,6,2],[0,3,7,4]].iter().enumerate(){
     s.quad(idx.map(|j|pts[j]),tint(c,0.54+i as f64*0.066,0.89));
   }
+  s.end_component(previous);
 }
 pub(super) fn crystal(s:&mut Scene,base:P,top:P,width:f64,spin:f64,c:u32){
   s.solid_crystal(base,top,width,spin,c,6);
@@ -38,6 +40,7 @@ pub(super) fn wing(s:&mut Scene,o:P,angle:f64,spread:f64,h:f64,c:u32){
 pub(super) fn floor_slab(s:&mut Scene,o:P,r:f64,depth:f64,spin:f64,c:u32){
   // Solid broken terrain segments, not a hollow ring.
   let n=8;
+  let Some(previous)=s.begin_component(n*2) else{return;};
   for i in 0..n{
     let a=TAU*i as f64/n as f64+spin;
     let b=TAU*(i+1) as f64/n as f64+spin;
@@ -50,9 +53,13 @@ pub(super) fn floor_slab(s:&mut Scene,o:P,r:f64,depth:f64,spin:f64,c:u32){
     s.quad([center,aa,bb,center],tint(c,0.56+0.04*(i%3) as f64,0.81));
     s.quad([aa,lowa,lowb,bb],tint(c,0.49,0.93));
   }
+  s.end_component(previous);
 }
 pub(super) fn orb(s:&mut Scene,o:P,rad:P,age:f64,c:u32,opacity:f64){
-  let n=14usize;let m=9usize;
+  // Coherent lower tessellation when many spells overlap. Never randomly
+  // remove panels from a closed large sphere.
+  let (n,m)=if s.reduced_detail{(8usize,6usize)}else{(14usize,9usize)};
+  let Some(previous)=s.begin_component(n*m) else{return;};
   let v=|i:usize,j:usize|{
     let theta=TAU*i as f64/n as f64+age*0.008;
     let phi=PI*j as f64/m as f64;
@@ -66,10 +73,12 @@ pub(super) fn orb(s:&mut Scene,o:P,rad:P,age:f64,c:u32,opacity:f64){
         tint(c,0.59+0.23*((i*3+j)%7) as f64/7.,opacity));
     }
   }
+  s.end_component(previous);
 }
 pub(super) fn curtain(s:&mut Scene,o:P,r:f64,height:f64,age:f64,phase:f64,c:u32){
   // Broad non-planar translucent atmosphere with spatial depth.
-  let rings=8usize;let cols=10usize;
+  let (rings,cols)=if s.reduced_detail{(5usize,7usize)}else{(8usize,10usize)};
+  let Some(previous)=s.begin_component(rings*cols) else{return;};
   let v=|j:usize,i:usize|{
     let t=j as f64/rings as f64;
     let u=i as f64/cols as f64*2.-1.;
@@ -83,6 +92,7 @@ pub(super) fn curtain(s:&mut Scene,o:P,r:f64,height:f64,age:f64,phase:f64,c:u32)
         tint(c,0.57+0.22*((j+i)%4) as f64/4.,0.30));
     }
   }
+  s.end_component(previous);
 }
 pub(super) fn arch(s:&mut Scene,o:P,a:f64,r:f64,h:f64,c:u32){
   // Thick anchored stone arch, not an outlined circle.
