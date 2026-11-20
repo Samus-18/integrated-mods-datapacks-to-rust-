@@ -405,4 +405,33 @@ mod tests{
   }
   assert_eq!(unique.len(),15);
  }
+ #[test]
+ fn bone_palisade_m29_has_double_sided_relieved_armor_not_featureless_wall(){
+   let age=(0..104).find(|tick|matches!(
+       stage(194,*tick as f64),Some((Stage::Cast,p)) if p>0.70
+   )).unwrap() as f64;
+   let mut scene=Scene::new(500);
+   render(Cast{kind:193,variant:13,start:0,
+        center:[0.,64.,0.],direction:[0.,0.,1.]},age,&mut scene);
+   assert!(scene.facets.len()>=250&&scene.facets.len()<=400);
+   assert_eq!(scene.group_ids.len(),scene.facets.len());
+   let mut frontal=0usize;
+   let mut rear=0usize;
+   let mut giant_wall=0usize;
+   for (quad,_) in &scene.facets{
+       let z=quad.iter().map(|p|p[2]).sum::<f64>()/4.;
+       if z>0.38{frontal+=1;}
+       if z< -0.38{rear+=1;}
+       let (min_x,max_x)=quad.iter().fold((f64::INFINITY,f64::NEG_INFINITY),
+           |(lo,hi),p|(lo.min(p[0]),hi.max(p[0])));
+       let (min_y,max_y)=quad.iter().fold((f64::INFINITY,f64::NEG_INFINITY),
+           |(lo,hi),p|(lo.min(p[1]),hi.max(p[1])));
+       if max_x-min_x>4.8&&max_y-min_y>1.1 {giant_wall+=1;}
+   }
+   assert!(frontal>=35&&rear>=35,
+       "double-sided bone plating vanished front={frontal} back={rear}");
+   assert_eq!(giant_wall,0,
+       "do not mask every relief with one giant full-height rectangular panel");
+ }
+
 }
