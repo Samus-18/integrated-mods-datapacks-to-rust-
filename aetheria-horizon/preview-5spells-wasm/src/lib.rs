@@ -301,9 +301,13 @@ impl Hooks for Mod {
         // truncated the LAST body parts first: it could erase wings, bases
         // and impact debris when several spells overlapped.
         let source_budget=if live.len()==1 {900} else {500};
+        // M29: decrease the density of *complete* orb/curtain surfaces before
+        // assembling crowded source scenes. Removing individual world quads
+        // from a closed 3D surface would otherwise punch visible holes.
+        let reduced_detail=live.len()>=4 || total_budget/live.len()<180;
         let mut drafts=Vec::with_capacity(live.len());
         for (cast,age) in live {
-            let mut spell=Scene::new(source_budget);
+            let mut spell=Scene::with_lod(source_budget,reduced_detail);
             render_spell(cast,age,&mut spell);
             drafts.push(spell);
         }
@@ -370,12 +374,45 @@ fn shade_argb(argb:u32, brightness:f64)->u32 {
     };
     (argb&0xFF00_0000) | (mul(16)<<16) | (mul(8)<<8) | mul(0)
 }
-struct Scene { facets:Vec<([[f64;3];4],u32)>, budget:usize }
+struct Scene {
+    facets:Vec<([[f64;3];4],u32)>,
+    // M29: adjacent faces belonging to one solid body must never be sampled
+    // separately. Each face belongs to a unique sequential atomic group.
+    group_ids:Vec<usize>,active_group:Option<usize>,next_group:usize,
+    budget:usize,reduced_detail:bool,
+}
 impl Scene {
-    fn new(budget:usize)->Self { Self{facets:Vec::new(),budget} }
+    fn new(budget:usize)->Self {Self::with_lod(budget,false)}
+    fn with_lod(budget:usize,reduced_detail:bool)->Self {
+        Self{facets:Vec::new(),group_ids:Vec::new(),active_group:None,
+            next_group:0,budget,reduced_detail}
+    }
+    /// Begin a contiguous, ALL-OR-NOTHING geometry component. Nested body
+    /// helpers inherit the current component ID instead of fragmenting it.
+    fn begin_component(&mut self,faces:usize)->Option<Option<usize>> {
+        if self.facets.len().saturating_add(faces)>self.budget{return None;}
+        let prev=self.active_group;
+        if prev.is_none() {
+            self.active_group=Some(self.next_group);
+            self.next_group+=1;
+        }
+        Some(prev)
+    }
+    fn end_component(&mut self,previous:Option<usize>){
+        self.active_group=previous;
+    }
     fn quad(&mut self,points:[[f64;3];4],color:u32) {
         if self.facets.len() < self.budget && points.iter().flatten().all(|v|v.is_finite()) {
+            let id=match self.active_group{
+                Some(id)=>id,
+                None=>{
+                    let id=self.next_group;
+                    self.next_group+=1;
+                    id
+                }
+            };
             self.facets.push((points,color));
+            self.group_ids.push(id);
         }
     }
     fn shard(&mut self, from:[f64;3], to:[f64;3], width:f64, twist:f64, color:u32){
@@ -386,8 +423,10 @@ impl Scene {
         let side=add(scale(tangent,twist.cos()*width),scale(normal,twist.sin()*width));
         let quarter=add(scale(tangent,-twist.sin()*width*0.8),scale(normal,twist.cos()*width*0.8));
         let middle=add(from,scale(sub(to,from),0.62));
+        let Some(previous)=self.begin_component(2) else{return;};
         self.quad([from,add(middle,side),to,sub(middle,side)],color);
         self.quad([from,add(middle,quarter),to,sub(middle,quarter)],color);
+        self.end_component(previous);
     }
     fn leaf(&mut self,at:[f64;3],dir:[f64;3],size:f64,color:u32){
         let end=add(at,scale(dir,size));
@@ -407,6 +446,7 @@ impl Scene {
         let normal=norm(cross(sub(b,a),sub(d,a)));
         if length(normal)<0.1 {return;}
         let offset=scale(normal,0.07);
+        let Some(previous)=self.begin_component(6) else{return;};
         let top=[add(a,offset),add(b,offset),add(c0,offset),add(d,offset)];
         let bottom=[sub(a,offset),sub(b,offset),sub(c0,offset),sub(d,offset)];
         self.quad(top,color);
@@ -415,6 +455,7 @@ impl Scene {
             let j=(i+1)%4;
             self.quad([top[i],top[j],bottom[j],bottom[i]],shade_argb(color,0.75));
         }
+        self.end_component(previous);
     }
 
     // Cylindrical world-space body, not billboards: used for roots, living
@@ -428,6 +469,7 @@ impl Scene {
         let base=if axis[1].abs()<0.91 {[0.0,1.0,0.0]}else{[1.0,0.0,0.0]};
         let tangent=norm(cross(axis,base));
         let normal=norm(cross(axis,tangent));
+        let Some(previous)=self.begin_component(sides) else{return;};
         for i in 0..sides {
             let a=TAU*i as f64/sides as f64+twist;
             let b=TAU*(i+1) as f64/sides as f64+twist;
@@ -439,6 +481,7 @@ impl Scene {
             self.quad([p0,p1,p2,p3],
                       shade_argb(color,match i%4{0=>0.86,1=>0.71,2=>1.0,_=>0.78}));
         }
+        self.end_component(previous);
     }
 
     /// Closed-sided 3D crystal grown along its axis. Every side has two
@@ -452,7 +495,7 @@ impl Scene {
             || !from.iter().chain(to.iter()).all(|v| v.is_finite())
             || length(sub(to,from)) < 0.1 { return; }
         let faces = sides * 2;
-        if self.facets.len().saturating_add(faces) > self.budget { return; }
+        let Some(previous)=self.begin_component(faces) else{return;};
         let axis=norm(sub(to,from));
         let reference=if axis[1].abs() < 0.9 {[0.0,1.0,0.0]} else {[1.0,0.0,0.0]};
         let tangent=norm(cross(axis,reference));
@@ -475,6 +518,7 @@ impl Scene {
             self.quad([a0,b0,b1,a1],shaded);
             self.quad([a1,b1,b2,a2],shade_argb(color,(shade*1.12).min(1.0)));
         }
+        self.end_component(previous);
     }
 }
 
