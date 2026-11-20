@@ -1,4 +1,4 @@
-# Aetheria Horizon — M32 ART REBUILD v0.8.0
+# Aetheria Horizon — M32 ART REBUILD v0.8.1
 Testovni mod pro Horizon Nightly 2026-11-20 (MC 26.3)
 SDK: 0a875da91dbb0fdcb7ba8c42c11341aa229af51a
 
@@ -12,7 +12,7 @@ SDK: 0a875da91dbb0fdcb7ba8c42c11341aa229af51a
 ## NOVÉ JEDNODUCHÉ OVLADANI (jen dve klavesy)
 **R (kratce stisknout)**: dalsi z 10 magickych skol.
 **R (drzet) + kolecko mysi**: vybirat z 20 kouzel dane skoly.
-**G**: seslat vybrane kouzlo na misto pred hracem.
+**Z**: seslat vybrane kouzlo na misto pred hracem.
 
 Zadne K/N/M/J/L/Z/X/C/V/B bindingy. Obri 200-kartove menu K uz neni soucasti aktivniho UI.
 Mala trojice v nabidce nad hotbarem se zobrazi jen pri vyberu.
