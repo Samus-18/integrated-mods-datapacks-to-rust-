@@ -1,4 +1,4 @@
-name: Aetheria M31 GPU volumetric shader test (200 visual drafts)
+name: Aetheria M31.1 Horizon Nightly 2026-11-20 API rebuild
 concurrency:
   group: aetheria-wasm-internal-main
   cancel-in-progress: true
@@ -29,10 +29,10 @@ jobs:
             ~/.cargo/bin/cargo-horizon-mod
             ~/.cargo/registry
             ~/.cargo/git
-          key: aetheria-horizon-mod-tool-dd67b76-v1-linux
+          key: aetheria-horizon-mod-tool-0a875da-v1-linux
       - name: Install pinned Horizon mod tool if not cached
         if: steps.cached-tool.outputs.cache-hit != 'true'
-        run: cargo install --locked --git https://github.com/horizon-rust/horizon --rev dd67b76ff23e28c6d8e21859df600d31572f81a0 cargo-horizon-mod
+        run: cargo install --locked --git https://github.com/horizon-rust/horizon --rev 0a875da91dbb0fdcb7ba8c42c11341aa229af51a cargo-horizon-mod
       - name: Prepare pinned free OGG encoder
         uses: actions/setup-python@v5
         with:
@@ -64,9 +64,14 @@ jobs:
               assert 'assets/aetheria_preview/shaders/pipeline/ethereal.wgsl' in names
               m=tomllib.loads(z.read('horizon-mod.toml').decode())
               assert m['id']=='aetheria_preview'
-              assert m['version']=='0.7.0'
+              assert m['version']=='0.7.1'
               assert 'native' not in m and 'wasm' in m
               assert hashlib.sha512(z.read('mod.wasm')).hexdigest()==m['wasm']['sha512']
+              wasm=z.read('mod.wasm')
+              assert b'horizon_layout' in wasm and b'horizon_hook' in wasm, 'missing new Horizon ABI exports'
+              assert b'horizon' in wasm and b'#' in wasm, 'missing name-linked Horizon API imports'
+              cargo=tomllib.loads(z.read('Cargo.toml').decode())
+              assert cargo['package']['metadata']['horizon']['sdk']=='0a875da91dbb0fdcb7ba8c42c11341aa229af51a', 'wrong Nightly SDK'
               import json
               defs=json.loads(z.read('assets/aetheria_preview/sounds.json'))
               assert len(defs)==30, '30 original SFX not packaged'
@@ -97,13 +102,13 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-M31-GPU-Test-v0.7.0
+          name: Aetheria-Horizon-M31-Nightly-2026-11-20-v0.7.1
           path: aetheria-horizon/preview-5spells-wasm/target/m31-gpu-test/
 
       - name: Upload geometry visual contact sheets
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-M31-Visual-Audit-v0.7.0-Internal
+          name: Aetheria-M31-Visual-Audit-v0.7.1-Internal
           path: aetheria-horizon/preview-5spells-wasm/target/visual-audit/
           if-no-files-found: warn
