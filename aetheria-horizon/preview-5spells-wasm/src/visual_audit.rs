@@ -55,6 +55,10 @@ struct Report {
     polygons:usize,span:f64,coverage:f64,degenerate:f64,range_y:f64
 }
 fn export_svg(scene:&Scene,view:View,slot:usize,stage:Stage,age:f64,path:&Path)->Report{
+    export_svg_named(scene,view,slot,stage,age,path,None)
+}
+fn export_svg_named(scene:&Scene,view:View,slot:usize,stage:Stage,age:f64,
+                    path:&Path,label:Option<&str>)->Report{
     let raw=scene.facets.iter().flat_map(|(corners,_)|
         corners.iter().map(|c|view.project(*c))
     ).collect::<Vec<_>>();
@@ -121,7 +125,11 @@ fn export_svg(scene:&Scene,view:View,slot:usize,stage:Stage,age:f64,path:&Path)-
                (a as f64/255.).min(0.86)).unwrap();
     }
     write!(svg,"<rect x=\"11\" y=\"11\" width=\"398\" height=\"41\" fill=\"#101926\" fill-opacity=\".90\"/>\n").unwrap();
-    write!(svg,"<text x=\"22\" y=\"30\" fill=\"#e7f4f6\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\">{:03}  {}</text>\n",display_id,xml(name)).unwrap();
+    if let Some(label)=label {
+        write!(svg,"<text x=\"22\" y=\"30\" fill=\"#e7f4f6\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\">{}</text>\n",xml(label)).unwrap();
+    } else {
+        write!(svg,"<text x=\"22\" y=\"30\" fill=\"#e7f4f6\" font-family=\"sans-serif\" font-size=\"14\" font-weight=\"bold\">{:03}  {}</text>\n",display_id,xml(name)).unwrap();
+    }
     write!(svg,"<text x=\"22\" y=\"46\" fill=\"#94c0ce\" font-family=\"monospace\" font-size=\"10\">{:?} @ {:04.1} ticks  |  {:.1} blocks  |  {} surfaces</text>\n",
         stage,age,span,scene.facets.len()).unwrap();
     svg.push_str("<text x=\"22\" y=\"346\" fill=\"#668899\" font-family=\"sans-serif\" font-size=\"10\">OFFSCREEN CPU GEOMETRY PROJECTION, NOT IN-GAME SCREENSHOT</text>\n</svg>\n");
@@ -425,7 +433,8 @@ fn m29_eight_real_ultimates_and_bone_wall_remain_coherent(){
         let filename=format!("m29_eight_spells_view{}.svg",i+1);
         let path=if export{folder.join(&filename)}
             else{std::env::temp_dir().join(filename)};
-        let report=export_svg(&final_scene,view,18,Stage::Impact,48.,&path);
+        let report=export_svg_named(&final_scene,view,18,Stage::Impact,48.,&path,
+            Some("M29: 8 SIMULTANEOUS MAGIC SCULPTURES"));
         assert!(report.coverage>0.0003&&report.degenerate<0.95,
             "M29 multi-cast projected image disappeared at view {}",i+1);
         if !export{let _=fs::remove_file(path);}
