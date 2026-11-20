@@ -1,4 +1,4 @@
-name: Aetheria 200 design-intent and visual draft WASM CI
+name: Aetheria M31 GPU volumetric shader test (200 visual drafts)
 concurrency:
   group: aetheria-wasm-internal-main
   cancel-in-progress: true
@@ -76,15 +76,34 @@ jobs:
                   assert z.read(path)[:4]==b'OggS'
               print('PASS: wasm .hmod, SHA512, 30 original OGG SFX, shader, ZIP verified')
           PY
+      - name: Prepare M31 playable test package
+        run: |
+          mkdir -p target/m31-gpu-test
+          cp target/horizon-mod/aetheria_preview.hmod target/m31-gpu-test/
+          cp TEST_INSTRUCTIONS_M31.md target/m31-gpu-test/README-TEST.md
+          python3 - <<'PY'
+          import zipfile, pathlib, hashlib
+          d=pathlib.Path('target/m31-gpu-test')
+          assert set(x.name for x in d.iterdir()) == {'aetheria_preview.hmod','README-TEST.md'}
+          with zipfile.ZipFile(d/'aetheria_preview.hmod') as z:
+              assert z.testzip() is None
+              shader=z.read('assets/aetheria_preview/shaders/pipeline/ethereal.wgsl')
+              assert b'aetheria_integrate_haze' in shader
+              assert b'for(var i=0u;i<10u;i=i+1u)' in shader
+              assert b'aetheria_haze_density' in shader
+          sha=hashlib.sha256((d/'aetheria_preview.hmod').read_bytes()).hexdigest()
+          (d/'SHA256.txt').write_text(sha+'  aetheria_preview.hmod\n')
+          print('M31 GPU haze test artifact ready; sha256:',sha)
+          PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-200Spells-WASM-v0.6.0-Internal-UNPOLISHED
-          path: aetheria-horizon/preview-5spells-wasm/target/horizon-mod/aetheria_preview.hmod
+          name: Aetheria-Horizon-M31-GPU-Test-v0.7.0
+          path: aetheria-horizon/preview-5spells-wasm/target/m31-gpu-test/
 
       - name: Upload geometry visual contact sheets
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-200Spells-Visual-Audit-v0.6.0-Internal
+          name: Aetheria-M31-Visual-Audit-v0.7.0-Internal
           path: aetheria-horizon/preview-5spells-wasm/target/visual-audit/
           if-no-files-found: warn
