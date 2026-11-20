@@ -86,8 +86,12 @@ fn glacial_haze(scene:&mut Scene,o:Vec3,age:f64,energy:f64){
     // cardboard ledges in audit, so replace with three vertical, curling,
     // translucent surfaces enclosing the spires from distinct directions.
     // Large, low-alpha transparent areas are ambience, not a wire outline.
-    let high=10usize;let across=8usize;
+    // The full rising haze sheets must not be ripped apart by M28's old
+    // face-wise budget sampling. Build connected lower-detail surfaces
+    // *before* the M29 per-spell scheduler when casting is crowded.
+    let (high,across)=if scene.reduced_detail{(6usize,5usize)}else{(10usize,8usize)};
     for sheet in 0..3{
+        let Some(previous)=scene.begin_component(high*across) else{continue;};
         let theta=sheet as f64*TAU/3.0+0.37+age*0.003;
         let (ca,sa)=(theta.cos(),theta.sin());
         for h in 0..high {
@@ -118,6 +122,7 @@ fn glacial_haze(scene:&mut Scene,o:Vec3,age:f64,energy:f64){
                     position(b,next),position(a,next)],c);
             }
         }
+        scene.end_component(previous);
     }
 }
 fn ground_cleavage(scene:&mut Scene,o:Vec3,energy:f64,age:f64){
@@ -183,6 +188,28 @@ pub(super) fn render_shard_chorus(cast:Cast,age:f64,scene:&mut Scene){
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn glacial_haze_m30_keeps_three_complete_sheets_when_lod_changes(){
+        let origin=[0.,64.,0.];let age=44.;let energy=0.85;
+        let mut high=Scene::with_lod(400,false);
+        glacial_haze(&mut high,origin,age,energy);
+        assert_eq!(high.facets.len(),3*10*8);
+        for sheet in 0..3{
+            let ids=&high.group_ids[sheet*80..(sheet+1)*80];
+            assert!(ids.iter().all(|id|*id==ids[0]));
+        }
+        let mut low=Scene::with_lod(400,true);
+        glacial_haze(&mut low,origin,age,energy);
+        assert_eq!(low.facets.len(),3*6*5);
+        for sheet in 0..3{
+            let ids=&low.group_ids[sheet*30..(sheet+1)*30];
+            assert!(ids.iter().all(|id|*id==ids[0]));
+        }
+        let crowded=super::fair_geometry::sample_fair(
+            &[low,Scene::new(0)],65);
+        assert!(crowded.len()==30||crowded.len()==60,
+            "each 30-face ice sheet must remain a continuous surface");
+    }
     #[test]
     fn shard_chorus_is_full_3d_grounded_without_ring_scaffolds(){
         let id=5;
