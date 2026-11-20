@@ -298,49 +298,60 @@ fn draw(s:&mut Scene,id:u16,o:[f64;3],age:f64,g:f64,c:u32) {
          0.27*g,a,tint(c,0.77,0.80));
    }
  },
- 194=>{ // BONE PALISADE: overlapping ribcage bastion, NOT nine bare pickets.
-   // The old CPU projection showed a generic fence. Seven broad overlapping
-   // ossicle shields now sit on a thick continuous backbone, with hooked
-   // shoulder bones and irregular cranial crests at the rim.
-   body(s,p(o,0.,0.76*g,-0.26*g),[3.82*g,1.04*g,0.71*g],tint(c,0.55,0.94));
+ 194=>{ // BONE PALISADE: interlocked sculpted osseous shield canopy.
+   // This is an uneven continuous mass of overlapping solid spines and
+   // faceted ossicle armor on BOTH front and back. No blank rectangular
+   // wall, exposed toothpick fence or isolated decorative rings.
+   let base=tint(c,0.50,0.96);
+   body(s,p(o,0.,-0.45*g,0.),[3.78*g,0.28*g,0.46*g],base);
+   for i in 0..4{
+     let x=(i as f64-1.5)*1.95*g;
+     body(s,p(o,x,-0.25*g,0.08*g*((i%2) as f64-0.5)),
+       [0.52*g,0.32*g,0.53*g],tint(c,0.53+0.04*i as f64,0.94));
+   }
    for i in 0..7{
      let x=(i as f64-3.)*1.05*g;
-     let shift=0.13*g*((i%3) as f64-1.);
-     let peak=(2.25+0.18*(i%4) as f64)*g;
-     let front=(0.64+0.05*(i%3) as f64)*g;
-     body(s,p(o,x,0.88*g,-0.08*g+shift),
-       [0.56*g,0.93*g,0.49*g],tint(c,0.56+0.04*(i%4) as f64,0.95));
-     body(s,p(o,x,1.46*g,0.13*g+shift),
-       [0.51*g,0.35*g,0.42*g],tint(c,0.72+0.03*(i%3) as f64,0.90));
-     // Front-and-back solid plated shield, not a gap between narrow posts.
-     s.membrane(
-       p(o,x-0.57*g,0.23*g,front),
-       p(o,x-0.42*g,1.65*g,front+0.18*g),
-       p(o,x+0.13*g,peak,front+0.25*g),
-       p(o,x+0.57*g,0.27*g,front),
-       tint(c,0.71+0.035*(i%3) as f64,0.93));
-     crystal(s,p(o,x-0.06*g,0.72*g,front+0.08*g),
-       p(o,x+0.13*g,peak+0.17*g,front+0.20*g),
-       0.31*g,0.14*i as f64,tint(c,0.86,0.97));
-     for side in [-1.,1.]{
+     let irregular=(i%4) as f64;
+     let height=(2.16+0.19*irregular)*g;
+     let bend=((i%3) as f64-1.)*0.31*g;
+     // The broad ten+ face waist/tip crystal is its own continuous
+     // three-dimensional vertical shield. Adjacent bases overlap.
+     crystal(s,p(o,x,-0.34*g,0.0),
+       p(o,x+bend,height,-0.20*g+0.17*(i%2) as f64*g),
+       (0.57+0.06*(i%3) as f64)*g,i as f64*0.37,
+       tint(c,0.58+0.065*(i%4) as f64,0.94));
+     for face in [-1.,1.] {
+       // Raised front AND back engraved armor; each folded piece
+       // includes two broad faces and all thickness side-walls.
+       let z=face*(0.88+0.03*(i%3) as f64)*g;
        s.membrane(
-         p(o,x+side*0.36*g,0.54*g,front-0.24*g),
-         p(o,x+side*0.63*g,1.42*g,front-0.02*g),
-         p(o,x+side*0.47*g,1.81*g,front-0.45*g),
-         p(o,x+side*0.12*g,0.83*g,front-0.60*g),
-         tint(c,0.60+0.05*((i+1)%3) as f64,0.89));
+         p(o,x-0.58*g,0.20*g,z),
+         p(o,x-0.38*g,(1.56+0.10*(i%3) as f64)*g,z+face*0.13*g),
+         p(o,x+bend*0.38,height*0.92,z+face*0.29*g),
+         p(o,x+0.60*g,0.25*g,z),
+         tint(c,0.70+0.048*(i%3) as f64,0.96));
+       // Each feathered side flares into a solid broad side-guard.
+       // This relief is asymmetric, layered, and visible obliquely.
+       let side=if (i%2)==0{-1.}else{1.};
+       s.membrane(
+         p(o,x+side*0.14*g,0.74*g,z),
+         p(o,x+side*0.64*g,1.12*g,z+face*0.16*g),
+         p(o,x+side*0.87*g,(1.48+0.14*irregular)*g,z+face*0.10*g),
+         p(o,x+side*0.32*g,1.81*g,z-face*0.21*g),
+         tint(c,0.66+0.06*(i%4) as f64,0.83));
      }
+     // High ornament is a substantial sculptural lobe, not a skinny pole.
+     crystal(s,
+       p(o,x+0.11*g,1.54*g,0.06*g),
+       p(o,x+bend*1.7,height+0.59*g,-0.36*g),
+       0.32*g,i as f64*0.29,tint(c,0.89,0.94));
    }
-   // Four asymmetric broad crown horns protrude from the solid rampart.
-   for i in 0..4{
-     let x=(i as f64-1.5)*1.78*g;
-     let lean=(if i%2==0{-0.23}else{0.23})*g;
-     crystal(s,p(o,x,1.48*g,-0.14*g),
-       p(o,x+lean,(2.58+0.14*(i%3) as f64)*g,-0.46*g),
-       0.38*g,i as f64*0.39,tint(c,0.83,0.95));
+   for i in 0..2{
+     let x=(i as f64-0.5)*4.72*g;
+     crystal(s,p(o,x,0.55*g,-0.13*g),
+       p(o,x+(if i==0{-0.41}else{0.39})*g,2.46*g,-0.75*g),
+       0.43*g,0.65+i as f64,tint(c,0.73,0.95));
    }
-   body(s,p(o,0.,-0.38*g,-0.07*g),
-     [3.94*g,0.28*g,0.82*g],tint(c,0.50,0.94));
   }
  _=>unreachable!("M27B only accepts fifteen ID-specific scenes")
  }
