@@ -57,6 +57,17 @@ fn shade_argb(argb:u32,brightness:f64)->u32 {
 mod sharp_projectile;
 #[path="../../../../preview-5spells-wasm/src/rime_bridge.rs"]
 mod rime_bridge;
+
+// Mimic the three immutable catalog index functions ONLY. This fast,
+// dependency-free harness compiles and executes the EXACT production M35
+// emitter source; full Horizon SDK ABI still gets separate CI coverage.
+mod catalog200 {
+    pub const SPELL_COUNT:usize=200;
+    pub fn school(slot:usize)->usize{slot.min(SPELL_COUNT-1)/20}
+    pub fn rank(slot:usize)->usize{slot.min(SPELL_COUNT-1)%20}
+}
+#[path="../../../../preview-5spells-wasm/src/procedural_fx.rs"]
+mod procedural_fx;
 #[cfg(test)]
 mod scene_tests {
     use super::*;
