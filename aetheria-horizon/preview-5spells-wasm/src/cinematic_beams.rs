@@ -108,7 +108,9 @@
  /// In contrast to the older ring + small spikes, most geometry fills the
  /// actual visual silhouette instead of tracing an empty border.
  fn fold_veil(s:&mut Scene,o:V,side:f64,age:f64,grow:f64,color:u32){
-     let nx=8usize;let ny=10usize;
+     // Closed double-sided warped surface, no random panel removal.
+     let (nx,ny)=if s.reduced_detail{(4usize,6usize)}else{(8usize,10usize)};
+     let Some(previous)=s.begin_component(3*nx*ny+2*nx+2*ny) else{return;};
      let time=age*0.048;
      let tint=|u:f64,v:f64| {
          // A shifting blue-violet dimensional material, not a flat purple
@@ -184,12 +186,14 @@
              ],shade_argb(color,0.53));
          }
      }
+     s.end_component(previous);
  }
  /// A wide 3D folded-space ribbon physically bridges the two portal veils.
  /// It sweeps across a quadrilateral surface with a thick back-side, not
  /// four thin beam lines connecting circles.
  fn fold_bridge(s:&mut Scene,o:V,age:f64,grow:f64,color:u32){
-     let sections=12usize;let rows=4usize;
+     let (sections,rows)=if s.reduced_detail{(8usize,3usize)}else{(12usize,4usize)};
+     let Some(previous)=s.begin_component(sections*(rows*2+2)) else{return;};
      let time=age*0.06;
      let point=|i:usize,j:usize,back:bool|{
          let t=i as f64/sections as f64;
@@ -223,12 +227,14 @@
              ],shade_argb(color,0.52));
          }
      }
+     s.end_component(previous);
  }
 
 
  /// Fully faceted time-vessel: broad 3D hourglass body, not a clock-hand rod.
  fn time_vessel(s:&mut Scene,o:V,age:f64,grow:f64,color:u32){
-     let rings=9usize;let facets=12usize;
+     let (rings,facets)=if s.reduced_detail{(6usize,8usize)}else{(9usize,12usize)};
+     let Some(previous)=s.begin_component(rings*facets) else{return;};
      let vertex=|j:usize,i:usize|{
          let v=j as f64/rings as f64;
          let a=TAU*i as f64/facets as f64+age*0.009+v*0.45;
@@ -243,6 +249,7 @@
                  shade_argb(color,0.56+0.4*((i*3+j)%5) as f64/5.0));
          }
      }
+     s.end_component(previous);
      // Crystalline "sand" masses float inside the vessel; no narrow beams.
      for i in 0..7 {
          let a=TAU*i as f64/7.+age*0.03;
@@ -275,6 +282,7 @@
              add(add(center,scale(tangent,sx*half_width)),
                  add([0.,sy*half_height,0.],scale(normal,sz*half_thick)))
          };
+         let Some(previous)=s.begin_component(6) else{continue;};
          let front=[
              corner(-1.,-1.,1.),corner(1.,-1.,1.),
              corner(1.,1.,1.),corner(-1.,1.,1.)
@@ -291,6 +299,7 @@
              s.quad([front[j],front[next],back[next],back[j]],
                     shade_argb(color,0.38+0.13*(j%3) as f64));
          }
+         s.end_component(previous);
          // Small offset internal afterimage, also solid rather than a sheet.
          if pane%2==0 {
              let inner_top=corner(0.,0.7,0.8);
@@ -302,8 +311,9 @@
  }
  /// Tick Pulse is a wave of intersecting filled shells, not three wire rings.
  fn temporal_dome(s:&mut Scene,o:V,age:f64,grow:f64,color:u32) {
-     let ns=12usize;let nv=7usize;
+     let (ns,nv)=if s.reduced_detail{(8usize,5usize)}else{(12usize,7usize)};
      for layer in 0..3 {
+         let Some(previous)=s.begin_component(ns*nv) else{continue;};
          let phase=age*0.023+layer as f64*0.52;
          let r=(1.2+layer as f64*1.05)*grow;
          let surface=|j:usize,i:usize|{
@@ -324,11 +334,13 @@
                             0.15*((i+j)%4) as f64/4.0));
              }
          }
+         s.end_component(previous);
      }
  }
  /// A full deformed gravitational lens, not generic orbiting wire outlines.
  fn astral_lens(s:&mut Scene,o:V,age:f64,grow:f64,color:u32){
-     let ns=14usize;let nv=8usize;
+     let (ns,nv)=if s.reduced_detail{(8usize,6usize)}else{(14usize,8usize)};
+     let Some(previous)=s.begin_component(ns*nv) else{return;};
      let vtx=|j:usize,i:usize|{
          let theta=TAU*i as f64/ns as f64+age*0.013;
          let phi=std::f64::consts::PI*j as f64/nv as f64;
@@ -347,6 +359,7 @@
                     shade_argb(color,0.38+0.40*((i*7+j)%9) as f64/9.0));
          }
      }
+     s.end_component(previous);
      // The compact core is opaque faceted matter (not a glowing ring).
      s.solid_crystal(p(o,0.,0.9,0.),p(o,0.,3.5,0.),
                      0.72,age*0.013,color,8);
