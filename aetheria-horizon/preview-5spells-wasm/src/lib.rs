@@ -309,9 +309,9 @@ impl Hooks for Mod {
         }
         if let Some(mask_pipeline)=soft_particle_pipeline {
             if particle_reserve==0{return;}
-            let room=event.draw.usage().quad_capacity
-                .saturating_sub(event.draw.usage().quads)
-                .min(particle_reserve as u32) as usize;
+            let room=(event.draw.usage().quad_capacity
+                .saturating_sub(event.draw.usage().quads) as usize)
+                .min(particle_reserve);
             if room==0{return;}
             let mut accents=Vec::with_capacity(live.len());
             for (cast,age) in live {
