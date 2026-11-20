@@ -127,3 +127,10 @@ Its actual Cast/Impact source SVG projections were compared in **both
 camera views**; they show an improved jagged sculpt, but are still
 first-pass faceted CPU visuals rather than approved cinematic Horizon
 GPU imagery. **No world/server mechanics or release gate improved.**
+
+
+## M30 — real animated magic shader materials (internal; 2026-11-20)
+
+The actual Horizon WASM source preview now has **distinct dynamic animated surface materials** for flame, ice, living roots, lightning and astral fissures, calculated with original WGSL in its *real* world-quad render pipeline. A geometric normal from GPU derivatives emphasizes angled full-volume crystal facets. Ice spell Shard Chorus keeps all three curved atmosphere sheets whole at both high and crowded LOD rather than removing random panels.
+
+[**Pinned WASM CI 44758785121 — PASS: 38/38 preview tests, pinned .hmod, Naga WGSL, 30 OGG, ZIP/SHA512**](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44758785121) · [M30 implementation/limits](docs/M30_LIVE_SHADER_MATERIALS.md). This does **not** mean actual HDR volumetric light or that the visuals match reference videos yet: the separate native postprocess/depth interface has not been wired, and no Windows GPU screenshot/FPS review was performed. Rust+WGSL development only; no C++/Iris/OptiFine. **0/100 real in-world accepted RPG spells; no incomplete download.**
