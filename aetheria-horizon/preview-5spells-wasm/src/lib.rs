@@ -5,6 +5,7 @@ mod fair_geometry;
 mod catalog30;
 mod cinematic_beams;
 mod hero_vfx;
+mod volumetric_forms;
 mod catalog200;
 mod mass_forms;
 mod ultimate_forms;
@@ -25,7 +26,7 @@ mod explicit_coverage;
 #[cfg(test)]
 mod shader_validation;
 use aetheria_horizon::ui::minimal_hud::QuickSelector;
-use catalog200::{SPELL_COUNT,DIRECT_SLOTS};
+use catalog200::SPELL_COUNT;
 use aetheria_horizon::core::player_data::PlayerMagic;
 use aetheria_horizon::cast as cast_spell;
 use mod_api::{
@@ -310,7 +311,6 @@ impl Hooks for Mod {
             quick_open:open,
             mana:state.local_mana,
             cooldowns:state.local_cooldowns,
-            cast_variant:state.last_variant,
         });
     }
 }
@@ -620,151 +620,11 @@ fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
     }
 }
 
+// M32: all 200 local preview slots use one new visual rendering architecture.
+// Old beam/rod/ring generators remain in source ONLY for reference and their
+// separate legacy tests; no old path runs during the live user spell cast.
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
-    // M27: all remaining Standard IDs 12–14 per school receive
-    // their own mass-first authored visual scenes, no semantic fallback.
-    if cast.kind<catalog200::SPELL_COUNT {
-        let id=catalog200::id(cast.kind);
-        if standard_m27a::dedicated(id){
-            standard_m27a::render(cast,age,scene);
-            return;
-        }
-        if standard_m27b::dedicated(id){
-            standard_m27b::render(cast,age,scene);
-            return;
-        }
-    }
-    if cast.kind<catalog200::SPELL_COUNT &&
-        standard_m26::dedicated(catalog200::id(cast.kind)) {
-        standard_m26::render(cast,age,scene);
-        return;
-    }
-    if cast.kind<catalog200::SPELL_COUNT {
-        let id=catalog200::id(cast.kind);
-        if standard_combo::dedicated(id){
-            standard_combo::render(cast,age,scene);
-            return;
-        }
-        if standard_charged2::dedicated(id){
-            standard_charged2::render(cast,age,scene);
-            return;
-        }
-    }
-    if cast.kind<catalog200::SPELL_COUNT {
-        let id=catalog200::id(cast.kind);
-        if standard_channelled::dedicated(id){
-            standard_channelled::render(cast,age,scene);
-            return;
-        }
-        if standard_instant::dedicated(id){
-            standard_instant::render(cast,age,scene);
-            return;
-        }
-    }
-    if cast.kind<catalog200::SPELL_COUNT &&
-       charged_standard_forms::dedicated(catalog200::id(cast.kind)) {
-        charged_standard_forms::render(cast,age,scene);
-        return;
-    }
-    if cast.kind<catalog200::SPELL_COUNT &&
-       standard_forms::dedicated(catalog200::id(cast.kind)) {
-        standard_forms::render(cast,age,scene);
-        return;
-    }
-    // All forty source-authored Awakening spells have their own additional
-    // spatial forms, not merely enlarged and recolored standard shapes.
-    if cast.kind<catalog200::SPELL_COUNT &&
-       (14..=17).contains(&catalog200::rank(cast.kind)) {
-        awakening_forms::render(cast,age,scene);
-        return;
-    }
-    // The twenty ORIGINAL Ultimates each get an explicitly authored scene,
-    // never a scaled-up generic standard spell or hollow ring.
-    if cast.kind<catalog200::SPELL_COUNT && catalog200::rank(cast.kind)>=18 {
-        ultimate_forms::render(cast,age,scene);
-        return;
-    }
-    // Core registry and UI are global (0..199); the first 3 spells of each
-    // school map explicitly to their original 30 bespoke renderer slots.
-    let Some(old_slot)=catalog200::curated_slot(cast.kind) else {
-        mass_forms::render_expansion(cast,age,scene);
-        return;
-    };
-    let cast=Cast{kind:old_slot,..cast};
-    if cast.kind==5 {
-        // Independent full-bodied glacier signature — no generic ring/spike
-        // backing sculpt that would undo the reference-led art direction.
-        hero_vfx::render_shard_chorus(cast,age,scene);
-        return;
-    }
-    if cast.kind<catalog30::SPELL_COUNT {
-        // Every curated ID gets its own world-space, temporal, 3D motif.
-        // Draw this first so the school-wide sculpt cannot starve the magic
-        // circle, physical beam, sky fracture or staggered impact of geometry.
-        cinematic_beams::draw(cast,age,scene);
-        // Gravity Thread, Blink Fold and the three Chronomancer spells
-        // are now explicitly FULL SURFACE-COMPOSED meshes, not outlines.
-        // Never overlay their old generic school rods/circles afterwards.
-        if (22..=26).contains(&cast.kind) {return;}
-        // The original five large sculpts support the physical cast/impact,
-        // not the anticipatory whisper or the fading afterimage.
-        let filled=matches!(
-            cinematic_beams::visual_phase(cast.kind,age),
-            Some((aetheria_horizon::vfx::timeline::Stage::Cast,_))
-                |Some((aetheria_horizon::vfx::timeline::Stage::Impact,_))
-        );
-        if !filled {return;}
-        // Cap legacy supporting geometry to ~one third of the remaining
-        // draw slots so the actual spell signature cannot be drowned out.
-        let original_limit=scene.budget;
-        let extra=original_limit.saturating_sub(scene.facets.len());
-        scene.budget=scene.facets.len().saturating_add(extra*34/100);
-        let school=catalog30::school(cast.kind);
-        let rank=catalog30::rank(cast.kind);
-        if rank==0 {
-            // Preserve the strong five original spell silhouettes as a
-            // backdrop for the first school spell, with bounded geometry.
-            let grow=(age/12.0).clamp(0.0,1.0).powf(0.66);
-            match school {
-                0=>phoenix_garden(cast.center,age,grow,scene),
-                1=>glacier_cathedral(cast.center,cast.direction,age,grow,scene),
-                5=>worldroot(cast.center,age,grow,scene),
-                6=>thunder_wyrm(cast.center,cast.direction,age,grow,scene),
-                7=>astral_sunder(cast.center,age,(age/60.0).clamp(0.,1.5),grow,scene),
-                _=>{let _=render_portable_sculpt(cast,age,scene);}
-            };
-        } else {
-            let _=render_portable_sculpt(cast,age,scene);
-        }
-        scene.budget=original_limit;
-        return;
-    }
-    // Each spell's second visual profile uses actual closed index meshes
-    // sculpted by the portable ten-school geometry system, not flat blades.
-    // The engine's supported world-quad API receives one triangle as a
-    // three-corner quad (last corner repeated) with face-aware shading.
-    if cast.variant == 1 && render_portable_sculpt(cast,age,scene){return;}
-    let t=(age/60.0).clamp(0.0,1.5);
-    // Gradually reveal shape; fade begins late in its distinct lifetime.
-    let grow=(age/12.0).clamp(0.0,1.0).powf(0.66);
-    match (cast.kind, cast.variant) {
-        (0,0)=>phoenix_garden(cast.center,age,grow,scene),
-        (0,1)=>phoenix_wings(cast.center,age,grow,scene),
-        (0,_)=>ember_cyclone(cast.center,age,grow,scene),
-        (1,0)=>glacier_cathedral(cast.center,cast.direction,age,grow,scene),
-        (1,1)=>glacier_arches(cast.center,cast.direction,age,grow,scene),
-        (1,_)=>frost_surge(cast.center,cast.direction,age,grow,scene),
-        (2,0)=>worldroot(cast.center,age,grow,scene),
-        (2,1)=>living_cage(cast.center,age,grow,scene),
-        (2,_)=>verdant_canopy(cast.center,age,grow,scene),
-        (3,0)=>thunder_wyrm(cast.center,cast.direction,age,grow,scene),
-        (3,1)=>storm_antlers(cast.center,age,grow,scene),
-        (3,_)=>storm_manta(cast.center,cast.direction,age,grow,scene),
-        (4,0)=>astral_sunder(cast.center,age,t,grow,scene),
-        (4,1)=>void_blossom(cast.center,age,grow,scene),
-        (4,_)=>fractured_stair(cast.center,age,grow,scene),
-        _ => {}
-    }
+    volumetric_forms::render(cast,age,scene);
 }
 
 /// 1: Opening, asymmetrical fiery blossom with featherlike 3D petals and a rising phoenix tail.
