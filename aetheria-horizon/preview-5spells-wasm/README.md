@@ -1,4 +1,4 @@
-# Aetheria Horizon — M32 VFX restart (0.8.0) — Horizon Rust
+# Aetheria Horizon — M34 original Blender ice spells (0.8.2) — Horizon Rust
 
 **Experimental visual mod. NOT a finished 200-spell RPG.**
 
@@ -17,7 +17,7 @@ This M32 build is a direct response to the user's 107-second 2026-11-20 in-game 
 
 - **R tap**: next magic school (10 schools).
 - **Hold R + mouse wheel**: cycle 20 spell IDs *within the selected school*, without hijacking the normal hotbar when R is up.
-- **G**: cast the selected client-local visual spell.
+- **Z**: cast the selected client-local visual spell (G conflicts with the Horizon game control).
 - No K fullscreen gallery, no N/M/J/L/Z/X/C/V/B direct shortcut keys. The small native picker appears briefly over the hotbar only when used.
 
 ## M32 visual architecture

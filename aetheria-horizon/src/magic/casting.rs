@@ -178,6 +178,21 @@ mod m2_tests {
   assert_eq!(cast(&mut p,1,100,f32::INFINITY),Err(CastError::InvalidInput));
   assert_eq!(p.mana,100.0);assert!(p.cooldown_until_tick.is_empty());
  }
+ #[test] fn rime_bridge_cast_matches_eight_original_visual_plates() {
+  // M34: one physical ice plate per authored Rime Bridge segment;
+  // do not silently drift the future server-world spell out of visual sync.
+  let mut p=PlayerMagic::new(1);
+  assert!(p.unlock(22));
+  let result=cast(&mut p,22,100,0.6).unwrap();
+  match result.action {
+   SpellAction::RimeBridge{plates,spacing,lifetime_ticks}=>{
+    assert_eq!(plates,8);
+    assert!((spacing-1.44).abs()<0.0001);
+    assert_eq!(lifetime_ticks,160);
+   },
+   _=>panic!("Rime Bridge cast is not the matching authored action"),
+  }
+ }
  #[test] fn moment_slip_requests_safe_rewind_not_direct_teleport() {
   let mut p=PlayerMagic::new(8);p.unlock(162);
   assert_eq!(cast(&mut p,162,100,1.0).unwrap().action,

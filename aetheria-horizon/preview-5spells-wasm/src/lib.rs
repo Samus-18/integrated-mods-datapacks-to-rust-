@@ -6,6 +6,8 @@ mod catalog30;
 mod cinematic_beams;
 mod hero_vfx;
 mod volumetric_forms;
+mod sharp_projectile;
+mod rime_bridge;
 mod catalog200;
 mod mass_forms;
 mod ultimate_forms;
@@ -68,7 +70,7 @@ struct Mod { state: Mutex<State> }
 impl Hooks for Mod {
     fn register(&self, registrar: &mut dyn Registrar, _: &RegistrationContext) {
         // Two controls: tap R next school; hold R and scroll one of its 20
-        // spells; G casts. Old debug shortcuts are not registered.
+        // spells; Z casts. Old debug shortcuts are not registered.
         for (id,key,label) in [
             ("quick_picker","key.keyboard.r","Tap: next school | Hold + wheel: spells"),
             ("cast","key.keyboard.z","Cast selected magic spell"),
@@ -624,6 +626,12 @@ fn render_spell_signature(cast:Cast,age:f64,scene:&mut Scene) {
 // Old beam/rod/ring generators remain in source ONLY for reference and their
 // separate legacy tests; no old path runs during the live user spell cast.
 fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
+    // M33: use the ACTUAL 56-quad authored Blender Frost Needle model for
+    // spell ID 021; all other 199 draft visuals remain unchanged until their
+    // own genuine model/material quality gate passes.
+    if sharp_projectile::render(cast,age,scene) { return; }
+    // M34: real independent sculpted Rime Bridge, registry #022.
+    if rime_bridge::render(cast,age,scene) { return; }
     volumetric_forms::render(cast,age,scene);
 }
 
