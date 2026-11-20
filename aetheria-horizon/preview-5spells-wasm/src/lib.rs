@@ -7,6 +7,7 @@ mod cinematic_beams;
 mod hero_vfx;
 mod volumetric_forms;
 mod sharp_projectile;
+mod rime_bridge;
 mod catalog200;
 mod mass_forms;
 mod ultimate_forms;
@@ -629,6 +630,8 @@ fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
     // spell ID 021; all other 199 draft visuals remain unchanged until their
     // own genuine model/material quality gate passes.
     if sharp_projectile::render(cast,age,scene) { return; }
+    // M34: real independent sculpted Rime Bridge, registry #022.
+    if rime_bridge::render(cast,age,scene) { return; }
     volumetric_forms::render(cast,age,scene);
 }
 

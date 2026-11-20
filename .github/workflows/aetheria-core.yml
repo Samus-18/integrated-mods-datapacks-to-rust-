@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
-      - name: Compile and test actual M33 authored Frost Needle Rust geometry
+      - name: Compile and test M33 Frost Needle + M34 Rime Bridge original Rust geometry
         run: cargo test --manifest-path asset-pipeline/sharp-projectile-v2/rust-qa/Cargo.toml --all-targets
       - name: Check portable Rust core
         run: cargo test --all-targets

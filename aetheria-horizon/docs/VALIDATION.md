@@ -79,3 +79,8 @@ The new shader runs through the mod's **existing actual Horizon WGSL PipelineBle
 - Real Horizon in-game visual, GPU HDR/depth/refraction and world-game mechanics NOT VERIFIED. See docs/M33_SHARP_PROJECTILE_REAL_BLENDER_RUNTIME.md.
 
 **M33 geometry normal regression (new):** independent signed-volume OBJ audit caught all 108/108 reversed faces on first Blender v2 pass (despite appearing normal in Blender). Regenerated from corrected winding; all 3 closed parts now positive signed volume and **108/108 exterior faces point outward**. Reproduced on fresh Git Windows checkout, source SHA canonicalized LF/CRLF, Python source test re-passed. The pinned CI job must additionally pass `validate_normals.py`. Does not certify in-game shader/backface behavior.
+
+### M34 2026-11-21
+- New original Blender 7-plate / 2-glacial-buttress Rime Bridge sculpt. Original reviewed first two camera views failed aesthetically as simple blocks; second two actual Blender angles show a substantial curving supported bridge. Not an in-game approved visual.
+- OBJ/GLB 9 watertight outward 3D solids; SHA canonical LF; 398 3D vertices, 380 fully preserved material-marked quads; 9 atomic 32/78-quad parts. Reproducible generalized OBJ->Rust tool and independent `validate_bridge.py` source/GLB validator PASS on Windows.
+- Real live spell router dispatches Cryomancer #022 `rime_bridge` before generic M32 renderer; #021 keeps M33 Frost Needle. Standalone Rust QA and pinned Horizon SDK CI result reported separately when known. No actual server bridge, collision/blocks or game FPS verified.

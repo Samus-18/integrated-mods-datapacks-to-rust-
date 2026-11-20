@@ -55,6 +55,8 @@ fn shade_argb(argb:u32,brightness:f64)->u32 {
 }
 #[path="../../../../preview-5spells-wasm/src/sharp_projectile.rs"]
 mod sharp_projectile;
+#[path="../../../../preview-5spells-wasm/src/rime_bridge.rs"]
+mod rime_bridge;
 #[cfg(test)]
 mod scene_tests {
     use super::*;

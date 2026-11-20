@@ -1,9 +1,9 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - M32.1 Collision-Free QA Test"
-version = "0.8.1"
+name = "Aetheria Horizon - M34 Original 3D Frost / Rime Internal Test"
+version = "0.8.2"
 api = "0.2"
 side = "client"
-description = "200 spell IDs; M32 fully overhauled broad mass-and-volume GPU preview, two-key R/G navigation; all art experimental. Client mana/SFX only; no server effects or saving."
+description = "200 spell IDs; Frost Needle (#021) and Rime Bridge (#022) sculpted original Blender 3D previews; R hold/wheel to select, Z to cast. Client only; no world edits, traversal collision, server gameplay or saving."
 authors = ["Samus-18"]
 capabilities = ["registries"]
 

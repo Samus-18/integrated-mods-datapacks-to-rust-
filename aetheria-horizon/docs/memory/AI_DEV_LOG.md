@@ -382,3 +382,10 @@ Updated package `aetheria_preview` to v0.7.0, workflow to publish a **real user-
 
 ### M33 normal/winding regression correction
 Independent model QA of the committed v2 sculpt uncovered **all 108 original OBJ faces inside-out**, which would have risked Horizon culling the entire hero 3D spell. Reversed every face in the Blender source before GLB/OBJ export, re-rendered both real camera previews, and regenerated Rust quad constants from the new OBJ. Verified all exterior faces outward: positive signed volume +6.24761 core, +0.65005 on each side fin. Added a permanent `validate_normals.py` CI guard; the initial SHA mismatch due Windows CRLF vs Linux LF is separately fixed via canonical source hash. Never claim initial test was error-free.
+
+## 2026-11-21 — M34 original Blender Rime Bridge, actual Horizon spell dispatch
+- Verified M33 pinned Horizon WASM QA run 44833699687 **SUCCESS**; M33 source 5/5, Aetheria core 78/78 and Rapier test passed. This does NOT mean M33's art or world gameplay was approved.
+- Reviewed latest official Horizon shader API 0.2 (full-screen shader packs are separate from guest world-quad pipeline), native mod manual, Orbital Laser fork-specific API research, SpellEngine's 3D FX model pipeline. No external code/assets copied.
+- First physically authored Blender Rime Bridge prototype looked like seven simple slabs and was rejected after two actual camera renders. Created two original large curved solid glacial buttresses that join the bridge into one readable visual sculpture. Second real renders inspected. More material and physical world work remains.
+- NEW generalized outward-normal/closed-mesh Blender-OBJ→Rust pipeline with exact SHA, material identities and atomic whole-part boundaries. Rime Bridge #022 now has original 9-body/380-quad 3D choreography in actual `render_spell`, distinct from Frost Needle #021. All other 198 stay earlier unapproved drafts.
+- Local Python source/multi-body verification passed. Added standalone source-authored Rust tests, pinned Horizon WASM CI job. No physics bridge, multiplayer save, world impact or in-game GPU FPS verified; no manual user playtest demanded.
