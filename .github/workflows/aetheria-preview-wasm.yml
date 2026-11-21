@@ -1,4 +1,4 @@
-name: Aetheria M37 names-first procedural GPU SDF silhouettes (internal QA)
+name: Aetheria M38 real GPU Thorn Dart shader visual QA (internal)
 concurrency:
   group: aetheria-wasm-internal-main
   cancel-in-progress: true
@@ -72,7 +72,7 @@ jobs:
               assert 'assets/aetheria_preview/shaders/pipeline/soft_particle.wgsl' in names, 'M35 masked particle shader absent'
               m=tomllib.loads(z.read('horizon-mod.toml').decode())
               assert m['id']=='aetheria_preview'
-              assert m['version']=='0.8.5'
+              assert m['version']=='0.8.6'
               assert 'native' not in m and 'wasm' in m
               assert hashlib.sha512(z.read('mod.wasm')).hexdigest()==m['wasm']['sha512']
               wasm=z.read('mod.wasm')
@@ -111,7 +111,7 @@ jobs:
         run: |
           mkdir -p target/m31-gpu-test
           cp target/horizon-mod/aetheria_preview.hmod target/m31-gpu-test/
-          cp TEST_M37.md target/m31-gpu-test/README-TEST.md
+          cp TEST_M38.md target/m31-gpu-test/README-TEST.md
           python3 - <<'PY'
           import zipfile, pathlib, hashlib
           d=pathlib.Path('target/m31-gpu-test')
@@ -128,7 +128,7 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-M37-INTERNAL-Name-True-WGSL-FX-Nightly-2026-11-20
+          name: Aetheria-Horizon-M38-INTERNAL-Thorn-Dart-Nightly-2026-11-20
           path: aetheria-horizon/preview-5spells-wasm/target/m31-gpu-test/
 
       - name: Upload geometry visual contact sheets

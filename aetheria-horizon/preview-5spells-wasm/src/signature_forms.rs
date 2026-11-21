@@ -475,11 +475,36 @@ fn carrion(c:Cast,age:f64,scene:&mut Scene){
             0.22*fade,mutate(GHOST,i));
     }
 }
+// Name-specific contiguous 3D fallback (only if GPU SDF is absent).
+fn thorn_dart(c:Cast,age:f64,scene:&mut Scene){
+    let (grow,fade)=phase(age);
+    if grow<0.03||fade<0.03{return;}
+    let mut body=Vec::new();
+    for i in 0..18{
+        let t=i as f64/17.0;
+        let bend=0.09*(t*TAU*1.5-age*0.026).sin();
+        body.push(local(c,bend,1.0+0.28*t,0.6+5.2*t+age*0.024));
+    }
+    connected_body(scene,&body,0.28*grow*fade,WOOD,8);
+    shard(scene,body[16],add(body[17],[0.0,0.12,0.70]),
+        0.32*fade,SAP);
+    for j in 0..7{
+        let k=2+j*2;
+        let sign=if j%2==0 {1.0}else{-1.0};
+        let base=body[k];
+        let tip=add(base,[sign*(0.74+0.10*(j as f64*0.8).sin())*grow,
+            0.19,-0.28]);
+        shard(scene,base,tip,0.16*fade,mutate(SAP,j));
+        scene.membrane(base,tip,
+            add(tip,[sign*0.13,0.13,0.13]),
+            add(base,[sign*0.06,0.21,-0.14]),mutate(LEAF,j));
+    }
+}
 /// The true source geometry replaces (does not merely recolor) generic
 /// visual bodies for these ten reference spells. ID is zero-based.
 pub(super) fn render(c:Cast,age:f64,scene:&mut Scene)->bool{
     let id=c.kind;
-    if !matches!(id,0|6|29|47|63|86|101|123|144|161|186){return false;}
+    if !matches!(id,0|6|29|47|63|86|100|101|123|144|161|186){return false;}
     if !age.is_finite()||!(0.0..104.0).contains(&age) ||
         !c.center.iter().chain(c.direction.iter()).all(|x|x.is_finite()){
         return true;
@@ -491,6 +516,7 @@ pub(super) fn render(c:Cast,age:f64,scene:&mut Scene)->bool{
         47=>twister(c,age,scene),
         63=>faultline(c,age,scene),
         86=>rainweaver(c,age,scene),
+        100=>thorn_dart(c,age,scene),
         101=>roots(c,age,scene),
         123=>arc_net(c,age,scene),
         144=>rift_slice(c,age,scene),
@@ -509,7 +535,7 @@ mod tests{
     }}
     #[test]
     fn source_hero_spells_are_actual_contiguous_3d_volumes_not_only_sprites(){
-        let ids=[0,6,29,47,63,86,101,123,144,161,186];
+        let ids=[0,6,29,47,63,86,100,101,123,144,161,186];
         for id in ids{
             let mut scene=Scene::with_lod(900,false);
             assert!(render(cast(id),48.0,&mut scene));
@@ -534,7 +560,7 @@ mod tests{
     }
     #[test]
     fn source_hero_movement_changes_geometry_over_time(){
-        for id in [0,6,29,47,63,86,101,123,144,161,186]{
+        for id in [0,6,29,47,63,86,100,101,123,144,161,186]{
             let mut a=Scene::new(900);let mut b=Scene::new(900);
             assert!(render(cast(id),25.0,&mut a));
             assert!(render(cast(id),63.0,&mut b));
@@ -544,7 +570,7 @@ mod tests{
     #[test]
     fn unrelated_189_spells_keep_existing_m36_path(){
         for id in 0..200{
-            if [0,6,29,47,63,86,101,123,144,161,186].contains(&id){
+            if [0,6,29,47,63,86,100,101,123,144,161,186].contains(&id){
                 continue;
             }
             let mut scene=Scene::new(120);
@@ -554,7 +580,7 @@ mod tests{
     }
     #[test]
     fn overload_never_punches_random_holes_in_source_geometry(){
-        for id in [0,6,29,47,63,86,101,123,144,161,186]{
+        for id in [0,6,29,47,63,86,100,101,123,144,161,186]{
             for cap in [0,30,80,150,280,500,900]{
                 let mut scene=Scene::new(cap);
                 assert!(render(cast(id),46.0,&mut scene));

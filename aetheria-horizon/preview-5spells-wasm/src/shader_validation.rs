@@ -166,11 +166,13 @@ mod tests {
                 f.name.as_deref()==Some(name)),
                 "Missing actual per-pixel signature function {name}");
         }
-        for id in 0..=10 {
+        for id in 0..=11 {
             assert!(actual.contains(&format!("which=={id}"))
-                || id==10 && actual.contains("CARRION SWARM"));
+                || id==10 && actual.contains("CARRION SWARM")
+                || id==11 && actual.contains("THORN DART"));
         }
         assert!(actual.contains("a37_edge(p)"));
+        assert!(actual.contains("clamp(i32(round((input.color.a*255.0-23.0)/21.0)),0,11)"));
         assert!(actual.contains("input.color.a*255.0-23.0"));
         assert!(!actual.contains("textureSample("));
         assert!(!actual.contains("MainDepthSampler"));
