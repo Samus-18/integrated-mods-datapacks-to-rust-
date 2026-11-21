@@ -42,7 +42,9 @@ pub(super) fn render(cast:Cast,age:f64,camera:[f64;3],scene:&mut Scene)->usize{
         ||!cast.center.iter().chain(cast.direction.iter()).all(|v|v.is_finite())
         ||!camera.iter().all(|v|v.is_finite()) {return 0;}
     let formation=smooth((age-2.0)/13.0);
-    let dissolution=1.0-smooth((age-78.0)/26.0);
+    let dissolution=if cast.kind==100 {
+        1.0-smooth((age-57.0)/22.0)
+    }else {1.0-smooth((age-78.0)/26.0)};
     let grow=formation*dissolution;
     if grow<0.02{return 0;}
     // A hero is appropriately large in world space. The last attempt drew
@@ -59,10 +61,16 @@ pub(super) fn render(cast:Cast,age:f64,camera:[f64;3],scene:&mut Scene)->usize{
         (7.0,6.1,2.0,-0.34), // diagonal torn dimensional slash
         (5.1,5.4,2.3,0.02),  // broken chrono glyph and echoes
         (6.4,5.8,2.0,0.08),  // ghost skull-bird swarm
-        (2.65,5.40,1.45,0.74), // Thorn Dart: barbed wooden projectile
+        (1.28,3.00,1.25,0.50), // Thorn Dart: compact readably pointed dart
     ];
     let (width,height,lift,roll)=shapes[id];
-    let center=add(cast.center,[0.0,lift,0.0]);
+    let center=if cast.kind==100 {
+        // Projectiles should clearly TRAVEL along the actual aim, not form a
+        // fixed, vertical gas cloud at the ground target for five seconds.
+        let travel=4.2*smooth((age-10.0)/39.0);
+        add(add(cast.center,[0.0,lift,0.0]),
+            scale(cast.direction,travel))
+    }else {add(cast.center,[0.0,lift,0.0])};
     let before=scene.facets.len();
     let _=sprite(scene,camera,center,width*grow.max(0.08),
         height*grow.max(0.08),roll,

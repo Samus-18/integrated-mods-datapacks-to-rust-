@@ -1,6 +1,6 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - M38 Name-True Real GPU Thorn Dart QA"
-version = "0.8.6"
+name = "Aetheria Horizon - M39 Visual-QA Sharp Name-True Thorn Dart"
+version = "0.8.7"
 api = "0.2"
 side = "client"
 description = "12 named signed-distance GPU signature silhouettes plus fallback sculpted 3D, 100 authored particle motions and 200 demo spell IDs. Experimental client VFX, no gameplay damage/world edits and no verified beauty/FPS."

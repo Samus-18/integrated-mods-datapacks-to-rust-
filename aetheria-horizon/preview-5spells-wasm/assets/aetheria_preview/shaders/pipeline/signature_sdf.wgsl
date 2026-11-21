@@ -1,4 +1,4 @@
-// Aetheria M38 — 11 distinct procedural hero spell MATERIALS.
+// Aetheria M39 — 11 distinct procedural hero spell MATERIALS.
 // ORIGINAL Horizon guest WGSL, NOT a Java/Fabric port or a Blender screenshot.
 // This is an OPTIONAL, depth-tested camera-facing world-space VFX material.
 // Each pixel reconstructs the NAME'S actual silhouette and evolving energy;
@@ -269,36 +269,50 @@ fn a37_shape(which:i32,p:vec2<f32>,time:f32)->vec3<f32>{
         aura=0.33*smoke*(0.5+0.5*n);
 
     }else{
-        // THORN DART (#101): sharp asymmetric pointed leaf-wood projectile.
-        // Seven hard barbs, living veins, leading tip; never green smoke.
-        let q=vec2<f32>(p.x-0.12*sin((p.y+0.5)*3.9-t*0.22),p.y);
-        let range=smoothstep(-0.97,-0.79,q.y)*
-            (1.0-smoothstep(0.87,1.01,q.y));
-        let taper=0.19-0.12*smoothstep(-0.61,0.88,q.y);
-        let shaft=(1.0-smoothstep(taper*0.60,taper+0.026,abs(q.x)))*range;
-        let head=(1.0-smoothstep(0.28,0.37,
-            abs(q.x)+max(0.0,0.49-q.y)*0.72))*
-            smoothstep(0.38,0.56,q.y)*
-            (1.0-smoothstep(0.86,1.0,q.y));
-        var thorns=0.0;
-        var veins=0.0;
-        for(var k=0;k<7;k=k+1){
+        // THORN DART (#101). M39 *actual GPU-photo driven* revision:
+        // precise tapered penetrating projectile with a continuous narrow
+        // wood shaft, long needle point, five small reverse barbs, thin
+        // sap filaments and hard edge highlights. Not an oversized leaf fan.
+        // Source source-matched against real Vulkan RX580 M38 screenshots:
+        // M38's wide seven-barb shape produced a huge pale green fan.
+        let y=p.y;
+        let q=vec2<f32>(p.x-0.025*sin(y*7.2-t*0.48),y);
+        let body_clip=smoothstep(-0.97,-0.83,y)*
+            (1.0-smoothstep(0.47,0.53,y));
+        let stem_width=mix(0.108,0.070,
+            smoothstep(-0.9,0.48,y));
+        let stem=(1.0-smoothstep(stem_width-0.026,
+            stem_width+0.020,abs(q.x)))*body_clip;
+        // A tapered triangular spearhead, wide at the shoulder around
+        // y=0.47 and literally zero width at the y=0.98 sharp tip.
+        let head_y=smoothstep(0.37,0.48,y)*
+            (1.0-smoothstep(0.93,0.995,y));
+        let head_width=max(0.0,0.23*(0.98-y)/0.52);
+        let head=(1.0-smoothstep(max(0.005,head_width-0.027),
+            head_width+0.026,abs(q.x)))*head_y;
+        var barb=0.0;
+        var fine_barb=0.0;
+        for(var k=0;k<5;k=k+1){
             let f=f32(k);
-            let y=-0.74+f*0.208;
-            let side=select(-1.0,1.0,(k%2)==0);
-            let origin=vec2<f32>(0.035*side+0.06*sin(y*3.7),y);
-            let tip=vec2<f32>(side*(0.35+0.08*sin(f*2.1)),
-                y-0.26-0.05*sin(t*1.1+f));
-            let d=a37_seg(q,origin,tip);
-            thorns=max(thorns,a37_line(d,0.068-0.004*f));
-            veins=max(veins,a37_line(d,0.028)*0.78);
+            let j=-0.72+f*0.225;
+            let sign=select(-1.0,1.0,(k%2)==0);
+            let root=vec2<f32>(sign*0.063,j);
+            let tip=vec2<f32>(sign*(0.17+0.027*f),
+                j-0.14-0.015*sin(t*0.7+f));
+            let dist=a37_seg(q,root,tip);
+            barb=max(barb,a37_line(dist,0.043));
+            fine_barb=max(fine_barb,a37_line(dist,0.016));
         }
-        let x=q.x-0.11*sin(q.y*7.2-t*1.4);
-        let sap=a37_line(abs(x),0.060+0.024*n)*range;
-        body=clamp(max(shaft,max(head,thorns*0.83)),0.0,1.0);
-        rim=clamp(max(head*0.94,max(veins,sap*0.85)),0.0,1.0);
-        aura=0.21*body*n+
-            0.33*sap*(1.0-smoothstep(0.32,0.95,abs(q.y)));
+        // Delicate center sap and glint. Very little free-floating noise.
+        let sap=a37_line(abs(q.x-0.014*sin(y*9.0-t*1.3)),
+            0.022+0.008*n)*body_clip;
+        let bevel=a37_line(abs(abs(q.x)-stem_width*0.88),
+            0.025)*body_clip;
+        body=clamp(max(stem,max(head,barb*0.78)),0.0,1.0);
+        rim=clamp(max(head*0.87,max(sap*0.90,
+            max(bevel*0.58,fine_barb*0.86))),0.0,1.0);
+        aura=clamp(0.14*body*n+0.15*sap+0.10*barb*n,
+            0.0,0.32);
     }
     return vec3<f32>(clamp(body,0.0,1.0),
         clamp(rim,0.0,1.0),clamp(aura,0.0,1.0));
@@ -317,8 +331,15 @@ fn pipeline_fragment(input:PipelineInput)->vec4<f32>{
     let rim=shape.y;
     let haze=shape.z;
     let inner=pow(clamp(body*0.65+rim,0.0,1.0),2.0);
-    let glow=tint*(0.67*body+1.15*rim+0.44*haze)+
+    var glow=tint*(0.67*body+1.15*rim+0.44*haze)+
         vec3<f32>(0.24,0.29,0.34)*(0.34+0.66*n)*inner;
+    if(id==11){
+        // Warm dark wooden core, charged bright green blade and veins:
+        // readable volume, no screen-wide pale pastel triangle.
+        glow=vec3<f32>(0.20,0.31,0.095)*body+
+             vec3<f32>(0.39,1.10,0.20)*rim+
+             vec3<f32>(0.17,0.52,0.08)*haze;
+    }
     let alpha=clamp((0.78*body+0.70*rim+0.33*haze)*
         softness*(0.78+0.22*n),0.0,0.90);
     // Exact zero alpha at proxy boundaries; never show a rectangular card.

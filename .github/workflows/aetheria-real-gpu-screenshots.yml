@@ -1,0 +1,36 @@
+name: Aetheria real Horizon GPU screenshots (no AI)
+
+on:
+  push:
+    paths:
+      - 'aetheria-horizon/docs/qa/actual-horizon/**'
+      - '.github/workflows/aetheria-real-gpu-screenshots.yml'
+  workflow_dispatch:
+
+jobs:
+  real-gpu-evidence:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify actual Horizon QA screenshots (PNG headers and resolution)
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+          root=Path('aetheria-horizon/docs/qa/actual-horizon')
+          shots=sorted(root.glob('*.png'))
+          assert len(shots)>=4, f'Expected before/after real Horizon pictures: {shots}'
+          for p in shots:
+              b=p.read_bytes()
+              assert b[:8]==b'\x89PNG\r\n\x1a\n',p
+              assert b[12:16]==b'IHDR'
+              w,h=struct.unpack('>II',b[16:24])
+              assert (w,h)==(1280,720),(p,w,h)
+              assert len(b)>150000,p
+              print('REAL_HORIZON_GPU_PNG',p,w,h,len(b))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aetheria-M39-REAL-RX580-Horizon-GPU-before-after
+          path: aetheria-horizon/docs/qa/actual-horizon/*.png
+          if-no-files-found: error
