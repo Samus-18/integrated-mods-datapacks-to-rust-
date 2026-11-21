@@ -154,8 +154,8 @@ mod m36_gallery {
                 spec.id,spec.name,spec.pattern,
                 tx=x+13,ty=y+29,sy=y+49,tone=PALETTE[school]).unwrap();
             for (k,age) in [31.0,62.0].into_iter().enumerate(){
-                let pane_x=x+14+k as i32*188;
-                let pane_y=y+63;
+                let pane_x=x as i32+14+k as i32*188;
+                let pane_y=y as i32+63;
                 write!(&mut s,r##"<rect x="{pane_x}" y="{pane_y}"
                      width="176" height="216" rx="7" fill="#080d19"/>
                      <text x="{label_x}" y="{label_y}" fill="#a8bfd1"
