@@ -15,12 +15,12 @@ pub(super) struct FxAuthor {
 // Coordinates are bounded world-space blocks; values are intentional
 // offline art direction, not unbounded work-unit or literal spell damage.
 pub(super) const AUTHOR_100:[FxAuthor;100]=[
-    FxAuthor{id:1,name:"Ember Needle",pattern:Pattern::Lance,density:64,spread:1,rise:0.9,twist:0.5,tempo:0.65,phase:0.1,sweep:0.55}, // twisting ember thorn
+    FxAuthor{id:1,name:"Ember Needle",pattern:Pattern::Lance,density:64,spread:1.0,rise:0.9,twist:0.5,tempo:0.65,phase:0.1,sweep:0.55}, // twisting ember thorn
     FxAuthor{id:2,name:"Cinder Fan",pattern:Pattern::Fan,density:76,spread:1.17,rise:1.13,twist:0.86,tempo:0.76,phase:0.176,sweep:0.68}, // seven curved coal blades
     FxAuthor{id:3,name:"Magma Lash",pattern:Pattern::Lash,density:72,spread:1.34,rise:1.36,twist:1.22,tempo:0.87,phase:0.252,sweep:0.81}, // segmented molten whip
     FxAuthor{id:4,name:"Furnace Step",pattern:Pattern::Footsteps,density:68,spread:1.51,rise:1.59,twist:0.62,tempo:0.98,phase:0.328,sweep:0.94}, // molten footstep ribbon
     FxAuthor{id:5,name:"Ashen Veil",pattern:Pattern::Cloud,density:64,spread:1.68,rise:0.9,twist:0.98,tempo:1.09,phase:0.404,sweep:1.07}, // rolling ash cloak
-    FxAuthor{id:6,name:"Firebrand Sigil",pattern:Pattern::Sigil,density:76,spread:1,rise:1.13,twist:1.34,tempo:1.2,phase:0.138,sweep:1.2}, // engraved fire seal
+    FxAuthor{id:6,name:"Firebrand Sigil",pattern:Pattern::Sigil,density:76,spread:1.0,rise:1.13,twist:1.34,tempo:1.2,phase:0.138,sweep:1.2}, // engraved fire seal
     FxAuthor{id:7,name:"Pyre Serpent",pattern:Pattern::Serpent,density:72,spread:1.17,rise:1.36,twist:0.74,tempo:1.31,phase:0.214,sweep:1.33}, // coiled fire serpent
     FxAuthor{id:8,name:"Lava Bloom",pattern:Pattern::Bloom,density:68,spread:1.34,rise:1.59,twist:1.1,tempo:0.65,phase:0.29,sweep:1.46}, // opening magma flower
     FxAuthor{id:9,name:"Coalstorm",pattern:Pattern::Orbit,density:64,spread:1.51,rise:0.9,twist:0.5,tempo:0.76,phase:0.366,sweep:0.55}, // swirling charcoal stones
