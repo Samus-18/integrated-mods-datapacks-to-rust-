@@ -12,6 +12,7 @@ mod procedural_fx;
 mod authored_100_data;
 mod authored_100_fx;
 mod signature_forms;
+mod thorn_living;
 mod signature_shader;
 mod catalog200;
 mod mass_forms;
@@ -294,7 +295,7 @@ impl Hooks for Mod {
         if let Some(shader)=signature_pipeline {
             let mut signatures=Vec::new();
             for (cast,age) in live.iter().copied(){
-                if !signature_shader::is_signature(cast.kind){continue;}
+                if cast.kind==100 || !signature_shader::is_signature(cast.kind){continue;}
                 let mut surface=Scene::new(1);
                 signature_shader::render(cast,age,camera,&mut surface);
                 signatures.push(surface);
@@ -326,7 +327,7 @@ impl Hooks for Mod {
         let mut drafts=Vec::with_capacity(live.len());
         for (cast,age) in live.iter().copied() {
             let mut spell=Scene::with_lod(source_budget,reduced_detail);
-            if !(signature_rendered && signature_shader::is_signature(cast.kind)){
+            if cast.kind==100 || !(signature_rendered && signature_shader::is_signature(cast.kind)){
                 render_spell(cast,age,&mut spell);
             }
             drafts.push(spell);
@@ -359,8 +360,15 @@ impl Hooks for Mod {
                 // let the NAME-TRUE GPU SDF hero (or coherent 3D fallback)
                 // supply the body. Do not paint a second generic smoke
                 // billboard over the recognisable spell silhouette.
-                if signature_shader::is_signature(cast.kind) {continue;}
+                if signature_shader::is_signature(cast.kind) && cast.kind!=100 {continue;}
                 let mut fx=Scene::with_lod(80,reduced_detail);
+                if cast.kind==100 {
+                    // Tiny authored pollen around M40 solid projectile;
+                    // never resurrect rejected generic green fog.
+                    thorn_living::render_spores(cast,age,camera,&mut fx);
+                    accents.push(fx);
+                    continue;
+                }
                 // First ten named spells in every school have a distinctly
                 // authored choreography; remaining slots use M35 background.
                 if authored_100_fx::render(cast,age,camera,&mut fx).is_none(){
