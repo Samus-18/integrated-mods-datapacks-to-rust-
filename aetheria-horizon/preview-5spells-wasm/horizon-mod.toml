@@ -1,9 +1,9 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - M34 Original 3D Frost / Rime Internal Test"
-version = "0.8.2"
+name = "Aetheria Horizon - M35 Procedural VFX Internal Test"
+version = "0.8.3"
 api = "0.2"
 side = "client"
-description = "200 spell IDs; Frost Needle (#021) and Rime Bridge (#022) sculpted original Blender 3D previews; R hold/wheel to select, Z to cast. Client only; no world edits, traversal collision, server gameplay or saving."
+description = "200 preview spell IDs; 10-school deterministic procedural particle VFX with original mask WGSL, plus original solid Frost Needle and Rime Bridge; client-only. No real bloom, multiplayer effects or collision."
 authors = ["Samus-18"]
 capabilities = ["registries"]
 
