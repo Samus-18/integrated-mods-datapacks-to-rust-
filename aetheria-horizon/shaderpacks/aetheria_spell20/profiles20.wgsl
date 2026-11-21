@@ -309,10 +309,10 @@ fn fx_profile(id:i32,p:vec3<f32>,t:f32)->vec3<f32> {
             vec3<f32>(0.56,0.78,0.40));
         for(var i=0;i<5;i=i+1) {
             let a=FX_TAU*f32(i)/5.0+0.3;
-            let from=vec3<f32>(0.24*cos(a),0.22,0.20*sin(a));
+            let bone_origin=vec3<f32>(0.24*cos(a),0.22,0.20*sin(a));
             let tip=vec3<f32>(1.38*cos(a),0.68+0.52*sin(a*1.4),0.98*sin(a));
             let hook=tip+vec3<f32>(-0.38*cos(a),0.58,-0.19*sin(a));
-            d=fx_smin(d,fx_capsule(q,from,tip,0.22),0.09);
+            d=fx_smin(d,fx_capsule(q,bone_origin,tip,0.22),0.09);
             d=min(d,fx_capsule(q,tip,hook,0.13));
         }
         return vec3<f32>(d+0.025*(n-0.5),1.17,0.022);
