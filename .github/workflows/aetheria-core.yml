@@ -26,6 +26,13 @@ jobs:
           name: Aetheria-M36-100-Spells-Source-Geometry-Review
           path: aetheria-horizon/asset-pipeline/sharp-projectile-v2/rust-qa/target/visual-m36/
           if-no-files-found: warn
+      - name: Upload exact M37 name-specific 3D geometry source QA (NOT game screenshots)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aetheria-M37-11-Source-Silhouettes-Internal
+          path: aetheria-horizon/asset-pipeline/sharp-projectile-v2/rust-qa/target/visual-m37/
+          if-no-files-found: warn
       - name: Check portable Rust core
         run: cargo test --all-targets
   rapier-physics-tests:
