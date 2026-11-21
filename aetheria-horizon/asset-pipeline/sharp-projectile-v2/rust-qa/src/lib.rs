@@ -149,6 +149,8 @@ impl Scene {
 }
 #[path="../../../../preview-5spells-wasm/src/signature_forms.rs"]
 mod signature_forms;
+#[path="../../../../preview-5spells-wasm/src/signature_shader.rs"]
+mod signature_shader;
 #[cfg(test)]
 mod signature_gallery;
 // END M37 EXACT HORIZON SCENE HELPERS

@@ -118,3 +118,8 @@ The new shader runs through the mod's **existing actual Horizon WGSL PipelineBle
 
 ### M36.2 pinned Nightly full QA success (2026-11-21)
 Latest M36 WASM official pinned SDK [run 44907516110](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44907516110) **SUCCESS 58/58 preview tests**, .hmod and 30 OGGs verified, shader/Naga, signed WASM SHA512 and ZIP OK; build SHA256 `7a592a197704f32f361f317b3b7ac102f03441218ef3066c99632d1312d2112f`. Optional standalone official Horizon 0.2 glow shaderpack [run 44907197852](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44907197852) **SUCCESS**. Both compiled outputs remain **experimental**, not in-game visual-quality accepted, 0/100 fully implemented playable/game-proven spells, no GPU screenshot or measured target RX580 FPS. No remote user's PC was used.
+
+### M37 names-first shader signatures (not approved in game)
+- Isolated M37 Git worktree based on verified M36 `35e298f`. No old builds overwritten and active Roblox was not interrupted.
+- First two independent Rust source-quad image audits visually FAILED (blocky/small/fragmented), despite earlier 24/24, 25/25 tests +79 shared tests passing. Source screenshots are never Horizon GPU screenshots or AI generated art.
+- New dedicated optional `signature_sdf.wgsl` implements 11 individual SDF/animated noise hero pixels; separate depth-tested `signature_pipeline`, one bounded proxy per cast, no raw rectangular fallback, prior 3D body only on shader failure. Additional exact source Rust tests and pinned Naga shader validation added. Do not mark PASS before current CI; no actual client FPS/screenshots or server spell physics yet.

@@ -1,9 +1,9 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - M36 100 Named Procedural Spells QA"
-version = "0.8.4"
+name = "Aetheria Horizon - M37 Name-True GPU Signature QA"
+version = "0.8.5"
 api = "0.2"
 side = "client"
-description = "200 demo spell IDs, 100 individually authored procedural movement profiles, 48 shape trajectories, 12 shader materials, two original 3D hero previews; visual/renderer QA only. No server gameplay or bloom."
+description = "11 named signed-distance GPU signature silhouettes plus fallback sculpted 3D, 100 authored particle motions and 200 demo spell IDs. Experimental client VFX, no gameplay damage/world edits and no verified beauty/FPS."
 authors = ["Samus-18"]
 capabilities = ["registries"]
 

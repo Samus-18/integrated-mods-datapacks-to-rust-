@@ -1,4 +1,4 @@
-name: Aetheria Rust core + 100 authored VFX
+name: Aetheria Rust core + M37 true shader signatures
 on:
   push:
     paths:

@@ -12,6 +12,7 @@ mod procedural_fx;
 mod authored_100_data;
 mod authored_100_fx;
 mod signature_forms;
+mod signature_shader;
 mod catalog200;
 mod mass_forms;
 mod ultimate_forms;
@@ -53,6 +54,7 @@ struct Cast { kind: usize, variant: u8, start: u64, center: [f64;3], direction: 
 struct State {
     tick:u64,effects:Vec<Cast>,pipeline:Option<RenderPipelineRef>,
     soft_particle_pipeline:Option<RenderPipelineRef>,
+    signature_pipeline:Option<RenderPipelineRef>,
     last_cast:Option<usize>,last_variant:u8,
     quick:QuickSelector,picker_was_down:bool,picker_scrolled:bool,
     // Client-only training instance; NOT multiplayer player data or world save.
@@ -62,7 +64,7 @@ struct State {
 impl Default for State {
     fn default()->Self {
         Self{tick:0,effects:Vec::new(),pipeline:None,
-            soft_particle_pipeline:None,
+            soft_particle_pipeline:None,signature_pipeline:None,
             last_cast:None,last_variant:0,
             quick:QuickSelector::default(),picker_was_down:false,picker_scrolled:false,
             demo_magic:None,local_mana:100.0,
@@ -101,6 +103,11 @@ impl Hooks for Mod {
         // solid surfaces, and never any plain-world raw particle rectangles.
         let mask=Identifier::parse("aetheria_preview:soft_particle").unwrap();
         event.pipelines.push(RenderPipeline::new(mask.clone(),mask,
+            PipelineBlend::Translucent, WorldDepth::Tested).optional());
+        // M37.2: actual per-pixel NAME-TRUE shapes; never show proxy
+        // rectangles when this independent GPU material is missing.
+        let signature=Identifier::parse("aetheria_preview:signature_sdf").unwrap();
+        event.pipelines.push(RenderPipeline::new(signature.clone(),signature,
             PipelineBlend::Translucent, WorldDepth::Tested).optional());
     }
 
@@ -263,10 +270,10 @@ impl Hooks for Mod {
     }
 
     fn submit_custom_geometry(&self, _: &dyn ClientHost, event: &mut SubmitCustomGeometryEvent<'_>) {
-        let (effects, now, pipeline, soft_particle_pipeline) = {
+        let (effects, now, pipeline, soft_particle_pipeline, signature_pipeline) = {
             let state = self.state.lock().unwrap();
             (state.effects.clone(), state.tick, state.pipeline,
-             state.soft_particle_pipeline)
+             state.soft_particle_pipeline,state.signature_pipeline)
         };
         if effects.is_empty() { return; }
         let time = f64::from(event.view.partial_tick.clamp(0.0, 1.0));
@@ -279,6 +286,32 @@ impl Hooks for Mod {
                 .then_some((*cast, age))
         }).collect();
         if live.is_empty() { return; }
+        // M37.2: Draw the true per-PIXEL authored silhouette first. If the
+        // optional Horizon WGSL shader is unavailable or submission fails,
+        // fall straight back to the tested CONNECTED 3D source geometry.
+        // This also guarantees no unmasked giant rectangular proxy planes.
+        let mut signature_rendered=false;
+        if let Some(shader)=signature_pipeline {
+            let mut signatures=Vec::new();
+            for (cast,age) in live.iter().copied(){
+                if !signature_shader::is_signature(cast.kind){continue;}
+                let mut surface=Scene::new(1);
+                signature_shader::render(cast,age,camera,&mut surface);
+                signatures.push(surface);
+            }
+            let desired:usize=signatures.iter().map(|s|s.facets.len()).sum();
+            if desired>0 && desired<=capacity as usize {
+                let faces=fair_geometry::sample_fair(&signatures,desired);
+                if faces.len()==desired {
+                    let quads:Vec<PipelineQuad>=faces.iter().map(|(points,color)|
+                        PipelineQuad::spanning(*points,*color)).collect();
+                    signature_rendered=event.draw.pipeline_quads(shader,&quads).is_ok();
+                }
+            }
+        }
+        // Query actual quota AFTER optional signature geometry submission.
+        let capacity=event.draw.usage().quad_capacity
+            .saturating_sub(event.draw.usage().quads);
         let total_budget = capacity.min(900) as usize;
         if total_budget==0 {return;}
         // Give the 3D body priority, while holding a small separate budget
@@ -293,7 +326,9 @@ impl Hooks for Mod {
         let mut drafts=Vec::with_capacity(live.len());
         for (cast,age) in live.iter().copied() {
             let mut spell=Scene::with_lod(source_budget,reduced_detail);
-            render_spell(cast,age,&mut spell);
+            if !(signature_rendered && signature_shader::is_signature(cast.kind)){
+                render_spell(cast,age,&mut spell);
+            }
             drafts.push(spell);
         }
         let solid=fair_geometry::sample_fair(&drafts,body_budget);
@@ -362,9 +397,12 @@ impl Mod {
         let shader=host.render_assets().render_pipeline(&id).ok();
         let soft=Identifier::parse("aetheria_preview:soft_particle").unwrap();
         let soft_shader=host.render_assets().render_pipeline(&soft).ok();
+        let signature=Identifier::parse("aetheria_preview:signature_sdf").unwrap();
+        let signature_shader=host.render_assets().render_pipeline(&signature).ok();
         let mut state=self.state.lock().unwrap();
         state.pipeline=shader;
         state.soft_particle_pipeline=soft_shader;
+        state.signature_pipeline=signature_shader;
     }
 }
 
