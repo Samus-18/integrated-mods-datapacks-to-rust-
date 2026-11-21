@@ -143,5 +143,43 @@ mod tests {
         validator.validate(&parsed)
             .expect("M35 separate soft-material WGSL failed pinned Horizon Naga validation");
     }
+    #[test]
+    fn m37_pixel_authored_signature_shapes_pass_pinned_naga(){
+        // The EXACT new guest shader file, no fake GLB or external Java
+        // postpipeline and no "pretty" source-only screenshot claims.
+        let actual=include_str!(
+            "../assets/aetheria_preview/shaders/pipeline/signature_sdf.wgsl");
+        let prelude=r#"
+            struct PipelineInput {
+                uv:vec2<f32>, color:vec4<f32>, position:vec3<f32>
+            };
+            struct AetheriaTestFrame { time:f32 };
+            var<private> frame:AetheriaTestFrame;
+        "#;
+        let source=format!("{prelude}\n{actual}");
+        let parsed=naga::front::wgsl::parse_str(&source)
+            .unwrap_or_else(|e|panic!("M37 shader error:\n{}",
+                e.emit_to_string(&source)));
+        for name in ["pipeline_fragment","a37_shape","a37_fbm",
+            "a37_edge","a37_seg","a37_noise","a37_line"]{
+            assert!(parsed.functions.iter().any(|(_,f)|
+                f.name.as_deref()==Some(name)),
+                "Missing actual per-pixel signature function {name}");
+        }
+        for id in 0..=10 {
+            assert!(actual.contains(&format!("which=={id}"))
+                || id==10 && actual.contains("CARRION SWARM"));
+        }
+        assert!(actual.contains("a37_edge(p)"));
+        assert!(actual.contains("input.color.a*255.0-23.0"));
+        assert!(!actual.contains("textureSample("));
+        assert!(!actual.contains("MainDepthSampler"));
+        let mut validator=naga::valid::Validator::new(
+            naga::valid::ValidationFlags::all(),
+            naga::valid::Capabilities::all()
+        );
+        validator.validate(&parsed)
+            .expect("M37 shader is not valid in pinned Horizon Naga");
+    }
 
 }

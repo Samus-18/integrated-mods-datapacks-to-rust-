@@ -72,6 +72,90 @@ mod procedural_fx;
 mod authored_100_data;
 #[path="../../../../preview-5spells-wasm/src/authored_100_fx.rs"]
 mod authored_100_fx;
+// BEGIN M37 EXACT HORIZON SCENE HELPERS
+impl Scene {
+    fn membrane(&mut self, a:[f64;3],b:[f64;3],c0:[f64;3],d:[f64;3],color:u32){
+        if self.facets.len().saturating_add(6)>self.budget {return;}
+        let normal=norm(cross(sub(b,a),sub(d,a)));
+        if length(normal)<0.1 {return;}
+        let offset=scale(normal,0.07);
+        let Some(previous)=self.begin_component(6) else{return;};
+        let top=[add(a,offset),add(b,offset),add(c0,offset),add(d,offset)];
+        let bottom=[sub(a,offset),sub(b,offset),sub(c0,offset),sub(d,offset)];
+        self.quad(top,color);
+        self.quad([bottom[3],bottom[2],bottom[1],bottom[0]],shade_argb(color,0.67));
+        for i in 0..4 {
+            let j=(i+1)%4;
+            self.quad([top[i],top[j],bottom[j],bottom[i]],shade_argb(color,0.75));
+        }
+        self.end_component(previous);
+    }
+    fn tube(&mut self, from:[f64;3],to:[f64;3],r0:f64,r1:f64,
+            twist:f64,color:u32,sides:usize) {
+        if !(5..=8).contains(&sides) || !r0.is_finite() || !r1.is_finite()
+            || r0<=0.004 || r1<=0.004 || length(sub(to,from))<0.03
+            || self.facets.len().saturating_add(sides)>self.budget {return;}
+        let axis=norm(sub(to,from));
+        let base=if axis[1].abs()<0.91 {[0.0,1.0,0.0]}else{[1.0,0.0,0.0]};
+        let tangent=norm(cross(axis,base));
+        let normal=norm(cross(axis,tangent));
+        let Some(previous)=self.begin_component(sides) else{return;};
+        for i in 0..sides {
+            let a=TAU*i as f64/sides as f64+twist;
+            let b=TAU*(i+1) as f64/sides as f64+twist;
+            let radial=|ang:f64,r:f64|add(scale(tangent,ang.cos()*r),scale(normal,ang.sin()*r));
+            let p0=add(from,radial(a,r0));
+            let p1=add(from,radial(b,r0));
+            let p2=add(to,radial(b,r1));
+            let p3=add(to,radial(a,r1));
+            self.quad([p0,p1,p2,p3],
+                      shade_argb(color,match i%4{0=>0.86,1=>0.71,2=>1.0,_=>0.78}));
+        }
+        self.end_component(previous);
+    }
+    fn solid_crystal(
+        &mut self, from:[f64;3], to:[f64;3], radius:f64,
+        twist:f64, color:u32, sides:usize
+    ) {
+        if !(5..=8).contains(&sides) || !radius.is_finite() || radius <= 0.01
+            || !from.iter().chain(to.iter()).all(|v| v.is_finite())
+            || length(sub(to,from)) < 0.1 { return; }
+        let faces = sides * 2;
+        let Some(previous)=self.begin_component(faces) else{return;};
+        let axis=norm(sub(to,from));
+        let reference=if axis[1].abs() < 0.9 {[0.0,1.0,0.0]} else {[1.0,0.0,0.0]};
+        let tangent=norm(cross(axis,reference));
+        let normal=norm(cross(tangent,axis));
+        let mid=add(from,scale(sub(to,from),0.59));
+        for face in 0..sides {
+            let a=TAU*face as f64/sides as f64+twist;
+            let b=TAU*(face+1) as f64/sides as f64+twist;
+            let ring=|center:[f64;3],r:f64,t:f64| -> [f64;3] {
+                add(center,add(scale(tangent,t.cos()*r),scale(normal,t.sin()*r)))
+            };
+            let a0=ring(from,radius,a);
+            let b0=ring(from,radius,b);
+            let a1=ring(mid,radius*0.68,a+0.1);
+            let b1=ring(mid,radius*0.68,b+0.1);
+            let a2=ring(to,0.015,a+0.15);
+            let b2=ring(to,0.015,b+0.15);
+            let shade=match face%5 {0=>0.66,1=>0.82,2=>1.0,3=>0.76,_=>0.9};
+            let shaded=shade_argb(color,shade);
+            self.quad([a0,b0,b1,a1],shaded);
+            self.quad([a1,b1,b2,a2],shade_argb(color,(shade*1.12).min(1.0)));
+        }
+        self.end_component(previous);
+    }
+}
+#[path="../../../../preview-5spells-wasm/src/signature_forms.rs"]
+mod signature_forms;
+#[path="../../../../preview-5spells-wasm/src/signature_shader.rs"]
+mod signature_shader;
+#[cfg(test)]
+mod signature_gallery;
+#[cfg(test)]
+mod signature_naga;
+// END M37 EXACT HORIZON SCENE HELPERS
 #[cfg(test)]
 mod scene_tests {
     use super::*;

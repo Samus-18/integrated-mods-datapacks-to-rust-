@@ -1,4 +1,4 @@
-name: Aetheria M36 authored 100 distinct procedural spell VFX (internal QA)
+name: Aetheria M37 names-first procedural GPU SDF silhouettes (internal QA)
 concurrency:
   group: aetheria-wasm-internal-main
   cancel-in-progress: true
@@ -72,7 +72,7 @@ jobs:
               assert 'assets/aetheria_preview/shaders/pipeline/soft_particle.wgsl' in names, 'M35 masked particle shader absent'
               m=tomllib.loads(z.read('horizon-mod.toml').decode())
               assert m['id']=='aetheria_preview'
-              assert m['version']=='0.8.4'
+              assert m['version']=='0.8.5'
               assert 'native' not in m and 'wasm' in m
               assert hashlib.sha512(z.read('mod.wasm')).hexdigest()==m['wasm']['sha512']
               wasm=z.read('mod.wasm')
@@ -89,6 +89,11 @@ jobs:
               assert 'mod procedural_fx;' in lib and 'procedural_fx::render(cast,age,camera,&mut fx)' in lib, 'M35 live CPU emitter missing'
               assert 'aetheria_preview:soft_particle' in lib, 'M35 separate optional shader not registered'
               assert 'src/authored_100_data.rs' in names and 'src/authored_100_fx.rs' in names, '100 authored M36 sources not packed'
+              assert 'src/signature_forms.rs' in names and 'src/signature_shader.rs' in names, 'M37 signature source missing'
+              assert 'assets/aetheria_preview/shaders/pipeline/signature_sdf.wgsl' in names, 'M37 material not packaged'
+              assert 'mod signature_shader;' in lib and 'aetheria_preview:signature_sdf' in lib, 'M37 optional shader not registered'
+              assert 'signature_shader::render(cast,age,camera,&mut surface)' in lib, 'M37 GPU hero path not drawn'
+              assert 'signature_forms::render(cast,age,scene)' in lib, 'M37 safe 3D fallback missing'
               assert 'mod authored_100_fx;' in lib and 'authored_100_fx::render(cast,age,camera,&mut fx)' in lib, 'M36 100-profile visual dispatcher not wired'
               assert 'src/rime_bridge_mesh_generated.rs' in names, 'original 436-quad Rime Bridge source missing'
               assert lib.count('KeyRegistration::new(')==1, 'old debug key mappings active'
@@ -106,7 +111,7 @@ jobs:
         run: |
           mkdir -p target/m31-gpu-test
           cp target/horizon-mod/aetheria_preview.hmod target/m31-gpu-test/
-          cp TEST_M36.md target/m31-gpu-test/README-TEST.md
+          cp TEST_M37.md target/m31-gpu-test/README-TEST.md
           python3 - <<'PY'
           import zipfile, pathlib, hashlib
           d=pathlib.Path('target/m31-gpu-test')
@@ -123,13 +128,13 @@ jobs:
           PY
       - uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-Horizon-M36-INTERNAL-100-Authored-FX-Nightly-2026-11-20
+          name: Aetheria-Horizon-M37-INTERNAL-Name-True-WGSL-FX-Nightly-2026-11-20
           path: aetheria-horizon/preview-5spells-wasm/target/m31-gpu-test/
 
       - name: Upload geometry visual contact sheets
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: Aetheria-M36-Visual-Audit-Internal
+          name: Aetheria-M37-Visual-Audit-Internal
           path: aetheria-horizon/preview-5spells-wasm/target/visual-audit/
           if-no-files-found: warn
