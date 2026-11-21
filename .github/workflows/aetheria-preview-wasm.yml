@@ -72,7 +72,7 @@ jobs:
               assert 'assets/aetheria_preview/shaders/pipeline/soft_particle.wgsl' in names, 'M35 masked particle shader absent'
               m=tomllib.loads(z.read('horizon-mod.toml').decode())
               assert m['id']=='aetheria_preview'
-              assert m['version']=='0.8.2'
+              assert m['version']=='0.8.3'
               assert 'native' not in m and 'wasm' in m
               assert hashlib.sha512(z.read('mod.wasm')).hexdigest()==m['wasm']['sha512']
               wasm=z.read('mod.wasm')
@@ -104,7 +104,7 @@ jobs:
         run: |
           mkdir -p target/m31-gpu-test
           cp target/horizon-mod/aetheria_preview.hmod target/m31-gpu-test/
-          cp TEST_M34.md target/m31-gpu-test/README-TEST.md
+          cp TEST_M35.md target/m31-gpu-test/README-TEST.md
           python3 - <<'PY'
           import zipfile, pathlib, hashlib
           d=pathlib.Path('target/m31-gpu-test')
