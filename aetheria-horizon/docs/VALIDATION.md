@@ -114,3 +114,7 @@ The new shader runs through the mod's **existing actual Horizon WGSL PipelineBle
 - Latest full **M36 `.hmod` pinned WASM** build [run 44907516110](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44907516110) was **still in progress** when checked; do not label that exact revision compiled until success reported.
 
 **Future acceptance gates:** actual native Horizon 26.3 captures of all 100 cast phases, performance on RX580, gameplay-authoritative damage/status/collision/save, richer layered VFX hero silhouettes and true GPU shader materials, synchronization of 100 distinct sound/impact profiles. This source-geometry milestone must not be published as a visually completed 100-spell mod. **No Remote Desktop Commander connection used.**
+
+
+### M36.2 pinned Nightly full QA success (2026-11-21)
+Latest M36 WASM official pinned SDK [run 44907516110](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44907516110) **SUCCESS 58/58 preview tests**, .hmod and 30 OGGs verified, shader/Naga, signed WASM SHA512 and ZIP OK; build SHA256 `7a592a197704f32f361f317b3b7ac102f03441218ef3066c99632d1312d2112f`. Optional standalone official Horizon 0.2 glow shaderpack [run 44907197852](https://github.com/Samus-18/integrated-mods-datapacks-to-rust-/actions/runs/44907197852) **SUCCESS**. Both compiled outputs remain **experimental**, not in-game visual-quality accepted, 0/100 fully implemented playable/game-proven spells, no GPU screenshot or measured target RX580 FPS. No remote user's PC was used.
