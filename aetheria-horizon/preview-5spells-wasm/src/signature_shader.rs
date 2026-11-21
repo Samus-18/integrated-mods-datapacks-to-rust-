@@ -1,4 +1,4 @@
-//! M37.2 true procedural PIXEL SHAPES for eleven specifically named spells.
+//! M38 true procedural PIXEL SHAPES for twelve specifically named spells.
 //! The source of the silhouette is a separate shader, NOT Blender models,
 //! not source-quad rods/rings, and not another cloned particle dot field.
 //! This CPU module contributes exactly ONE camera-facing bounded proxy quad
@@ -9,8 +9,8 @@
 //! and cannot claim depth-volume or beauty until verified on Horizon GPU.
 use super::{Cast,Scene,add,scale};
 use super::procedural_fx::sprite;
-const SIGNATURES:[usize;11]=[0,6,29,47,63,86,101,123,144,161,186];
-const BASE_RGB:[u32;11]=[
+const SIGNATURES:[usize;12]=[0,6,29,47,63,86,101,123,144,161,186,100];
+const BASE_RGB:[u32;12]=[
     0x00FF8B32, // Ember Needle
     0x00FF5D16, // Pyre Serpent
     0x0093DCFF, // Snowblind
@@ -22,6 +22,7 @@ const BASE_RGB:[u32;11]=[
     0x00C378FB, // Rift Slice
     0x00FFD998, // Moment Slip
     0x00B588EB, // Carrion Swarm
+    0x008EE86B, // Thorn Dart #101
 ];
 // Material IDs separated by 21/255, quantized independent of themed RGB.
 pub(super) fn material_for(slot:usize)->Option<(usize,u8,u32)>{
@@ -46,7 +47,7 @@ pub(super) fn render(cast:Cast,age:f64,camera:[f64;3],scene:&mut Scene)->usize{
     if grow<0.02{return 0;}
     // A hero is appropriately large in world space. The last attempt drew
     // tiny 100px glyphs at a normal 20-block third-person distance.
-    let shapes:[(f64,f64,f64,f64);11]=[
+    let shapes:[(f64,f64,f64,f64);12]=[
         (2.6,5.5,1.3,0.44),   // spear, diagonal along target aim
         (5.2,5.9,2.0,-0.08), // curled head+body fire serpent
         (6.5,6.2,1.8,0.03),  // sweeping blizzard+snowflake core
@@ -58,6 +59,7 @@ pub(super) fn render(cast:Cast,age:f64,camera:[f64;3],scene:&mut Scene)->usize{
         (7.0,6.1,2.0,-0.34), // diagonal torn dimensional slash
         (5.1,5.4,2.3,0.02),  // broken chrono glyph and echoes
         (6.4,5.8,2.0,0.08),  // ghost skull-bird swarm
+        (2.65,5.40,1.45,0.74), // Thorn Dart: barbed wooden projectile
     ];
     let (width,height,lift,roll)=shapes[id];
     let center=add(cast.center,[0.0,lift,0.0]);
@@ -75,18 +77,18 @@ mod tests {
              direction:[0.24,-0.2,0.92]}
     }
     #[test]
-    fn exactly_eleven_name_bound_shader_material_ids_no_generic_colour_clones(){
-        assert_eq!(SIGNATURES.len(),11);
+    fn exactly_twelve_name_bound_shader_material_ids_no_generic_colour_clones(){
+        assert_eq!(SIGNATURES.len(),12);
         let tags:Vec<_>=(0..200)
           .filter_map(|s|material_for(s).map(|(_,m,_)|(s,m))).collect();
-        assert_eq!(tags.len(),11);
+        assert_eq!(tags.len(),12);
         assert_eq!(tags.iter().map(|(_,m)|*m)
-           .collect::<std::collections::BTreeSet<_>>().len(),11);
-        assert!(tags.iter().all(|(_,m)|*m>=23 && *m<=233));
+           .collect::<std::collections::BTreeSet<_>>().len(),12);
+        assert!(tags.iter().all(|(_,m)|*m>=23 && *m<=254));
         assert_eq!(tags[1].0,6);
     }
     #[test]
-    fn all_eleven_actual_proxies_camera_facing_bounded_and_animated(){
+    fn all_twelve_actual_proxies_camera_facing_bounded_and_animated(){
         for slot in SIGNATURES {
             for camera in [[9.0,72.0,10.0],[-6.0,75.0,-9.0],
                            [0.0,113.0,1.0]] {

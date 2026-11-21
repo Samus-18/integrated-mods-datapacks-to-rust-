@@ -1,9 +1,9 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - M37 Name-True GPU Signature QA"
-version = "0.8.5"
+name = "Aetheria Horizon - M38 Name-True Real GPU Thorn Dart QA"
+version = "0.8.6"
 api = "0.2"
 side = "client"
-description = "11 named signed-distance GPU signature silhouettes plus fallback sculpted 3D, 100 authored particle motions and 200 demo spell IDs. Experimental client VFX, no gameplay damage/world edits and no verified beauty/FPS."
+description = "12 named signed-distance GPU signature silhouettes plus fallback sculpted 3D, 100 authored particle motions and 200 demo spell IDs. Experimental client VFX, no gameplay damage/world edits and no verified beauty/FPS."
 authors = ["Samus-18"]
 capabilities = ["registries"]
 

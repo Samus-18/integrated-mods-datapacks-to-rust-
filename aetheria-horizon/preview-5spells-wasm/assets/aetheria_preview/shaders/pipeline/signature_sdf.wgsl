@@ -1,4 +1,4 @@
-// Aetheria M37.2 — 11 distinct procedural hero spell MATERIALS.
+// Aetheria M38 — 11 distinct procedural hero spell MATERIALS.
 // ORIGINAL Horizon guest WGSL, NOT a Java/Fabric port or a Blender screenshot.
 // This is an OPTIONAL, depth-tested camera-facing world-space VFX material.
 // Each pixel reconstructs the NAME'S actual silhouette and evolving energy;
@@ -6,7 +6,7 @@
 // The game still requires its actual Horizon GPU video/photographic QA.
 // No scene-color, screen-depth, shadow or invented fullscreen HDR APIs.
 //
-// input.color.a encodes one of 11 named materials: 23+21*i (8-bit).
+// input.color.a encodes one of 12 named materials: 23+21*i (8-bit).
 // input.color.rgb remains the school's themed palette. The material must
 // NEVER render as a plain unmasked WorldQuad on shader initialization failure.
 
@@ -240,7 +240,7 @@ fn a37_shape(which:i32,p:vec2<f32>,time:f32)->vec3<f32>{
         aura=arc*markings+0.52*shards*
             (1.0-smoothstep(0.48,0.92,r));
 
-    }else{
+    }else if(which==10){
         // CARRION SWARM — ominous winged skull-shaped spectral creatures
         // following a curved dark necromantic wake, not purple glitter.
         var birds=0.0;
@@ -267,6 +267,38 @@ fn a37_shape(which:i32,p:vec2<f32>,time:f32)->vec3<f32>{
         body=birds*0.87;
         rim=max(eyes,0.50*birds*n);
         aura=0.33*smoke*(0.5+0.5*n);
+
+    }else{
+        // THORN DART (#101): sharp asymmetric pointed leaf-wood projectile.
+        // Seven hard barbs, living veins, leading tip; never green smoke.
+        let q=vec2<f32>(p.x-0.12*sin((p.y+0.5)*3.9-t*0.22),p.y);
+        let range=smoothstep(-0.97,-0.79,q.y)*
+            (1.0-smoothstep(0.87,1.01,q.y));
+        let taper=0.19-0.12*smoothstep(-0.61,0.88,q.y);
+        let shaft=(1.0-smoothstep(taper*0.60,taper+0.026,abs(q.x)))*range;
+        let head=(1.0-smoothstep(0.28,0.37,
+            abs(q.x)+max(0.0,0.49-q.y)*0.72))*
+            smoothstep(0.38,0.56,q.y)*
+            (1.0-smoothstep(0.86,1.0,q.y));
+        var thorns=0.0;
+        var veins=0.0;
+        for(var k=0;k<7;k=k+1){
+            let f=f32(k);
+            let y=-0.74+f*0.208;
+            let side=select(-1.0,1.0,(k%2)==0);
+            let origin=vec2<f32>(0.035*side+0.06*sin(y*3.7),y);
+            let tip=vec2<f32>(side*(0.35+0.08*sin(f*2.1)),
+                y-0.26-0.05*sin(t*1.1+f));
+            let d=a37_seg(q,origin,tip);
+            thorns=max(thorns,a37_line(d,0.068-0.004*f));
+            veins=max(veins,a37_line(d,0.028)*0.78);
+        }
+        let x=q.x-0.11*sin(q.y*7.2-t*1.4);
+        let sap=a37_line(abs(x),0.060+0.024*n)*range;
+        body=clamp(max(shaft,max(head,thorns*0.83)),0.0,1.0);
+        rim=clamp(max(head*0.94,max(veins,sap*0.85)),0.0,1.0);
+        aura=0.21*body*n+
+            0.33*sap*(1.0-smoothstep(0.32,0.95,abs(q.y)));
     }
     return vec3<f32>(clamp(body,0.0,1.0),
         clamp(rim,0.0,1.0),clamp(aura,0.0,1.0));
@@ -274,7 +306,7 @@ fn a37_shape(which:i32,p:vec2<f32>,time:f32)->vec3<f32>{
 fn pipeline_fragment(input:PipelineInput)->vec4<f32>{
     let p=input.uv*2.0-vec2<f32>(1.0);
     let time=frame.time;
-    let id=clamp(i32(round((input.color.a*255.0-23.0)/21.0)),0,10);
+    let id=clamp(i32(round((input.color.a*255.0-23.0)/21.0)),0,11);
     let shape=a37_shape(id,p,time);
     let softness=a37_edge(p);
     let tint=max(input.color.rgb,vec3<f32>(0.0));
