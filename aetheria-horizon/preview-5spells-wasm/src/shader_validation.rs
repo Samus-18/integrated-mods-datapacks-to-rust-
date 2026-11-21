@@ -92,4 +92,45 @@ mod tests {
         validator.validate(&parsed)
             .expect("M17 shader is not accepted by pinned Horizon Naga");
     }
+    #[test]
+    fn m35_separate_particle_mask_wgsl_validates_with_pinned_naga(){
+        // The exact secondary optional pipeline code, NOT a mockup of it.
+        // No Java Photon classes, framebuffer access or fake bloom.
+        let actual=include_str!("../assets/aetheria_preview/shaders/pipeline/soft_particle.wgsl");
+        let mock_prelude=r#"
+            struct PipelineInput {
+                uv: vec2<f32>,
+                color: vec4<f32>,
+                position: vec3<f32>,
+            };
+            struct AetheriaTestFrame { time: f32 };
+            var<private> frame: AetheriaTestFrame;
+        "#;
+        let source=format!("{mock_prelude}\n{actual}");
+        let parsed=naga::front::wgsl::parse_str(&source)
+            .unwrap_or_else(|error|panic!(
+                "M35 original soft-particle WGSL parse error:\n{}",
+                error.emit_to_string(&source)
+            ));
+        for name in ["pipeline_fragment","aetheria_soft_edge",
+            "aetheria_soft_noise","aetheria_soft_hash"] {
+            assert!(parsed.functions.iter().any(|(_,f)|
+                f.name.as_deref()==Some(name)),
+                "M35 missing procedurally masked particle expression: {name}");
+        }
+        assert!(actual.contains("aetheria_soft_edge(uv)"));
+        assert!(actual.contains("input.color.a<0.285"));
+        assert!(actual.contains("input.color.a<0.335"));
+        assert!(actual.contains("input.color.a<0.39"));
+        assert!(actual.contains("return vec4<f32>(min(glow,vec3<f32>(1.14)),opacity);"));
+        assert!(!actual.contains("textureSample("));
+        assert!(!actual.contains("MainDepthSampler"));
+        let mut validator=naga::valid::Validator::new(
+            naga::valid::ValidationFlags::all(),
+            naga::valid::Capabilities::all()
+        );
+        validator.validate(&parsed)
+            .expect("M35 separate soft-material WGSL failed pinned Horizon Naga validation");
+    }
+
 }

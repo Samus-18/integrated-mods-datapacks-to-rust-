@@ -8,6 +8,7 @@ mod hero_vfx;
 mod volumetric_forms;
 mod sharp_projectile;
 mod rime_bridge;
+mod procedural_fx;
 mod catalog200;
 mod mass_forms;
 mod ultimate_forms;
@@ -48,6 +49,7 @@ const MOD_ID: &str = "aetheria_preview";
 struct Cast { kind: usize, variant: u8, start: u64, center: [f64;3], direction: [f64;3] }
 struct State {
     tick:u64,effects:Vec<Cast>,pipeline:Option<RenderPipelineRef>,
+    soft_particle_pipeline:Option<RenderPipelineRef>,
     last_cast:Option<usize>,last_variant:u8,
     quick:QuickSelector,picker_was_down:bool,picker_scrolled:bool,
     // Client-only training instance; NOT multiplayer player data or world save.
@@ -57,6 +59,7 @@ struct State {
 impl Default for State {
     fn default()->Self {
         Self{tick:0,effects:Vec::new(),pipeline:None,
+            soft_particle_pipeline:None,
             last_cast:None,last_variant:0,
             quick:QuickSelector::default(),picker_was_down:false,picker_scrolled:false,
             demo_magic:None,local_mana:100.0,
@@ -90,6 +93,11 @@ impl Hooks for Mod {
         let id = Identifier::parse("aetheria_preview:ethereal").unwrap();
         // Optional shader: if unsupported on a local build, plain geometry still draws.
         event.pipelines.push(RenderPipeline::new(id.clone(), id,
+            PipelineBlend::Translucent, WorldDepth::Tested).optional());
+        // Separate optional pipeline: no alpha-tag collisions with legacy
+        // solid surfaces, and never any plain-world raw particle rectangles.
+        let mask=Identifier::parse("aetheria_preview:soft_particle").unwrap();
+        event.pipelines.push(RenderPipeline::new(mask.clone(),mask,
             PipelineBlend::Translucent, WorldDepth::Tested).optional());
     }
 
@@ -252,9 +260,10 @@ impl Hooks for Mod {
     }
 
     fn submit_custom_geometry(&self, _: &dyn ClientHost, event: &mut SubmitCustomGeometryEvent<'_>) {
-        let (effects, now, pipeline) = {
+        let (effects, now, pipeline, soft_particle_pipeline) = {
             let state = self.state.lock().unwrap();
-            (state.effects.clone(), state.tick, state.pipeline)
+            (state.effects.clone(), state.tick, state.pipeline,
+             state.soft_particle_pipeline)
         };
         if effects.is_empty() { return; }
         let time = f64::from(event.view.partial_tick.clamp(0.0, 1.0));
@@ -269,32 +278,56 @@ impl Hooks for Mod {
         if live.is_empty() { return; }
         let total_budget = capacity.min(900) as usize;
         if total_budget==0 {return;}
-        // Preserve each authored sculpture in a bounded source draft before
-        // allocating the actual Horizon quads. The old per_spell_budget cap
-        // truncated the LAST body parts first: it could erase wings, bases
-        // and impact debris when several spells overlapped.
+        // Give the 3D body priority, while holding a small separate budget
+        // for genuinely soft GPU particles. No group of authored source mesh
+        // faces will be chopped apart merely to make room for sparkles.
+        let particle_reserve=if soft_particle_pipeline.is_some() && total_budget>120 {
+            total_budget.min(144)
+        }else{0};
+        let body_budget=total_budget-particle_reserve;
         let source_budget=if live.len()==1 {900} else {500};
-        // M29: decrease the density of *complete* orb/curtain surfaces before
-        // assembling crowded source scenes. Removing individual world quads
-        // from a closed 3D surface would otherwise punch visible holes.
-        let reduced_detail=live.len()>=4 || total_budget/live.len()<180;
+        let reduced_detail=live.len()>=4 || body_budget/live.len()<180;
         let mut drafts=Vec::with_capacity(live.len());
-        for (cast,age) in live {
+        for (cast,age) in live.iter().copied() {
             let mut spell=Scene::with_lod(source_budget,reduced_detail);
             render_spell(cast,age,&mut spell);
             drafts.push(spell);
         }
-        let mut scene=Scene::new(total_budget);
-        scene.facets=fair_geometry::sample_fair(&drafts,total_budget);
+        let solid=fair_geometry::sample_fair(&drafts,body_budget);
+        let mut drawn=false;
         if let Some(pipeline) = pipeline {
-            let quads: Vec<PipelineQuad> = scene.facets.iter().map(|(corners, color)|
+            let quads: Vec<PipelineQuad> = solid.iter().map(|(corners, color)|
                 PipelineQuad::spanning(*corners, *color)).collect();
-            if event.draw.pipeline_quads(pipeline, &quads).is_ok() { return; }
+            drawn=event.draw.pipeline_quads(pipeline, &quads).is_ok();
         }
-        // Fallback on plain geometry if optional shader could not compile or resolve.
-        let quads: Vec<WorldQuad> = scene.facets.iter().map(|(corners,color)|
-            WorldQuad::new(*corners, *color, WorldDepth::Tested)).collect();
-        let _ = event.draw.quads(&quads);
+        if !drawn {
+            // Existing body fallback always remains available if the
+            // original material shader is unsupported by the Nightly build.
+            let quads: Vec<WorldQuad> = solid.iter().map(|(corners,color)|
+                WorldQuad::new(*corners, *color, WorldDepth::Tested)).collect();
+            let _ = event.draw.quads(&quads);
+        }
+        if let Some(mask_pipeline)=soft_particle_pipeline {
+            if particle_reserve==0{return;}
+            let room=(event.draw.usage().quad_capacity
+                .saturating_sub(event.draw.usage().quads) as usize)
+                .min(particle_reserve);
+            if room==0{return;}
+            let mut accents=Vec::with_capacity(live.len());
+            for (cast,age) in live {
+                let mut fx=Scene::with_lod(80,reduced_detail);
+                procedural_fx::render(cast,age,camera,&mut fx);
+                accents.push(fx);
+            }
+            let accents=fair_geometry::sample_fair(&accents,room);
+            if !accents.is_empty() {
+                let quads: Vec<PipelineQuad> = accents.iter().map(|(corners,color)|
+                    PipelineQuad::spanning(*corners,*color)).collect();
+                // Never fallback to plain quads here. Without the dedicated
+                // alpha-mask shader they would appear as flat opaque cards.
+                let _=event.draw.pipeline_quads(mask_pipeline,&quads);
+            }
+        }
     }
 
     fn gui_render_post(&self, host: &dyn ClientHost, event: &mut GuiRenderPostEvent<'_>) {
@@ -319,8 +352,12 @@ impl Hooks for Mod {
 impl Mod {
     fn resolve_pipeline(&self, host: &dyn ClientHost) {
         let id = Identifier::parse("aetheria_preview:ethereal").unwrap();
-        let shader = host.render_assets().render_pipeline(&id).ok();
-        self.state.lock().unwrap().pipeline = shader;
+        let shader=host.render_assets().render_pipeline(&id).ok();
+        let soft=Identifier::parse("aetheria_preview:soft_particle").unwrap();
+        let soft_shader=host.render_assets().render_pipeline(&soft).ok();
+        let mut state=self.state.lock().unwrap();
+        state.pipeline=shader;
+        state.soft_particle_pipeline=soft_shader;
     }
 }
 
