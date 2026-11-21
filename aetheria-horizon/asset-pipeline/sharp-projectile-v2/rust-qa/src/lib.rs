@@ -186,33 +186,33 @@ mod m36_gallery {
                         139=>{
                             write!(&mut s,r##"<polygon points="{:.2},{:.2} {:.2},{:.2} {:.2},{:.2} {:.2},{:.2}"
                                 fill="url(#glow)" opacity=".82"/>"##,
-                                u,v-rad*1.2,u+rad*.65,v,u,v+rad*1.2,u-rad*.60,v).unwrap();
+                                u,v-rad*1.2,u+rad*0.65,v,u,v+rad*1.2,u-rad*0.60,v).unwrap();
                         }
                         154=>{
                             write!(&mut s,r##"<ellipse cx="{u:.2}" cy="{v:.2}" rx="{:.2}"
                                 ry="{:.2}" transform="rotate(32 {u:.2} {v:.2})"
                                 fill="url(#glow)" opacity=".72"/>"##,
-                                rad*.62,rad*1.35).unwrap();
+                                rad*0.62,rad*1.35).unwrap();
                         }
                         169=>{
                             write!(&mut s,r##"<polyline points="{:.2},{:.2} {:.2},{:.2}
                                 {:.2},{:.2} {:.2},{:.2}" fill="none"
                                 stroke="{tone}" stroke-width="{:.2}" stroke-linejoin="round"
                                 opacity=".71"/>"##,
-                                u-rad*.45,v+rad,u+rad*.25,v+rad*.16,
-                                u-rad*.10,v-rad*.12,u+rad*.4,v-rad,rad*.30).unwrap();
+                                u-rad*0.45,v+rad,u+rad*0.25,v+rad*0.16,
+                                u-rad*0.10,v-rad*0.12,u+rad*0.4,v-rad,rad*0.30).unwrap();
                         }
                         184=>{
                             write!(&mut s,r##"<path d="M{:.2},{:.2} Q{:.2},{:.2} {:.2},{:.2}"
                                 fill="none" stroke="{tone}" stroke-width="{:.2}"
                                 opacity=".64" stroke-linecap="round"/>"##,
-                                u-rad,v+rad,u+rad*.66,v,u+rad,v-rad,rad*.52).unwrap();
+                                u-rad,v+rad,u+rad*0.66,v,u+rad,v-rad,rad*0.52).unwrap();
                         }
                         199=>{
                             write!(&mut s,r##"<polygon points="{:.2},{:.2} {:.2},{:.2}
                                 {:.2},{:.2} {:.2},{:.2}" fill="none"
                                 stroke="{tone}" stroke-width="{:.2}" opacity=".67"/>"##,
-                                u,v-rad,u+rad,v,u,v+rad,u-rad,v,rad*.25).unwrap();
+                                u,v-rad,u+rad,v,u,v+rad,u-rad,v,rad*0.25).unwrap();
                         }
                         _=>{
                             write!(&mut s,r##"<circle cx="{u:.2}" cy="{v:.2}" r="{rad:.2}"
