@@ -3,7 +3,7 @@
 //! Rust geometry with source ARGB, not a Horizon GPU/WGSL/game screenshot.
 //! DO NOT use these images to claim God Wand graphical parity or client FPS.
 #![cfg(test)]
-use super::{Cast,Scene,add,sub,scale,cross,norm,length};
+use super::{Cast,Scene,sub,cross,norm};
 use std::{fmt::Write as FmtWrite,fs,path::Path};
 
 type V=[f64;3];
@@ -82,7 +82,7 @@ fn render_all_eleven_true_hero_source_silhouettes_for_visual_rejection(){
         let svg=show(id,name);
         assert!(svg.len()>10000,"#{id} visual evidence too sparse");
         fs::write(out.join(format!("{:03}_{}.svg",id+1,
-            name.to_lowercase().replace(' ','_'))),svg).unwrap();
+            name.to_lowercase().replace(' ',"_"))),svg).unwrap();
     }
     assert_eq!(fs::read_dir(&out).unwrap().count(),11);
 }
