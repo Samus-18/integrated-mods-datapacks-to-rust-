@@ -25,7 +25,7 @@ struct FXState {
     power:f32,
     radius:f32,
 };
-struct FXVolume { light:vec3<f32>, coverage:f32, distortion:f32 };
+struct FXVolume { light:vec3<f32>, coverage:f32, distortion:f32, solid:f32 };
 fn fx_hash3(p:vec3<f32>)->f32 {
     return fract(sin(dot(p,vec3<f32>(127.1,311.7,74.7)))*43758.5453);
 }
@@ -92,9 +92,13 @@ fn fx_read_state()->FXState {
     if(aetheria_demo>0 || aetheria_cycle) {
         var id=clamp(aetheria_demo,1,20);
         if(aetheria_cycle) { id=1+i32(floor(frame.time/4.0))%20; }
-        let aim=normalize((frame.view_inverse*vec4<f32>(0.0,0.0,-1.0,0.0)).xyz);
-        let center=aim*8.0+vec3<f32>(0.0,0.20,0.0);
-        return FXState(id,center,aim,fract(frame.time/4.0),1.0,3.8);
+        // QA ONLY: fixed world position. Deliberately NEVER follow the
+        // player's gaze. The previous code made an unplayable crosshair sticker.
+        // Gameplay uses frame.mods[] above and wins over QA.
+        let fixed_world=vec3<f32>(0.0,112.0,0.0);
+        let center=fixed_world-frame.camera_position;
+        return FXState(id,center,vec3<f32>(0.0,0.0,1.0),
+            fract(frame.time/4.0),1.0,3.8);
     }
     return FXState(0,vec3<f32>(0.0),vec3<f32>(0.0,0.0,1.0),0.0,0.0,0.0);
 }
@@ -404,10 +408,40 @@ fn fx_palette(id:i32,p:vec3<f32>,t:f32)->vec3<f32> {
     let pulse=0.43+0.57*smoothstep(0.17,0.91,mottling);
     return mix(a,b,pulse);
 }
+fn fx_is_solid(id:i32)->bool {
+    return id==3 || id==4 || id==6 || id==7 || id==8 ||
+        id==11 || id==12 || id==15 || id==17 || id==19;
+}
+// A sharply shaded 3-D *surface*, not a bloom-cloud approximating a solid.
+// Four taps: source SDF and three forward differences. All normals and
+// glints change with the actual view vector when the player walks around.
+fn fx_shaded_surface(id:i32,point:vec3<f32>,ray:vec3<f32>,t:f32)->vec3<f32> {
+    let eps=0.026;
+    let base=fx_profile(id,point,t).x;
+    let normal=normalize(vec3<f32>(
+        fx_profile(id,point+vec3<f32>(eps,0.0,0.0),t).x-base,
+        fx_profile(id,point+vec3<f32>(0.0,eps,0.0),t).x-base,
+        fx_profile(id,point+vec3<f32>(0.0,0.0,eps),t).x-base));
+    let sun=normalize(vec3<f32>(-0.49,0.72,-0.55));
+    let diff=max(dot(normal,sun),0.0);
+    let rim=pow(1.0-max(dot(normal,-ray),0.0),3.0);
+    let view_reflect=reflect(ray,normal);
+    let glint=pow(max(dot(view_reflect,sun),0.0),24.0);
+    let crystal=id==3 || id==4 || id==8 || id==15;
+    let organic=id==11 || id==12 || id==19;
+    var pigment=fx_palette(id,point,t);
+    let grain=fx_noise(point*select(2.5,7.0,crystal));
+    if(organic){pigment*=0.78+0.25*grain;}
+    let faceted=select(1.0,0.78+0.35*step(0.65,grain),crystal);
+    let lighting=(0.23+0.73*diff)*faceted;
+    let specular=select(0.06,0.42,crystal);
+    return pigment*lighting + vec3<f32>(0.45,0.73,1.0)*(
+        rim*select(0.04,0.22,crystal)+glint*specular);
+}
 fn fx_volume(input:PostInput,steps:i32)->FXVolume {
     let state=fx_read_state();
     if(state.id==0 || state.power<0.002) {
-        return FXVolume(vec3<f32>(0.0),0.0,0.0);
+        return FXVolume(vec3<f32>(0.0),0.0,0.0,0.0);
     }
     // Depth and camera-space reconstruction belong to the FULLSCREEN post,
     // never to the old .hmod quad fragment stage.
@@ -416,7 +450,7 @@ fn fx_volume(input:PostInput,steps:i32)->FXVolume {
     let offset2=dot(state.center,state.center)-along*along;
     let r2=state.radius*state.radius;
     if(along<0.0 || offset2>=r2) {
-        return FXVolume(vec3<f32>(0.0),0.0,0.0);
+        return FXVolume(vec3<f32>(0.0),0.0,0.0,0.0);
     }
     let h=sqrt(max(0.0,r2-offset2));
     let enter=max(0.0,along-h);
@@ -427,14 +461,39 @@ fn fx_volume(input:PostInput,steps:i32)->FXVolume {
         maxdist=length(view_position(input.uv,terrain_depth))-0.07;
     }
     let far=min(exit,maxdist);
-    if(far<=enter) {return FXVolume(vec3<f32>(0.0),0.0,0.0);}
+    if(far<=enter) {return FXVolume(vec3<f32>(0.0),0.0,0.0,0.0);}
     let amount=select(12,select(12,20,steps>12),aetheria_quality>0);
     let increment=(far-enter)/f32(amount);
     var trans=1.0;
     var acc=vec3<f32>(0.0);
     var refraction=0.0;
     let activity=fx_phase_window(state.phase)*state.power;
-    if(activity<=0.002){return FXVolume(vec3<f32>(0.0),0.0,0.0);}
+    if(activity<=0.002){return FXVolume(vec3<f32>(0.0),0.0,0.0,0.0);}
+    if(fx_is_solid(state.id)) {
+        // Surface sphere tracing: advance by distance TO THE ACTUAL SPELL
+        // geometry. Unlike ray-integrated fog, gives proper shaded faces and
+        // exposes cracks / fingers / branches against the real world.
+        var cursor=enter;
+        let local_ray=fx_to_spell_space(r,state.direction);
+        let max_steps=select(22,32,aetheria_quality>0);
+        for(var j=0;j<32;j=j+1) {
+            if(j>=max_steps || cursor>=far){break;}
+            let point=fx_animate_space(state.id,
+                fx_to_spell_space(r*cursor-state.center,state.direction),
+                state.phase);
+            let signed=fx_profile(state.id,point,state.phase).x;
+            if(signed<=0.035) {
+                let shaded=fx_shaded_surface(state.id,point,local_ray,
+                    state.phase);
+                let opacity=select(0.91,0.78,
+                    state.id==3 || state.id==4 || state.id==8);
+                return FXVolume(shaded*activity,
+                    clamp(activity*opacity,0.0,1.0),0.0,1.0);
+            }
+            cursor+=clamp(signed*0.73,0.045,0.48);
+        }
+        return FXVolume(vec3<f32>(0.0),0.0,0.0,0.0);
+    }
     for(var i=0;i<18;i=i+1) {
         if(i>=amount || trans<0.035){break;}
         let distance=enter+(f32(i)+0.5)*increment;
@@ -459,5 +518,5 @@ fn fx_volume(input:PostInput,steps:i32)->FXVolume {
         refraction+=contribution*m.z;
         trans*=1.0-optical;
     }
-    return FXVolume(acc,1.0-trans,refraction);
+    return FXVolume(acc,1.0-trans,refraction,0.0);
 }

@@ -69,6 +69,44 @@ alpha card/needle-star was not equivalent. Read
 `docs/research/GOD_WAND_161_RENDER_AUDIT.md` for precise class inventory,
 technical inspiration and original-all-rights-reserved asset policy.
 
+## M44 — correction of screen-attached VFX (2026-11-21)
+
+User reported all spell colors appear but shapes are poor and the visible
+effect remains glued to the crosshair while the player rotates.
+
+**Root cause found in production source:** the internal QA branch in
+`fx_read_state` generated `center = camera_forward * 8 + offset`
+every frame. That literally creates a camera-facing screen sticker. M44
+changes that QA branch to `fixed_world - frame.camera_position`
+with a fixed 3D direction. In ordinary play, mod-provided world-space cast
+center in `frame.mods[1]` still takes precedence; QA defaults OFF.
+Any real game test must separately verify that moving and rotating the
+camera makes a world-placed spell move across or out of the viewport.
+
+**Shape diagnosis:** The M43 implementation primarily integrated emission
+through 3D density and could not convey physically shaded solid surfaces.
+M44 adds a world-depth-clipped sphere tracing branch for TEN physical
+profiles (Frost Needle, Rime Bridge, Razor Crescent, Stone Knuckle,
+Crystal Traverse, Thorn Dart, Root Snare, Star Shard, Second Hand,
+Bone Thorn), with normals, diffuse shading, view rim, faceting,
+specular reflections and actual surface-over-background composition.
+The other ten energy/water/chrono profiles retain separate spatial
+volume behavior with tuned emission; they do NOT become solid merely by
+recoloring. This is code-only until real Vulkan screenshots prove
+artistic quality and stable FPS.
+
+M44 automatic criteria:
+1. `fixed_world-frame.camera_position` present; no `aim*8` demo;
+   native `frame.mods[1].xyz` source used for real casts.
+2. 20 unique profiles still compile via local Naga tests, and
+   Horizon's pinned official shader checker/pack succeed.
+3. Source HMOD compile+input hooks succeed on pinned SDK.
+4. In isolated RX580 game: capture unchanged **world coordinate**
+   from at least TWO camera yaw angles and two different positions,
+   inspect genuine snapshots, FPS and screenshot silhouette.
+5. Preserve user's game session and Photon; no release ZIP or claim of
+   20 finished spells pending accepted art/gameplay.
+
 ## Real GPU screenshot acceptance gate — 2026-11-21
 
 The first M43 shaderpack (before visual retuning) was officially validated

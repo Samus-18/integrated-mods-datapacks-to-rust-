@@ -14,7 +14,7 @@ struct PostInput {
 };
 struct Frame {
     mods:array<vec4<f32>,8>,
-    view_inverse:mat4x4<f32>,time:f32,headroom:f32,
+    view_inverse:mat4x4<f32>,time:f32,headroom:f32,camera_position:vec3<f32>,
 };
 @group(3) @binding(0) var<uniform> frame:Frame;
 @group(3) @binding(1) var scene_color:texture_2d<f32>;
@@ -51,6 +51,12 @@ fn original_twenty_spells_unique_shapes_and_no_invalid_reserved_identifiers(){
         assert!(!SHARED.contains(reserved),"WGSL reserved: {reserved}");
     }
     assert_eq!(SHARED.matches("fn fx_profile(").count(),1);
+    assert!(SHARED.contains("frame.mods[1].xyz"));
+    assert!(SHARED.contains("let center=fixed_world-frame.camera_position;"));
+    assert!(!SHARED.contains("let center=aim*8.0"));
+    assert!(SHARED.contains("fn fx_is_solid("));
+    assert!(SHARED.contains("fn fx_shaded_surface("));
+    assert!(COMPOSITE.contains("rgb=mix(input.color.rgb,vol.light,vol.coverage)"));
     assert!(SHARED.contains("terrain_depth=input.depth"));
     assert!(SHARED.contains("view_position(input.uv,terrain_depth)"));
 }
