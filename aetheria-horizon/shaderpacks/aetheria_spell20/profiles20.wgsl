@@ -395,8 +395,8 @@ fn fx_volume(input:PostInput,steps:i32)->FXVolume {
     var trans=1.0;
     var acc=vec3<f32>(0.0);
     var refraction=0.0;
-    let active=fx_phase_window(state.phase)*state.power;
-    if(active<=0.002){return FXVolume(vec3<f32>(0.0),0.0,0.0);}
+    let activity=fx_phase_window(state.phase)*state.power;
+    if(activity<=0.002){return FXVolume(vec3<f32>(0.0),0.0,0.0);}
     for(var i=0;i<18;i=i+1) {
         if(i>=amount || trans<0.035){break;}
         let distance=enter+(f32(i)+0.5)*increment;
@@ -405,7 +405,7 @@ fn fx_volume(input:PostInput,steps:i32)->FXVolume {
         let m=fx_profile(state.id,local,state.phase);
         let density=(1.0-smoothstep(-0.16,0.48,m.x))*
             (0.66+0.34*fx_noise(local*3.0+vec3<f32>(state.phase*7.0)));
-        let optical=clamp(density*increment*1.35*active,0.0,0.38);
+        let optical=clamp(density*increment*1.35*activity,0.0,0.38);
         let contribution=trans*optical;
         acc+=fx_palette(state.id,local,state.phase)*
             contribution*(0.50+0.72*m.y);
