@@ -9,6 +9,8 @@ mod volumetric_forms;
 mod sharp_projectile;
 mod rime_bridge;
 mod procedural_fx;
+mod authored_100_data;
+mod authored_100_fx;
 mod catalog200;
 mod mass_forms;
 mod ultimate_forms;
@@ -316,7 +318,11 @@ impl Hooks for Mod {
             let mut accents=Vec::with_capacity(live.len());
             for (cast,age) in live {
                 let mut fx=Scene::with_lod(80,reduced_detail);
-                procedural_fx::render(cast,age,camera,&mut fx);
+                // First ten named spells in every school have a distinctly
+                // authored choreography; remaining slots use M35 background.
+                if authored_100_fx::render(cast,age,camera,&mut fx).is_none(){
+                    procedural_fx::render(cast,age,camera,&mut fx);
+                }
                 accents.push(fx);
             }
             let accents=fair_geometry::sample_fair(&accents,room);
