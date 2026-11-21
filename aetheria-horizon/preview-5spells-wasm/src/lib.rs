@@ -11,6 +11,7 @@ mod rime_bridge;
 mod procedural_fx;
 mod authored_100_data;
 mod authored_100_fx;
+mod signature_forms;
 mod catalog200;
 mod mass_forms;
 mod ultimate_forms;
@@ -675,6 +676,9 @@ fn render_spell(cast:Cast, age:f64, scene:&mut Scene) {
     if sharp_projectile::render(cast,age,scene) { return; }
     // M34: real independent sculpted Rime Bridge, registry #022.
     if rime_bridge::render(cast,age,scene) { return; }
+    // M37: actual name-true connected 3D surfaces, replacing rejected
+    // generic solid forms for eleven high-priority signature spells.
+    if signature_forms::render(cast,age,scene) { return; }
     volumetric_forms::render(cast,age,scene);
 }
 
