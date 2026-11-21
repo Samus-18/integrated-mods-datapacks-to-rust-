@@ -97,8 +97,11 @@ fn fx_read_state()->FXState {
         // Gameplay uses frame.mods[] above and wins over QA.
         let fixed_world=vec3<f32>(0.0,112.0,0.0);
         let center=fixed_world-frame.camera_position;
+        // Single-profile QA freezes its phase for valid before/after
+        // camera rotation comparisons; automatic cycle is still animated.
+        let qa_phase=select(0.50,fract(frame.time/4.0),aetheria_cycle);
         return FXState(id,center,vec3<f32>(0.0,0.0,1.0),
-            fract(frame.time/4.0),1.0,3.8);
+            qa_phase,1.0,3.8);
     }
     return FXState(0,vec3<f32>(0.0),vec3<f32>(0.0,0.0,1.0),0.0,0.0,0.0);
 }
@@ -211,14 +214,28 @@ fn fx_profile(id:i32,p:vec3<f32>,t:f32)->vec3<f32> {
     if(id==7) { // Stone Knuckle: connected articulated fist and heavy cuboid punch.
         let q=p;
         var d=fx_box(q+vec3<f32>(0.0,0.35,0.25),vec3<f32>(1.17,0.68,0.75),0.25);
+        // Separate articulated stone fingers instead of one smoothed cube.
         for(var i=0;i<4;i=i+1) {
-            let x=(f32(i)-1.5)*0.58;
-            let finger=fx_box(q-vec3<f32>(x,0.62,-0.50),
-                vec3<f32>(0.26,0.44+0.07*f32(i%2),0.46),0.20);
-            d=fx_smin(d,finger,0.11);
+            let x=(f32(i)-1.5)*0.60;
+            let finger=fx_box(q-vec3<f32>(x,0.47,-0.71),
+                vec3<f32>(0.235,0.45+0.07*f32(i%2),0.39),0.075);
+            let upper=fx_box(q-vec3<f32>(x,0.86,-0.80),
+                vec3<f32>(0.21,0.18,0.23),0.038);
+            d=min(d,fx_smin(finger,upper,0.035));
         }
-        let thumb=fx_capsule(q,vec3<f32>(-1.07,-0.3,-0.1),vec3<f32>(-0.80,0.50,-0.78),0.28);
-        return vec3<f32>(fx_smin(d,thumb,0.19)+0.05*(n-0.5),0.86,0.013);
+        let thumb=fx_capsule(q,vec3<f32>(-1.10,-0.29,-0.12),
+            vec3<f32>(-0.80,0.31,-0.95),0.30);
+        d=fx_smin(d,thumb,0.08);
+        // Six individual crumbling rock chips with genuinely separate volumes.
+        for(var i=0;i<6;i=i+1){
+            let fi=f32(i);
+            let chunk=fx_box(q-vec3<f32>(
+                1.20*cos(fi*2.39),0.68*sin(fi*1.73),
+                -0.72+0.35*sin(fi*3.10+t*6.0)),
+                vec3<f32>(0.09+0.05*fract(fi*0.71),0.12,0.10),0.022);
+            d=min(d,chunk);
+        }
+        return vec3<f32>(d+0.037*(n-0.5),0.86,0.009);
     }
     if(id==8) { // Crystal Traverse: rising faceted steps + reflective crystal spires.
         var d=100.0;
@@ -388,7 +405,7 @@ fn fx_palette(id:i32,p:vec3<f32>,t:f32)->vec3<f32> {
         case 4: {a=vec3<f32>(0.16,0.44,0.73);b=vec3<f32>(0.79,1.03,1.48);}
         case 5: {a=vec3<f32>(0.12,0.54,0.51);b=vec3<f32>(0.75,1.23,1.10);}
         case 6: {a=vec3<f32>(0.17,0.46,0.47);b=vec3<f32>(0.84,1.76,1.57);}
-        case 7: {a=vec3<f32>(0.25,0.17,0.09);b=vec3<f32>(1.12,0.71,0.32);}
+        case 7: {a=vec3<f32>(0.09,0.077,0.059);b=vec3<f32>(0.54,0.42,0.29);}
         case 8: {a=vec3<f32>(0.30,0.22,0.44);b=vec3<f32>(1.12,0.96,1.66);}
         case 9: {a=vec3<f32>(0.02,0.25,0.65);b=vec3<f32>(0.36,1.11,1.90);}
         case 10: {a=vec3<f32>(0.05,0.40,0.58);b=vec3<f32>(0.68,1.55,1.75);}
@@ -432,11 +449,121 @@ fn fx_shaded_surface(id:i32,point:vec3<f32>,ray:vec3<f32>,t:f32)->vec3<f32> {
     var pigment=fx_palette(id,point,t);
     let grain=fx_noise(point*select(2.5,7.0,crystal));
     if(organic){pigment*=0.78+0.25*grain;}
-    let faceted=select(1.0,0.78+0.35*step(0.65,grain),crystal);
+    // Ten exact thematic material treatments. Texture features are anchored
+    // in spell-LOCAL 3D coordinates, NOT a camera-aligned flat overlay.
+    if(id==3 || id==4) {
+        // Ice strata with thin blue fracture veins and prismatic ridges.
+        let fracture=abs(sin(point.x*9.0+point.z*4.2));
+        let vein=1.0-smoothstep(0.04,0.16,fracture);
+        pigment=mix(pigment,vec3<f32>(0.028,0.20,0.37),vein*0.55);
+        pigment+=vec3<f32>(0.06,0.16,0.27)*step(0.72,grain);
+    } else if(id==6) {
+        // Wind blade has a razor-lit edge and teal moving striations.
+        let flow=0.5+0.5*sin(point.z*13.0+point.x*4.0+t*11.0);
+        pigment*=0.52+0.48*flow;
+        pigment+=vec3<f32>(0.05,0.23,0.21)*pow(1.0-abs(normal.z),2.0);
+    } else if(id==7) {
+        // Fractured stone: HARD angular bands and dark carved knuckle seams.
+        let fault=abs(sin(point.x*6.6+point.y*3.2+
+            1.8*fx_noise(point*2.8))*sin(point.z*5.8-point.y*4.5));
+        let crack=1.0-smoothstep(0.023,0.13,fault);
+        let facet=step(0.52,fx_noise(point*3.5));
+        pigment*=0.53+0.47*facet;
+        pigment=mix(pigment,pigment*0.11,crack*0.88);
+        pigment+=vec3<f32>(0.11,0.081,0.046)*step(0.86,grain);
+    } else if(id==8 || id==15) {
+        // Amethyst/astral: directional cuts, not smooth neon gradients.
+        let fracture=abs(sin(point.x*10.0+point.y*6.3-point.z*5.0));
+        let vein=1.0-smoothstep(0.035,0.13,fracture);
+        pigment*=0.54+0.49*step(0.49,grain);
+        pigment+=vec3<f32>(0.16,0.08,0.26)*vein;
+    } else if(id==11) {
+        // Seven living leaves: branching longitudinal venation.
+        let vein=abs(sin(point.x*9.5+point.z*4.1+
+            0.58*sin(point.y*8.0)));
+        pigment*=0.54+0.38*smoothstep(0.03,0.25,vein);
+        pigment+=vec3<f32>(0.06,0.18,0.018)*step(0.73,grain);
+    } else if(id==12) {
+        // Bark rings and fibrous roughness follow the roots.
+        let bark=0.5+0.5*sin(point.y*17.0+point.x*3.7+
+            fx_noise(point*6.0)*2.0);
+        pigment*=0.40+0.55*bark;
+    } else if(id==17) {
+        // Chrono dial: readable golden tick engravings around its center.
+        let a=atan2(point.y,point.x);
+        let etch=1.0-smoothstep(0.04,0.15,abs(sin(a*12.0)));
+        pigment*=0.56+0.54*grain;
+        pigment+=vec3<f32>(0.22,0.13,0.035)*etch;
+    } else if(id==19) {
+        // Bone has marrow grooves rather than a monochrome glowing spike.
+        let fissure=abs(sin(point.y*12.0+point.z*5.0+
+            fx_noise(point*5.0)*1.4));
+        pigment=mix(pigment,vec3<f32>(0.12,0.045,0.12),
+            (1.0-smoothstep(0.035,0.18,fissure))*0.69);
+    }
+    let faceted=select(1.0,0.62+0.57*step(0.55,grain),crystal);
     let lighting=(0.23+0.73*diff)*faceted;
     let specular=select(0.06,0.42,crystal);
     return pigment*lighting + vec3<f32>(0.45,0.73,1.0)*(
         rim*select(0.04,0.22,crystal)+glint*specular);
+}
+// The other TEN spell profiles are living energy, not opaque stone.
+// Each receives a specific 3D emissive structure, animated in LOCAL space.
+// These are higher frequency radiance patterns INSIDE the named SDF form,
+// not generic particles or a fullscreen image.
+fn fx_energy_detail(id:i32,p:vec3<f32>,t:f32)->f32 {
+    var intensity=1.0;
+    switch(id) {
+        case 1: { // Ember Needle: turbulent flame tongues trailing the spear
+            let curl=fx_noise(p*vec3<f32>(3.0,9.0,3.5)-
+                vec3<f32>(0.0,t*11.0,t*3.0));
+            intensity=0.21+1.20*smoothstep(0.33,0.84,curl);
+        }
+        case 2: { // Cinder Fan: seven fanned ember veins
+            let a=atan2(p.y,p.x);
+            let ribs=pow(0.5+0.5*cos(a*7.0+t*3.8),4.0);
+            intensity=0.27+0.83*ribs+0.20*fx_noise(p*7.0);
+        }
+        case 5: { // Gale Palm: thin converging vortical pressure striations
+            let angle=atan2(p.y,p.x);
+            let wave=sin(angle*5.0+length(p.xy)*7.4-t*11.0);
+            intensity=0.26+0.79*pow(0.5+0.5*wave,3.0);
+        }
+        case 9: { // Tide Needle: sunlight caustics inside braided water
+            let ripple=sin(p.z*11.0+length(p.xy)*13.0+t*8.0);
+            intensity=0.35+0.78*pow(0.5+0.5*ripple,3.0);
+        }
+        case 10: { // Flowstep: white-water foam only on wave crests
+            let crest=sin(p.x*6.0+p.z*3.0-t*12.0);
+            intensity=0.25+0.80*pow(0.5+0.5*crest,5.0);
+        }
+        case 13: { // Spark Fork: jittering forked lightning strokes
+            let lightning=fx_noise(p*vec3<f32>(11.0,4.0,13.0)+
+                vec3<f32>(t*19.0,-t*22.0,t*14.0));
+            intensity=0.20+1.30*step(0.53,lightning);
+        }
+        case 14: { // Static Halo: arcing breaks and broad plasma center
+            let a=atan2(p.z,p.x);
+            let arc=sin(a*11.0+p.y*7.0-t*18.0);
+            intensity=0.18+1.17*pow(0.5+0.5*arc,8.0);
+        }
+        case 16: { // Gravity Thread: deep dark core and bright stretched lip
+            let pull=length(p.xz);
+            intensity=0.14+0.96*smoothstep(0.27,1.20,pull);
+            intensity*=0.75+0.35*fx_noise(p*5.0+vec3<f32>(t));
+        }
+        case 18: { // Moment Slip: scanning temporal tears
+            let slit=abs(sin(p.y*10.0+p.x*3.7-t*21.0));
+            intensity=0.12+1.20*(1.0-smoothstep(0.05,0.20,slit));
+        }
+        case 20: { // Soul Lantern: individual ascending ghost filaments
+            let trail=fx_noise(p*vec3<f32>(5.0,2.0,5.0)+
+                vec3<f32>(t*2.0,-t*10.0,t*3.0));
+            intensity=0.19+1.11*smoothstep(0.43,0.85,trail);
+        }
+        default: {}
+    }
+    return clamp(intensity,0.10,1.55);
 }
 fn fx_volume(input:PostInput,steps:i32)->FXVolume {
     let state=fx_read_state();
@@ -508,8 +635,9 @@ fn fx_volume(input:PostInput,steps:i32)->FXVolume {
         let core=1.0-smoothstep(-0.09,0.11,m.x);
         let shell=exp(-abs(m.x)*9.0);
         let articulation=fx_noise(local*3.0+vec3<f32>(state.phase*7.0));
-        let density=clamp((core*0.64+shell*0.29)*
-            (0.54+0.46*articulation),0.0,1.0);
+        let detail=fx_energy_detail(state.id,local,state.phase);
+        let density=clamp((core*0.42+shell*0.40)*
+            (0.42+0.41*articulation)*detail,0.0,1.0);
         let optical=clamp(density*increment*0.89*activity,0.0,0.25);
         let contribution=trans*optical;
         let pigment=fx_palette(state.id,local,state.phase);

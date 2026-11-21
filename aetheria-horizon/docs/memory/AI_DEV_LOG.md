@@ -473,3 +473,43 @@ Hooks::shader_params to existing R/Z .hmod state for 20 exact identity
 uniforms; **must pass pinned SDK CI and actual game test** before claiming
 a functional bridge. Source Naga/Rust 37/37 passed. No 20 fully finished
 skills, nor user-ready ZIP. Do NOT generate AI screenshots or touch Photon.
+
+## 2026-11-21 — M44 *REAL* camera-position comparison (Vulkan RX580)
+Official M44 \`horizon-shader\` validation passed in GitHub run 44933345818.
+Isolated Horizon Nightly 2026-11-20, Minecraft 26.3, Vulkan RX580,
+1280×720 captured THREE unretouched screenshots for frozen spell 7:
+- M44_01 (camera 0,112,-9, aimed at fixed-world 0,112,0): spell appears
+  as a poorly detailed beige fist in the world.
+- M44_02 same world and player coordinate, camera rotated +55deg:
+  **spell NOT visible**, while background and camera rotate. This rejects
+  the old screen-attached forward*8 behavior.
+- M44_03 moved to world 5,112,-9, original gaze: the same effect is now
+  at the RIGHT side of the viewport, not crosshair centered.
+- QA session quit cleanly without disturbing user's saves or Photon.
+
+**Position gate: PASS for M44 QA fixed-world path; visual gate: FAIL.**
+After these screenshots, M44 adds separate stone finger and fracture chips,
+fractured dark stone palette, distinct 3D materials for ten solid profiles,
+and individual high-frequency emissive structures for the OTHER ten
+energy profiles. This newest material pass has local 38/38 Rust+Naga
+test PASS; it has not been accepted in real Vulkan screenshots yet.
+No 20 gameplay-finished claim; leave user ZIP unreleased.
+
+Remember: the demo \`aetheria_demo\` used in QA is a deliberate frozen
+world-position test and remains OFF in user manifest. Actual Z casting is
+driven by the tested \`ShaderParamsEvent\` hook and world-space source
+coordinates, but the integrated 20-case in-game screenshot pass is still
+pending (no false claims of tested combat or sound quality).
+
+## M44 surface and energy detail pass — actual RX580 QA
+New M44 screenshot 1 after refactoring Stone Knuckle (#61 => profile 7)
+shows separated four stone knuckles, carved dark fissures, and a coherent
+3-D surface. This is visibly more structured than the PRE_DETAIL beige blob.
+The fixed world object is still in the world when camera translates; it is
+not a viewport-layer sticker. Screenshot comparison NOT yet approved as
+final art: fist still largely cuboid and has no full authored combat or
+impact scene. QA snapshots are original game frames, not generated images.
+The same commit applies 3D surface material treatments to ten physical
+profiles and distinct local-space energy flow to the other ten. Correct
+Naga parsing and 38/38 exact-source Rust tests confirmed. Pending official
+shader check of the newest revision and performance/art QA for all twenty.
