@@ -5,6 +5,7 @@ const EMISSION:&str=include_str!("../../../../shaderpacks/aetheria_spell20/post/
 const BLUR_H:&str=include_str!("../../../../shaderpacks/aetheria_spell20/post/blur_h.wgsl");
 const BLUR_V:&str=include_str!("../../../../shaderpacks/aetheria_spell20/post/blur_v.wgsl");
 const COMPOSITE:&str=include_str!("../../../../shaderpacks/aetheria_spell20/post/composite.wgsl");
+const PREVIEW_MOD:&str=include_str!("../../../../preview-5spells-wasm/src/lib.rs");
 // Naga parses the same WGSL grammar as Horizon, with lightweight stand-ins
 // for the Horizon post-only prelude provided by the official pack loader.
 const PRELUDE:&str=r#"
@@ -59,4 +60,13 @@ fn original_twenty_spells_unique_shapes_and_no_invalid_reserved_identifiers(){
     assert!(COMPOSITE.contains("rgb=mix(input.color.rgb,vol.light,vol.coverage)"));
     assert!(SHARED.contains("terrain_depth=input.depth"));
     assert!(SHARED.contains("view_position(input.uv,terrain_depth)"));
+}
+
+#[test]
+fn m44_first_twenty_cannot_render_old_camera_facing_hero_proxies(){
+    assert!(PREVIEW_MOD.contains("fn use_legacy_signature_proxy(slot:usize)->bool"));
+    assert!(PREVIEW_MOD.contains("post_profiles20::profile_for_spell(catalog200::id(slot)).is_none()"));
+    assert!(PREVIEW_MOD.contains("if !use_legacy_signature_proxy(cast.kind){continue;}"));
+    assert!(PREVIEW_MOD.contains("if !signature_rendered || !use_legacy_signature_proxy(cast.kind)"));
+    assert!(PREVIEW_MOD.contains("m44_world_anchored_batch_tests"));
 }

@@ -51,6 +51,16 @@ use aetheria_horizon::vfx::arcane_forms::{sculpt_school,Material as ArcaneMateri
 
 const MOD_ID: &str = "aetheria_preview";
 
+// M44: the FIRST batch of 20 has real depth-aware HDR spell silhouettes.
+// Do not submit the older 2.5D screen-facing alpha proxy for ANY of them.
+// The source-geometry fallback is still available without the .hshader.
+fn use_legacy_signature_proxy(slot:usize)->bool {
+    slot<SPELL_COUNT
+        && signature_shader::is_signature(slot)
+        && slot!=100
+        && post_profiles20::profile_for_spell(catalog200::id(slot)).is_none()
+}
+
 #[derive(Clone, Copy)]
 struct Cast { kind: usize, variant: u8, start: u64, center: [f64;3], direction: [f64;3] }
 struct State {
@@ -325,7 +335,7 @@ impl Hooks for Mod {
         if let Some(shader)=signature_pipeline {
             let mut signatures=Vec::new();
             for (cast,age) in live.iter().copied(){
-                if cast.kind==100 || !signature_shader::is_signature(cast.kind){continue;}
+                if !use_legacy_signature_proxy(cast.kind){continue;}
                 let mut surface=Scene::new(1);
                 signature_shader::render(cast,age,camera,&mut surface);
                 signatures.push(surface);
@@ -357,7 +367,8 @@ impl Hooks for Mod {
         let mut drafts=Vec::with_capacity(live.len());
         for (cast,age) in live.iter().copied() {
             let mut spell=Scene::with_lod(source_budget,reduced_detail);
-            if cast.kind==100 || !(signature_rendered && signature_shader::is_signature(cast.kind)){
+            if !signature_rendered || !use_legacy_signature_proxy(cast.kind){
+                // The first 20 NEVER become old camera-facing hero cards.
                 render_spell(cast,age,&mut spell);
             }
             drafts.push(spell);
@@ -390,7 +401,8 @@ impl Hooks for Mod {
                 // let the NAME-TRUE GPU SDF hero (or coherent 3D fallback)
                 // supply the body. Do not paint a second generic smoke
                 // billboard over the recognisable spell silhouette.
-                if signature_shader::is_signature(cast.kind) && cast.kind!=100 {continue;}
+                if post_profiles20::profile_for_spell(catalog200::id(cast.kind)).is_some()
+                    || use_legacy_signature_proxy(cast.kind) {continue;}
                 let mut fx=Scene::with_lod(80,reduced_detail);
                 if cast.kind==100 {
                     // Tiny authored pollen around M40 solid projectile;
@@ -1168,5 +1180,25 @@ fn fractured_stair(o:[f64;3],age:f64,grow:f64,scene:&mut Scene) {
             let tip=add(p,[h*(step%3) as f64,0.7+h,a.sin()*0.7]);
             scene.shard(p,tip,0.11,h+age*0.02,alpha(0xA0D9B8FF,age,101.0));
         }
+    }
+}
+
+// M44 regression: the new twenty are world-space SDF/post effects; none may
+// regress into the old, screen-facing signature proxy path.
+#[cfg(test)]
+mod m44_world_anchored_batch_tests {
+    use super::*;
+    #[test]
+    fn first_twenty_no_legacy_camera_facing_proxy(){
+        for profile in post_profiles20::POST20 {
+            assert!(!use_legacy_signature_proxy((profile.spell_id-1) as usize),
+                "old 2.5D billboard reenabled for {}",profile.name);
+        }
+        // The other unrelated nine legacy signatures remain on the
+        // original route until their own graphics batch is authored.
+        assert!(use_legacy_signature_proxy(6));
+        assert!(use_legacy_signature_proxy(29));
+        assert!(!use_legacy_signature_proxy(100));
+        assert!(!use_legacy_signature_proxy(999));
     }
 }

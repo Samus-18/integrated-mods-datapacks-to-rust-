@@ -513,3 +513,16 @@ The same commit applies 3D surface material treatments to ten physical
 profiles and distinct local-space energy flow to the other ten. Correct
 Naga parsing and 38/38 exact-source Rust tests confirmed. Pending official
 shader check of the newest revision and performance/art QA for all twenty.
+
+## 2026-11-21 — M44 secondary 2.5D proxy blocker fixed in real .hmod path
+Inspected the EXACT production `signature_shader.rs` and
+`submit_custom_geometry`: twelve old hero silhouettes still used one
+camera-facing rectangular proxy each, overlapping the HDR field for IDs
+in the new first-20 batch. New `use_legacy_signature_proxy` safely refuses
+these proxy submissions for every one of the first 20 canonical IDs;
+`render_spell` stays a bounded genuinely world-space geometry fallback,
+even while unrelated legacy signatures are active. The old generic
+soft-particle accent path skips all twenty so it can't overlay 2.5D smoke.
+Added production regression test, plus exact-source Rust-qa guard.
+Local 39/39 tests passed. **New pinned .hmod CI and integrated 20-spell
+in-game acceptance still required.** Do not claim finished release.
