@@ -72,6 +72,8 @@ mod procedural_fx;
 mod authored_100_data;
 #[path="../../../../preview-5spells-wasm/src/authored_100_fx.rs"]
 mod authored_100_fx;
+#[path="../../../../preview-5spells-wasm/src/post_profiles20.rs"]
+mod post_profiles20;
 // BEGIN M37 EXACT HORIZON SCENE HELPERS
 impl Scene {
     fn membrane(&mut self, a:[f64;3],b:[f64;3],c0:[f64;3],d:[f64;3],color:u32){

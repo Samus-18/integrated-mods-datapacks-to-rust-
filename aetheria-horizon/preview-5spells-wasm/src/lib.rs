@@ -11,6 +11,7 @@ mod rime_bridge;
 mod procedural_fx;
 mod authored_100_data;
 mod authored_100_fx;
+mod post_profiles20;
 mod signature_forms;
 mod thorn_living;
 mod signature_shader;

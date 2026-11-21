@@ -1,0 +1,66 @@
+schema = 1
+id = "aetheria_spell20"
+name = "Aetheria — First 20 Spell Fields (internal QA)"
+version = "0.1.0"
+api = "0.2"
+description = "Original depth-aware WGSL profiles for 20 canonical Aetheria spells; visual QA, not finished gameplay."
+shared = ["profiles20.wgsl"]
+
+[frame]
+blend = "linear"
+
+[[post]]
+name = "Aetheria Volume Emission"
+file = "post/emission.wgsl"
+output = "aetheria_emission"
+scale = 0.5
+
+[[post]]
+name = "Aetheria Bloom Horizontal"
+file = "post/blur_h.wgsl"
+output = "aetheria_blur_h"
+scale = 0.5
+
+[[post]]
+name = "Aetheria Bloom Vertical"
+file = "post/blur_v.wgsl"
+output = "aetheria_blur_v"
+scale = 0.5
+
+[[post]]
+name = "Aetheria Scene Compositor"
+file = "post/composite.wgsl"
+
+[[options]]
+id = "aetheria_demo"
+name = "QA: Show one test spell (0=off)"
+type = "int"
+default = 0
+min = 0
+max = 20
+
+[[options]]
+id = "aetheria_cycle"
+name = "QA: Cycle all 20 spell profiles"
+type = "bool"
+default = false
+
+[[options]]
+id = "aetheria_bloom"
+name = "Original spell glow strength"
+type = "float"
+default = 0.65
+min = 0.0
+max = 1.0
+step = 0.05
+
+[[options]]
+id = "aetheria_quality"
+name = "Raymarch detail (0=RX580 lower)"
+type = "int"
+default = 0
+min = 0
+max = 1
+
+[budget]
+gpu_ms = 4.0

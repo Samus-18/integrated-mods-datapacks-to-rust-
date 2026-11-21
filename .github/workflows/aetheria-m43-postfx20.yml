@@ -1,0 +1,70 @@
+name: Aetheria M43 20 distinct postfx profiles (internal)
+on:
+  push:
+    branches: [aetheria-m42-postfx-foundation]
+    paths:
+      - 'aetheria-horizon/shaderpacks/aetheria_spell20/**'
+      - 'aetheria-horizon/preview-5spells-wasm/src/post_profiles20.rs'
+      - '.github/workflows/aetheria-m43-postfx20.yml'
+  workflow_dispatch:
+jobs:
+  validate-shader20:
+    runs-on: ubuntu-latest
+    timeout-minutes: 28
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm exact 20 canonical spell identities and bound shader workload
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          base=Path('aetheria-horizon/shaderpacks/aetheria_spell20')
+          shader=(base/'profiles20.wgsl').read_text()
+          ids=[int(x) for x in re.findall(r'if\(id==(\d+)\)\s*\{\s*//',shader)]
+          assert ids == list(range(1,21)), f'expected exactly 20 different spatial profile branches, got {ids}'
+          for fn in ['profiles20.wgsl','post/emission.wgsl','post/blur_h.wgsl','post/blur_v.wgsl','post/composite.wgsl']:
+              path=base/fn
+              assert path.stat().st_size <= 256*1024,fn
+          assert 'frame.mods[0]' in shader
+          assert 'view_position(' in shader
+          assert 'input.depth' in shader
+          assert 'fx_profile(state.id' in shader
+          assert 'scene_color' in (base/'post/composite.wgsl').read_text()
+          print('20 unique profile branches, camera-space and depth use OK')
+          PY
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: aetheria-m43-shader-api-v0-2
+      - name: Fetch pinned official Horizon shader checker
+        run: |
+          mkdir -p "$RUNNER_TEMP/horizon-source"
+          cd "$RUNNER_TEMP/horizon-source"
+          git init -q
+          git remote add origin https://github.com/horizon-rust/horizon.git
+          git fetch -q --depth=1 origin 0a875da91dbb0fdcb7ba8c42c11341aa229af51a
+          git checkout -q --detach FETCH_HEAD
+          test "$(git rev-parse HEAD)" = "0a875da91dbb0fdcb7ba8c42c11341aa229af51a"
+      - name: Validate real Horizon API 0.2 WGSL shaders, pack manifest and GPU bindings
+        run: |
+          cargo run --locked --release -q \
+            --manifest-path "$RUNNER_TEMP/horizon-source/Cargo.toml" \
+            -p horizon-shader-api --bin horizon-shader -- \
+            check "$GITHUB_WORKSPACE/aetheria-horizon/shaderpacks/aetheria_spell20" --json \
+            | tee "$GITHUB_WORKSPACE/M43-official-shader-check.json"
+      - name: Build deterministic internal hshader after official validation
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/target/m43-postfx20"
+          cargo run --locked --release -q \
+            --manifest-path "$RUNNER_TEMP/horizon-source/Cargo.toml" \
+            -p horizon-shader-api --bin horizon-shader -- \
+            pack "$GITHUB_WORKSPACE/aetheria-horizon/shaderpacks/aetheria_spell20" \
+            --out "$GITHUB_WORKSPACE/target/m43-postfx20/aetheria_spell20_INTERNAL_QA.hshader"
+          sha256sum "$GITHUB_WORKSPACE/target/m43-postfx20/aetheria_spell20_INTERNAL_QA.hshader" \
+            > "$GITHUB_WORKSPACE/target/m43-postfx20/SHA256SUMS.txt"
+          cp "$GITHUB_WORKSPACE/M43-official-shader-check.json" "$GITHUB_WORKSPACE/target/m43-postfx20/official-check.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aetheria-M43-20-PostFX-Shader-INTERNAL-NOT-FINAL
+          path: target/m43-postfx20/
+          retention-days: 7
