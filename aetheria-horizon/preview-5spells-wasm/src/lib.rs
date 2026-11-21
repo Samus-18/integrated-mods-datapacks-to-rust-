@@ -62,6 +62,8 @@ struct State {
     // Client-only training instance; NOT multiplayer player data or world save.
     demo_magic:Option<PlayerMagic>,
     local_mana:f32,local_cooldowns:[u64;SPELL_COUNT],
+    // Camera snapshot for spell-space shader uniforms, never an input-control hook.
+    last_camera:Option<[f64;3]>,
 }
 impl Default for State {
     fn default()->Self {
@@ -70,7 +72,7 @@ impl Default for State {
             last_cast:None,last_variant:0,
             quick:QuickSelector::default(),picker_was_down:false,picker_scrolled:false,
             demo_magic:None,local_mana:100.0,
-            local_cooldowns:[0;SPELL_COUNT]}
+            local_cooldowns:[0;SPELL_COUNT],last_camera:None}
     }
 }
 #[derive(Default)]
@@ -78,6 +80,29 @@ struct Mod { state: Mutex<State> }
 
 #[mod_api::horizon_mod]
 impl Hooks for Mod {
+    // M43: transmit the 20 cast identities directly from the SAME Aetheria
+    // state as the R/Z picker to the native Horizon HDR post renderer.
+    // If the pinned guest SDK does not expose this hook, compilation MUST
+    // fail; never silently claim a working shader bridge.
+    fn shader_params(&self, partial:f32, params:&mut [[f32;4];8]) {
+        let state=self.state.lock().unwrap();
+        let Some(camera)=state.last_camera else {return;};
+        if !partial.is_finite() {return;}
+        for cast in state.effects.iter().rev().copied() {
+            if cast.kind>=SPELL_COUNT {continue;}
+            let Some(profile)=post_profiles20::profile_for_spell((cast.kind+1) as u16)
+                else {continue;};
+            let ticks=(state.tick.saturating_sub(cast.start) as f32)+partial.clamp(0.0,1.0);
+            let lifetime=(profile.charge_s+profile.sustain_s+profile.dissolve_s)*20.0;
+            if ticks>lifetime || lifetime<1.0 {continue;}
+            let world=cast.center.map(|v|v as f32);
+            let camera=camera.map(|v|v as f32);
+            let direction=cast.direction.map(|v|v as f32);
+            *params=post_profiles20::pack_frame_rows(profile,ticks/lifetime,1.0,
+                world,camera,direction);
+            return;
+        }
+    }
     fn register(&self, registrar: &mut dyn Registrar, _: &RegistrationContext) {
         // Two controls: tap R next school; hold R and scroll one of its 20
         // spells; Z casts. Old debug shortcuts are not registered.
@@ -128,7 +153,9 @@ impl Hooks for Mod {
         let mut pressed = Vec::new();
         let cast_selected=active_gameplay && host.consume_click(MOD_ID,"cast");
         let picker_down=active_gameplay && host.is_down(MOD_ID,"quick_picker");
-        let camera = if pressed.is_empty() && !cast_selected {None}else{host.camera()};
+        // M43: cache one actual camera per tick for FULLSCREEN volumetric
+        // spell positioning, including while no fresh cast key is pressed.
+        let camera = if playing {host.camera()} else {None};
         // Client-side surface target: makes the ice and roots grow out of a
         // real selected block rather than floating at the player's eye level.
         let ground_target = if pressed.is_empty() && !cast_selected { None } else {
@@ -139,6 +166,8 @@ impl Hooks for Mod {
             }
         };
         let mut state = self.state.lock().unwrap();
+        state.last_camera = camera.as_ref().map(|c|c.position)
+            .filter(|p|p.iter().all(|v|v.is_finite()));
         let mut queued_sounds: Vec<(usize,u8,[f64;3])> = Vec::new();
         if !playing {
             state.effects.clear();

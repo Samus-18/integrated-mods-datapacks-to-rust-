@@ -12,9 +12,16 @@ fn post(input:PostInput)->vec4<f32> {
     let offset=clamp(vol.distortion,0.0,0.12)*shimmer*0.016;
     let distorted=textureSampleLevel(scene_color,linear_sampler,
         clamp(uv+offset,vec2<f32>(0.001),vec2<f32>(0.999)),0.0);
-    let near=vol.light*1.08;
+    // M43 actual Horizon RX580 shows overly bright blown-out generic fog.
+    // Solid faces and terrain should stay readable in bright daylight;
+    // stronger spectral contrast may appear when the world is genuinely dark.
+    let near=vol.light*0.72;
     let glow=textureSampleLevel(aetheria_blur_v,linear_sampler,uv,0.0).rgb;
-    let rgb=distorted.rgb + near + glow*aetheria_bloom*0.66;
-    // Linear-light HDR: do not globally bleach the world or fake fullscreen whiteout.
-    return vec4<f32>(min(rgb,vec3<f32>(max(2.5,frame.headroom*1.8))),input.color.a);
+    let luma=dot(distorted.rgb,vec3<f32>(0.2126,0.7152,0.0722));
+    let scene_adaptation=1.0/(1.0+2.3*max(luma,0.0));
+    let radiance=(near+glow*aetheria_bloom*0.19)*scene_adaptation;
+    let rgb=distorted.rgb+radiance;
+    // Preserve HDR headroom where available; ordinary SDR clips gently.
+    let limit=max(1.10,frame.headroom*1.25);
+    return vec4<f32>(min(rgb,vec3<f32>(limit)),input.color.a);
 }

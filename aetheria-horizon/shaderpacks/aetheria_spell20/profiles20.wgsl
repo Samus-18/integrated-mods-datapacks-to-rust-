@@ -93,8 +93,8 @@ fn fx_read_state()->FXState {
         var id=clamp(aetheria_demo,1,20);
         if(aetheria_cycle) { id=1+i32(floor(frame.time/4.0))%20; }
         let aim=normalize((frame.view_inverse*vec4<f32>(0.0,0.0,-1.0,0.0)).xyz);
-        let center=aim*7.0+vec3<f32>(0.0,0.20,0.0);
-        return FXState(id,center,aim,fract(frame.time/4.0),1.0,5.5);
+        let center=aim*8.0+vec3<f32>(0.0,0.20,0.0);
+        return FXState(id,center,aim,fract(frame.time/4.0),1.0,3.8);
     }
     return FXState(0,vec3<f32>(0.0),vec3<f32>(0.0,0.0,1.0),0.0,0.0,0.0);
 }
@@ -104,6 +104,44 @@ fn fx_to_spell_space(p:vec3<f32>,direction:vec3<f32>)->vec3<f32> {
     let right=normalize(cross(guide,forward));
     let up=normalize(cross(forward,right));
     return vec3<f32>(dot(p,right),dot(p,up),dot(p,forward));
+}
+// One time-driven **physical progression** for each of the 20 shapes.
+// Projectile, rising architecture, breaking wave and spatial implosion do
+// not share the same growth trajectory; time changes WHERE the actual
+// volume exists, not only its tint/alpha or a fake sprite animation.
+fn fx_animate_space(id:i32,p:vec3<f32>,t:f32)->vec3<f32> {
+    let release=smoothstep(0.13,0.64,t);
+    let forming=smoothstep(0.02,0.22,t);
+    var q=p;
+    if(id==1 || id==3 || id==6 || id==9 ||
+       id==11 || id==13 || id==15 || id==19) {
+        // Impulsive directional casts, with shape-specific lateral drift.
+        q.z+=0.85-1.70*release;
+        q.x+=0.14*sin(t*11.0+f32(id));
+        q.y+=0.10*cos(t*9.0+f32(id)*0.73);
+    } else if(id==4 || id==8) {
+        // Frost/stone construction assembles progressively from near to far.
+        q.z+=(1.0-release)*1.25;
+        q.y+=0.21*(1.0-forming);
+    } else if(id==2 || id==5 || id==14 || id==16) {
+        // Expanding fan, shock-wave, plasma and gravity pressure front.
+        let size=mix(0.59,1.03,release);
+        q=vec3<f32>(q.xy/max(size,0.1),q.z);
+        q.z+=0.13*sin(t*8.0);
+    } else if(id==7 || id==12 || id==17) {
+        // Fist drops, roots unfold and clock components coalesce.
+        q.y+=0.75*(1.0-release);
+        q.x+=0.17*sin(t*4.5+f32(id)*0.5);
+    } else if(id==10 || id==18) {
+        // Traveling water/temporal sheets shear rather than rotate in place.
+        q.x+=0.63*(release-0.5);
+        q.z+=0.28*sin(t*8.0+q.x*2.0);
+    } else if(id==20) {
+        // Soul lantern ascends and sheds bright souls from below.
+        q.y-=0.67*release;
+        q.x+=0.08*sin(t*7.5);
+    }
+    return q;
 }
 // Returns [signed-distance, in-body emission multiplier, local refraction].
 // Every case is a separate authored spatial form, NOT one generic recoloured
@@ -390,7 +428,7 @@ fn fx_volume(input:PostInput,steps:i32)->FXVolume {
     }
     let far=min(exit,maxdist);
     if(far<=enter) {return FXVolume(vec3<f32>(0.0),0.0,0.0);}
-    let amount=select(10,select(12,18,steps>12),aetheria_quality>0);
+    let amount=select(12,select(12,20,steps>12),aetheria_quality>0);
     let increment=(far-enter)/f32(amount);
     var trans=1.0;
     var acc=vec3<f32>(0.0);
@@ -401,14 +439,23 @@ fn fx_volume(input:PostInput,steps:i32)->FXVolume {
         if(i>=amount || trans<0.035){break;}
         let distance=enter+(f32(i)+0.5)*increment;
         let world=r*distance-state.center;
-        let local=fx_to_spell_space(world,state.direction);
+        let local=fx_animate_space(state.id,
+            fx_to_spell_space(world,state.direction),state.phase);
         let m=fx_profile(state.id,local,state.phase);
-        let density=(1.0-smoothstep(-0.16,0.48,m.x))*
-            (0.66+0.34*fx_noise(local*3.0+vec3<f32>(state.phase*7.0)));
-        let optical=clamp(density*increment*1.35*activity,0.0,0.38);
+        // Actual RX580 M43 screenshot QA: too much broad optical fog hid
+        // the 20 different SDF silhouettes under clipped white-yellow blobs.
+        // Tight self-occluded body + thin surface crest; neither is a giant
+        // glow sphere at the bound radius.
+        let core=1.0-smoothstep(-0.09,0.11,m.x);
+        let shell=exp(-abs(m.x)*9.0);
+        let articulation=fx_noise(local*3.0+vec3<f32>(state.phase*7.0));
+        let density=clamp((core*0.64+shell*0.29)*
+            (0.54+0.46*articulation),0.0,1.0);
+        let optical=clamp(density*increment*0.89*activity,0.0,0.25);
         let contribution=trans*optical;
-        acc+=fx_palette(state.id,local,state.phase)*
-            contribution*(0.50+0.72*m.y);
+        let pigment=fx_palette(state.id,local,state.phase);
+        acc+=pigment*contribution*
+            (0.22+0.40*m.y+0.32*shell);
         refraction+=contribution*m.z;
         trans*=1.0-optical;
     }
