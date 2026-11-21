@@ -1,4 +1,4 @@
-name: Aetheria Rust core
+name: Aetheria Rust core + 100 authored VFX
 on:
   push:
     paths:
@@ -19,6 +19,13 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Compile exact M33/M34/M35 ice models and procedural particle Rust source
         run: cargo test --manifest-path asset-pipeline/sharp-projectile-v2/rust-qa/Cargo.toml --all-targets
+      - name: Export actual M36 Rust-geometry art review panels
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Aetheria-M36-100-Spells-Source-Geometry-Review
+          path: aetheria-horizon/asset-pipeline/sharp-projectile-v2/rust-qa/target/visual-m36/
+          if-no-files-found: warn
       - name: Check portable Rust core
         run: cargo test --all-targets
   rapier-physics-tests:
