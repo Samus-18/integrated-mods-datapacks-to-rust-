@@ -57,6 +57,20 @@ pub(super) fn pack_frame_rows(
     out[3]=[profile.tint[0],profile.tint[1],profile.tint[2],0.0];
     out
 }
+/// One canonical duration/validation routine shared by the runtime hook
+/// and offline tests. Bad/future/expired cast events emit *zero* uniforms.
+#[allow(dead_code)]
+pub(super) fn packet_from_cast(
+    spell_id:u16,age_ticks:f32,center:[f32;3],
+    camera:[f32;3],direction:[f32;3]
+)->[[f32;4];8]{
+    let zero=[[0.0_f32;4];8];
+    let Some(profile)=profile_for_spell(spell_id) else {return zero;};
+    if !age_ticks.is_finite() || age_ticks<0.0{return zero;}
+    let duration=(profile.charge_s+profile.sustain_s+profile.dissolve_s)*20.0;
+    if !duration.is_finite() || duration<1.0 || age_ticks>duration {return zero;}
+    pack_frame_rows(profile,age_ticks/duration,1.0,center,camera,direction)
+}
 #[cfg(test)]
 mod tests{
     use super::*;
@@ -75,6 +89,24 @@ mod tests{
         }
         assert_eq!(ids.len(),20);assert_eq!(names.len(),20);
         assert!(profile_for_spell(199).is_none());
+    }
+    #[test] fn all_twenty_real_cast_packets_and_release_tails_are_safe(){
+        let camera=[0.0_f32,67.0,0.0];
+        let center=[1.0_f32,67.0,8.0];
+        for p in POST20 {
+            let length=(p.charge_s+p.sustain_s+p.dissolve_s)*20.0;
+            let data=packet_from_cast(p.spell_id,length*0.54,center,
+                camera,[0.0,0.1,1.0]);
+            assert_eq!(data[0][0],f32::from(p.profile));
+            assert_eq!(data[0][3],1.0);
+            assert!(data.iter().flatten().all(|f|f.is_finite()));
+            assert_eq!(packet_from_cast(p.spell_id,length+0.2,center,
+                camera,[0.0,0.0,1.0]),[[0.0;4];8]);
+            assert_eq!(packet_from_cast(p.spell_id,-1.0,center,
+                camera,[0.0,0.0,1.0]),[[0.0;4];8]);
+        }
+        assert_eq!(packet_from_cast(999,12.0,center,camera,[0.,0.,1.]),
+            [[0.0;4];8]);
     }
     #[test] fn zero_bad_inputs_and_unit_forward_never_nan(){
         let a=&POST20[10];

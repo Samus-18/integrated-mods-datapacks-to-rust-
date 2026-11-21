@@ -458,3 +458,18 @@ User rejected the one-spell M39–M41 visual loop and supplied godwand-neoforge-
 
 ## 2026-11-21 — M43 batch of 20 post FX profiles (SOURCE stage)
 After auditing God Wand 1.6.1 the user requested batching 20, no one-skill loop. Created original Horizon .hshader scene-depth full-screen 4-stage renderer for two specific spells per school (exact 20 canonical IDs 1,2,21,22,...181,182), plus Rust 20-profile dispatch and finite camera-relative parameters. Local exact-source Rust 35/35 passed. Official Horizon API 0.2 checker action pending. NO claim of 20 complete spells: native shader_params bridge, Photon selection policy, art in-game Vulkan review, sound/server gameplay not done. No AI pictures. See docs/M43_BATCH20_SOURCE_AND_QA.md.
+
+## 2026-11-21 — M43 actual Vulkan 20-profile QA and global art correction
+Official Horizon post shader checker completed success for first M43 version,
+GitHub run 44930578596, artifact 14717477788. Real isolated Nightly 2026-11-20
+Vulkan RX580 loaded all four stages in 899ms, took ten real screenshots;
+user mouse activity safely stopped the test and left their game open.
+Four images archived with PRE_REFINEMENT NOT_APPROVED names.
+Art verdict FAIL: yellow-white over-exposure and milky cyan/gold fog obscure
+actual spell silhouettes. Improved all twenty with sharp SDF density bands,
+lower brightness/adaptive daylight composition, tighter preview bound and
+category-dependent physical movement over time. Added experimental
+Hooks::shader_params to existing R/Z .hmod state for 20 exact identity
+uniforms; **must pass pinned SDK CI and actual game test** before claiming
+a functional bridge. Source Naga/Rust 37/37 passed. No 20 fully finished
+skills, nor user-ready ZIP. Do NOT generate AI screenshots or touch Photon.

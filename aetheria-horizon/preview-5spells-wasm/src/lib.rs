@@ -40,7 +40,7 @@ use aetheria_horizon::core::player_data::PlayerMagic;
 use aetheria_horizon::cast as cast_spell;
 use mod_api::{
     self, Hooks, Registrar, RegistrationContext, KeyRegistration, KeyConflictContext,
-    ClientHost, ClientTickPostEvent, ClientSetupEvent, ClientResourcesReloadedEvent,
+    ClientHost, ClientTickPostEvent, ShaderParamsEvent, ClientSetupEvent, ClientResourcesReloadedEvent,
     SubmitCustomGeometryEvent, GuiRenderPostEvent, RegisterRenderPipelinesEvent,
     RenderPipeline, RenderPipelineRef, PipelineBlend, PipelineQuad, WorldDepth,
     MouseScrollingEvent, Flow,
@@ -84,7 +84,8 @@ impl Hooks for Mod {
     // state as the R/Z picker to the native Horizon HDR post renderer.
     // If the pinned guest SDK does not expose this hook, compilation MUST
     // fail; never silently claim a working shader bridge.
-    fn shader_params(&self, partial:f32, params:&mut [[f32;4];8]) {
+    fn shader_params(&self, _: &dyn ClientHost, event:&mut ShaderParamsEvent<'_>) {
+        let partial=event.partial;
         let state=self.state.lock().unwrap();
         let Some(camera)=state.last_camera else {return;};
         if !partial.is_finite() {return;}
@@ -93,14 +94,13 @@ impl Hooks for Mod {
             let Some(profile)=post_profiles20::profile_for_spell((cast.kind+1) as u16)
                 else {continue;};
             let ticks=(state.tick.saturating_sub(cast.start) as f32)+partial.clamp(0.0,1.0);
-            let lifetime=(profile.charge_s+profile.sustain_s+profile.dissolve_s)*20.0;
-            if ticks>lifetime || lifetime<1.0 {continue;}
-            let world=cast.center.map(|v|v as f32);
-            let camera=camera.map(|v|v as f32);
-            let direction=cast.direction.map(|v|v as f32);
-            *params=post_profiles20::pack_frame_rows(profile,ticks/lifetime,1.0,
-                world,camera,direction);
-            return;
+            let rows=post_profiles20::packet_from_cast(profile.spell_id,ticks,
+                cast.center.map(|v|v as f32),camera.map(|v|v as f32),
+                cast.direction.map(|v|v as f32));
+            if rows[0][3]>0.5 {
+                event.params.copy_from_slice(&rows);
+                return;
+            }
         }
     }
     fn register(&self, registrar: &mut dyn Registrar, _: &RegistrationContext) {

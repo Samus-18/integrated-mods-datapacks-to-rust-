@@ -20,7 +20,8 @@ jobs:
           import re
           base=Path('aetheria-horizon/shaderpacks/aetheria_spell20')
           shader=(base/'profiles20.wgsl').read_text()
-          ids=[int(x) for x in re.findall(r'if\(id==(\d+)\)\s*\{\s*//',shader)]
+          shape_source=shader.split('fn fx_profile(',1)[1].split('fn fx_palette(',1)[0]
+          ids=[int(x) for x in re.findall(r'if\(id==(\d+)\)\s*\{\s*//',shape_source)]
           assert ids == list(range(1,21)), f'expected exactly 20 different spatial profile branches, got {ids}'
           for fn in ['profiles20.wgsl','post/emission.wgsl','post/blur_h.wgsl','post/blur_v.wgsl','post/composite.wgsl']:
               path=base/fn

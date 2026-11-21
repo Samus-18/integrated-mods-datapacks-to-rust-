@@ -68,3 +68,44 @@ geometry, game sound and phase-specific server logic. Our earlier giant
 alpha card/needle-star was not equivalent. Read
 `docs/research/GOD_WAND_161_RENDER_AUDIT.md` for precise class inventory,
 technical inspiration and original-all-rights-reserved asset policy.
+
+## Real GPU screenshot acceptance gate — 2026-11-21
+
+The first M43 shaderpack (before visual retuning) was officially validated
+by Horizon API 0.2 in GitHub Actions `44930578596`, then **loaded for real**
+by Horizon Nightly 2026-11-20 into a fresh isolated Minecraft 26.3 world,
+Vulkan / Radeon RX 580 Series. The game log explicitly confirmed all four
+M43 shader stages loaded in 899 ms. Ten original, NOT AI, screenshot frames
+were captured. Four are archived under `docs/qa/actual-horizon/`, marked
+`M43_PRE_REFINEMENT_RealHorizon_*_NOT_APPROVED.png`.
+Then horizon-ctl detected real user mouse/motion input and correctly stopped
+automatic QA **without quitting or taking the user's game controls**.
+There is no verified profile-ID mapping for those ten timing-based cycle shots.
+
+**Visual verdict: FAIL / prototype too bright and fog-like.** True images
+show white-yellow overexposure for fire, opaque cyan glow smearing details,
+a pale gold fog-like patch and a weak/absent effect in one later frame.
+The new post stack is genuinely active, but this is NOT the God Wand-level
+visual craftsmanship the user asked for.
+
+### Cross-school M43 visual corrections now authored (unverified in-game)
+- Reduced demo bounding radius 5.5 to 3.8 blocks, moved preview from 7 to
+  8 blocks to preserve clear edges and reduce giant glowing blobs.
+- Narrowed signed-distance density bands and optical buildup, strengthened
+  local shell clarity, reduced direct emission and bloom additivity.
+- Added daylight-adapted linear-light scene blending: keep solid foliage,
+  stone and world textures readable; retain HDR headroom where available.
+- Added per-type time progression in `fx_animate_space`: flying projectiles
+  differ from expanding shock fronts, rising constructed bridges, dropping
+  rock/roots, sliding water/temporal sheets and ascending souls.
+- New `Hooks::shader_params` source connects the existing R/Z cast state
+  and current camera to the same 20 profile IDs via a bounded 8×vec4 slot.
+  Whether the pinned Horizon guest SDK can compile and run that client hook
+  is **PENDING .hmod CI and REAL integrated game test**; no false bridge claim.
+- Local exact-source Rust + Naga suite passed **37/37** after retuning.
+  Official post-pack check must pass again for the latest source.
+  A new post-refinement real Radeon screenshot must be inspected and accepted
+  before counting ANY of these twenty as finished.
+
+The older shaderpack may NOT coexist with a simultaneously selected Photon:
+avoid destructive changes to a user's installed game or saved options.
