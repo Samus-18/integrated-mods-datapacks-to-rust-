@@ -135,3 +135,7 @@ Evidence docs/qa/actual-horizon (game screenshots, never generated images).
 M41 tangent geometric fix and 100-identity material layer revision
 passed 33/33 local exact-source tests. M41 CI and actual GPU verdict pending.
 100 playable spell gate, server hooks and art acceptance remain unmet.
+
+### M41 actual runtime safety gate (2026-11-21)
+CI 44925973886 PASS and .hmod checksum 9a165d074d22874f50c7d6893ed4e504e57eadad69f35ba90886c99b349ab718; real Nightly Vulkan RX580 launch and Wild Thorn Dart HUD selection confirmed.
+Further automated spell capture ABORTED by user's input in the game. The safety guard left Horizon running and did not take control; neither M41 spell VFX appearance nor graphics of other schools were verified in-game. Only actual-game baseline/selection captures exist. The script's m40 output directory was corrected to m41.

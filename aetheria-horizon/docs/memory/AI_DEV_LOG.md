@@ -447,3 +447,8 @@ Also corrects M36 giant single-card fake hero material across all
 fragments along 48 distinct positional choreography families.
 33/33 local exact-source Rust QA pass including M40 bug regression test.
 M41 not CI-compiled/actual-game accepted yet, ZERO fully playable 100 gate.
+
+## 2026-11-21 — M41 compiled CI, live QA safely aborted
+GitHub Action 44925973886 PASS, compiled M41 0.8.9 .hmod sha256 9a165d074d22874f50c7d6893ed4e504e57eadad69f35ba90886c99b349ab718.
+Actual Horizon Vulkan RX580 launched in isolated QA, HUD confirmed Thorn Dart selected. M41 effect/impact was NOT captured because the control tool detected user input and intentionally stopped. It left game open rather than hijacking user session. Two authentic M41 baseline/selection pictures archived and M41 test script output path corrected from m40 to m41.
+No M41 visual acceptance until real screenshots; zero completed 100-gameplay-spell gate.

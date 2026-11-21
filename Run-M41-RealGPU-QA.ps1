@@ -11,7 +11,7 @@ if (-not (Test-Path -LiteralPath $ModPath -PathType Leaf)) { throw 'CI-certified
 if (Get-Process horizon-client -ErrorAction SilentlyContinue) {
   throw 'Horizon already running. Do NOT hijack a live user session.'
 }
-if (-not $OutputRoot) { $OutputRoot = Join-Path $PSScriptRoot 'aetheria-horizon\preview-5spells-wasm\target\m40-runtime-qa' }
+if (-not $OutputRoot) { $OutputRoot = Join-Path $PSScriptRoot 'aetheria-horizon\preview-5spells-wasm\target\m41-runtime-qa' }
 New-Item -ItemType Directory -Force -Path $OutputRoot | Out-Null
 $isolated = Join-Path $OutputRoot 'isolated-game'
 New-Item -ItemType Directory -Force -Path $isolated | Out-Null
@@ -54,6 +54,26 @@ try {
   & $ctl screenshot (Join-Path $OutputRoot 'M41_04_thorn_impact_actual_Horizon.png') | Out-Null
   Start-Sleep -Milliseconds 1500
   & $ctl screenshot (Join-Path $OutputRoot 'M41_05_thorn_afterglow_actual_Horizon.png') | Out-Null
+  # M41 also changes material overlays for 100 named drafted spells.
+  # Actual per-school screenshots MUST sample non-SDF named routes rather
+  # than only the specialized Thorn Dart and SDF signatures.
+  $sampling=@(
+    @{ name='Spark Fork'; file='M41_06_spark_fork_actual_Horizon.png' },
+    @{ name='Star Shard'; file='M41_07_star_shard_actual_Horizon.png' },
+    @{ name='Second Hand'; file='M41_08_second_hand_actual_Horizon.png' },
+    @{ name='Bone Thorn'; file='M41_09_bone_thorn_actual_Horizon.png' }
+  )
+  foreach($sample in $sampling) {
+    $null=check_user
+    & $ctl key r down | Out-Null
+    Start-Sleep -Milliseconds 240
+    & $ctl key r up | Out-Null
+    Start-Sleep -Milliseconds 850 # collapse school wheel
+    & $ctl key z tap | Out-Null
+    Start-Sleep -Milliseconds 920
+    & $ctl screenshot (Join-Path $OutputRoot $sample.file) | Out-Null
+    Write-Output ('Actual M41 material sample: '+$sample.name)
+  }
   $state=check_user
   $report=[ordered]@{
     engine = 'Actual Horizon Nightly 2026-11-20, Minecraft 26.3'
@@ -65,7 +85,7 @@ try {
     shader_is_beautiful = $false # requires human/visual inspection of actual PNGs
     user_controls_intact = $true
     version = 'M41 0.8.9 INTERNAL'
-    screenshot_count = 6
+    screenshot_count = 10
   }
   $report|ConvertTo-Json -Depth 6 |Set-Content -LiteralPath (Join-Path $OutputRoot 'QA_M41_real_game_report.json') -Encoding utf8
   Write-Output ('Actual QA GPU: '+$report.gpu+' / FPS near cast '+$report.fps_observed_after_cast)
