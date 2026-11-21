@@ -26,7 +26,7 @@ insertion=(f"{begin}\nimpl Scene {{\n{methods}\n}}\n"
     '#[path="../../../../preview-5spells-wasm/src/signature_forms.rs"]\n'
     'mod signature_forms;\n'
     '#[path="../../../../preview-5spells-wasm/src/signature_shader.rs"]\n'
-    f"mod signature_shader;\n#[cfg(test)]\nmod signature_gallery;\n{end}")
+    f"mod signature_shader;\n#[cfg(test)]\nmod signature_gallery;\n#[cfg(test)]\nmod signature_naga;\n{end}")
 if begin in qa:
     before,after=qa.split(begin,1)
     _,after=after.split(end,1)

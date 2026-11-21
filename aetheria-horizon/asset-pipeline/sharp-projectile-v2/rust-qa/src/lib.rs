@@ -153,6 +153,8 @@ mod signature_forms;
 mod signature_shader;
 #[cfg(test)]
 mod signature_gallery;
+#[cfg(test)]
+mod signature_naga;
 // END M37 EXACT HORIZON SCENE HELPERS
 #[cfg(test)]
 mod scene_tests {
