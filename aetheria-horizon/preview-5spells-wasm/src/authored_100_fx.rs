@@ -173,7 +173,7 @@ pub(super) fn render(
     cast:Cast,age:f64,camera:[f64;3],scene:&mut Scene
 )->Option<usize>{
     let author=author_for(cast.kind)?;
-    if !age.is_finite()||!(0.0.0.104.0).contains(&age)
+    if !age.is_finite()||!(0.0..104.0).contains(&age)
         ||!cast.center.iter().chain(cast.direction.iter()).all(|v|v.is_finite())
         ||!camera.iter().all(|v|v.is_finite())
     {return Some(0);}
@@ -191,7 +191,7 @@ pub(super) fn render(
         let v=rand(cast.kind,i,1);
         let born=4.0+rand(cast.kind,i,2)*34.0*author.phase;
         let life=(age-born)/(50.0+29.0*rand(cast.kind,i,3));
-        if !(0.0.0.1.0).contains(&life){continue;}
+        if !(0.0..1.0).contains(&life){continue;}
         let fade=ease(life*8.0)*(1.0-ease((life-0.72)/0.28))*envelope;
         if fade<0.06{continue;}
         let local=pose(author,q,u,v,overall);
@@ -222,7 +222,7 @@ mod tests{
  #[test]
  fn all_100_authored_slots_have_deterministic_distinct_animated_quads(){
    let mut actual=0;
-   for slot in 0.0.200{
+   for slot in 0..200{
      let eligible=slot%20<10;
      for age in [9.0,22.0,47.0,70.0,88.0]{
        let mut a=Scene::with_lod(90,false);
