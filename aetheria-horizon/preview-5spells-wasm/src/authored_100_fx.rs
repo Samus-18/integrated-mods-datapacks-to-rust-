@@ -11,6 +11,25 @@ const RGB:[u32;10]=[
   0x007FDB98,0x009FC6FA,0x00C9A0F9,0x00E9C890,0x00D3ABDB,
 ];
 const MATERIAL:[u8;10]=[64,79,110,91,91,110,79,110,79,110];
+/// An actual per-shape material identity, NOT merely a school color.
+/// The dedicated WGSL fragment processor gives these tags distinct soft
+/// silhouettes (flame, star, droplet, wisp, smoke, glass, leaf, arc, stream,
+/// rune, chrono fracture, bone). These values never hit plain WorldQuad.
+fn material_for(p:Pattern,school:usize)->u8{
+    use Pattern::*;
+    match p {
+        Cloud|Veil|Vortex|Implode =>123,
+        Lance|Bridge|Cage|Claw|Mirror|Jaws|Crescent|Shield|Barrage|Crack=>139,
+        Bloom|Roots|Wings|Canopy|Weave|Surf=>154,
+        Fork|Net|Coil|Corona|Sonic=>169,
+        Lash|Serpent|Footsteps|Tether|Jet|Cascade|Rain=>184,
+        Sigil|Compass|Fold=>199,
+        Clock|TimeEcho|Sandglass|Stasis=>214,
+        Lantern if school==9=>229,
+        Pool if school==9=>229,
+        _=>MATERIAL[school],
+    }
+}
 fn hash(n:f64)->f64 {let q=(n*12.9898+78.233).sin()*43758.5453123;q-q.floor()}
 fn rand(slot:usize,i:usize,k:usize)->f64 {
     hash(1.0+slot as f64*27.31+i as f64*73.19+k as f64*11.17)
@@ -208,7 +227,7 @@ pub(super) fn render(
         };
         let roll=0.18*author.twist*(life*TAU+q*TAU).sin();
         let _=sprite(scene,camera,position,width,height,roll,
-                     RGB[school],MATERIAL[school]);
+                     RGB[school],material_for(author.pattern,school));
     }
     Some(scene.facets.len()-start)
 }
@@ -252,6 +271,18 @@ mod tests{
    let signatures:std::collections::BTreeSet<_>=unique.values()
       .map(|v|format!("{:0.2},{:0.2},{:0.2}",v[0],v[1],v[2])).collect();
    assert!(signatures.len()>=36);
+ }
+ #[test]
+ fn all_shader_silhouette_categories_are_represented_in_authored_100(){
+   use std::collections::BTreeSet;
+   let tags: BTreeSet<_>=super::super::authored_100_data::AUTHOR_100
+      .iter().map(|a|material_for(a.pattern,(a.id as usize-1)/20)).collect();
+   assert!(tags.len()>=10,"Only {} actual silhouette families",tags.len());
+   for tag in [64,79,91,110,123,139,154,169,184,199,214,229] {
+      if tag!=79 && tag!=91 && tag!=64 && tag!=110 {
+         assert!(tags.contains(&tag),"missing authored material tag {}",tag);
+      }
+   }
  }
  #[test]
  fn camera_steep_angle_and_zero_budget_do_not_break_world_geometry(){
