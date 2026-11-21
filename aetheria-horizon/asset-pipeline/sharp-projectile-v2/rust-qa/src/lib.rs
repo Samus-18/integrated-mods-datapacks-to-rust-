@@ -68,6 +68,10 @@ mod catalog200 {
 }
 #[path="../../../../preview-5spells-wasm/src/procedural_fx.rs"]
 mod procedural_fx;
+#[path="../../../../preview-5spells-wasm/src/authored_100_data.rs"]
+mod authored_100_data;
+#[path="../../../../preview-5spells-wasm/src/authored_100_fx.rs"]
+mod authored_100_fx;
 #[cfg(test)]
 mod scene_tests {
     use super::*;
