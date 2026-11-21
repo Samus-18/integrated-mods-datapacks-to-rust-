@@ -137,7 +137,7 @@ mod m36_gallery {
         <text x="42" y="55" fill="{tone}" font-family="Segoe UI,Arial" font-size="30"
          font-weight="bold">AETHERIA / {title} / 10 SOURCE-SCULPTED SPELLS</text>
         <text x="42" y="83" fill="#9baecb" font-family="Segoe UI,Arial" font-size="17">
-        Actual Rust world-quad center projections at two times, soft particle mask approximation.
+        Real Rust source vertices at two times, with an SVG material-mask approximation.
         NOT a Horizon GPU screenshot. NOT 100 finished spells.</text>"##,
         tone=PALETTE[school],title=SCHOOLS[school]).unwrap();
         for index in 0..10 {
@@ -167,19 +167,58 @@ mod m36_gallery {
                 authored_100_fx::render(cast,age,[9.,72.,12.],&mut scene);
                 let cx=(pane_x+88) as f64;
                 let cy=(pane_y+125) as f64;
-                for (corners,_) in scene.facets {
+                for (corners,color) in scene.facets {
                     let p=corners.iter().copied().fold([0.,0.,0.],add);
                     let center=scale(p,0.25);
-                    let u=cx+center[0]*17.0+center[2]*2.3;
-                    let v=cy-(center[1]-65.0)*18.0+center[2]*2.0;
+                    let u=cx+center[0]*23.0+center[2]*3.8;
+                    let v=cy-(center[1]-65.0)*25.0+center[2]*3.6;
                     if u<pane_x as f64+4.0||u>(pane_x+172) as f64
                        ||v<(pane_y+18) as f64||v>(pane_y+210) as f64 {
                         continue;
                     }
-                    let rad=(length(sub(corners[0],center))*20.0).clamp(1.6,10.2);
-                    write!(&mut s,r##"<circle cx="{:.2}" cy="{:.2}" r="{:.2}"
-                         fill="url(#glow)" opacity=".74"/>"##,
-                        u,v,rad).unwrap();
+                    let rad=(length(sub(corners[0],center))*27.0).clamp(2.0,14.0);
+                    // Display only the material-silhouette category that
+                    // the actual GPU shader selects. SVG styles approximate
+                    // (never claim a pixel-perfect Horizon GPU capture).
+                    let tag=(color>>24) as u8;
+                    let tone=PALETTE[school];
+                    match tag {
+                        139=>{
+                            write!(&mut s,r##"<polygon points="{:.2},{:.2} {:.2},{:.2} {:.2},{:.2} {:.2},{:.2}"
+                                fill="url(#glow)" opacity=".82"/>"##,
+                                u,v-rad*1.2,u+rad*.65,v,u,v+rad*1.2,u-rad*.60,v).unwrap();
+                        }
+                        154=>{
+                            write!(&mut s,r##"<ellipse cx="{u:.2}" cy="{v:.2}" rx="{:.2}"
+                                ry="{:.2}" transform="rotate(32 {u:.2} {v:.2})"
+                                fill="url(#glow)" opacity=".72"/>"##,
+                                rad*.62,rad*1.35).unwrap();
+                        }
+                        169=>{
+                            write!(&mut s,r##"<polyline points="{:.2},{:.2} {:.2},{:.2}
+                                {:.2},{:.2} {:.2},{:.2}" fill="none"
+                                stroke="{tone}" stroke-width="{:.2}" stroke-linejoin="round"
+                                opacity=".71"/>"##,
+                                u-rad*.45,v+rad,u+rad*.25,v+rad*.16,
+                                u-rad*.10,v-rad*.12,u+rad*.4,v-rad,rad*.30).unwrap();
+                        }
+                        184=>{
+                            write!(&mut s,r##"<path d="M{:.2},{:.2} Q{:.2},{:.2} {:.2},{:.2}"
+                                fill="none" stroke="{tone}" stroke-width="{:.2}"
+                                opacity=".64" stroke-linecap="round"/>"##,
+                                u-rad,v+rad,u+rad*.66,v,u+rad,v-rad,rad*.52).unwrap();
+                        }
+                        199=>{
+                            write!(&mut s,r##"<polygon points="{:.2},{:.2} {:.2},{:.2}
+                                {:.2},{:.2} {:.2},{:.2}" fill="none"
+                                stroke="{tone}" stroke-width="{:.2}" opacity=".67"/>"##,
+                                u,v-rad,u+rad,v,u,v+rad,u-rad,v,rad*.25).unwrap();
+                        }
+                        _=>{
+                            write!(&mut s,r##"<circle cx="{u:.2}" cy="{v:.2}" r="{rad:.2}"
+                                fill="url(#glow)" opacity=".74"/>"##).unwrap();
+                        }
+                    }
                 }
             }
         }
