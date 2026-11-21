@@ -240,9 +240,9 @@ fn fx_profile(id:i32,p:vec3<f32>,t:f32)->vec3<f32> {
         var d=max(length(q.xz-vec2<f32>(jx,jz))-0.16,abs(q.y)-2.0);
         for(var i=0;i<3;i=i+1) {
             let f=f32(i)-1.0;
-            let from=vec3<f32>(jx*0.6,-0.4+f*0.42,0.0);
+            let branch_origin=vec3<f32>(jx*0.6,-0.4+f*0.42,0.0);
             let to=vec3<f32>(f*0.88,1.35+f*0.17,0.65*cos(f*2.0+t));
-            d=min(d,fx_capsule(q,from,to,0.10));
+            d=min(d,fx_capsule(q,branch_origin,to,0.10));
         }
         return vec3<f32>(d,2.20,0.038);
     }
