@@ -353,6 +353,13 @@ impl Hooks for Mod {
             if room==0{return;}
             let mut accents=Vec::with_capacity(live.len());
             for (cast,age) in live {
+                // M38 REAL GPU QA: the rejected old generic wisp/smoke
+                // emitter looked like a green gas pillar over Thorn Dart.
+                // For all twelve specially sculpted signature spells,
+                // let the NAME-TRUE GPU SDF hero (or coherent 3D fallback)
+                // supply the body. Do not paint a second generic smoke
+                // billboard over the recognisable spell silhouette.
+                if signature_shader::is_signature(cast.kind) {continue;}
                 let mut fx=Scene::with_lod(80,reduced_detail);
                 // First ten named spells in every school have a distinctly
                 // authored choreography; remaining slots use M35 background.

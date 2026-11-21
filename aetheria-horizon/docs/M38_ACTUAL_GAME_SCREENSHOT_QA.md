@@ -24,3 +24,4 @@ followed by ACTUAL new in-game screenshot before any quality approval.
 The remaining 88 of the first 100 do not yet have unique GPU hero SDFs.
 Not 100 production-ready spells, no server-authoritative damage/physics.
 Never substitute AI-generated concept art for gameplay screenshots.
+M38 critical correction: the old M36 procedural wisps also drew a large green fog billboard over Thorn Dart. Added explicit suppression of generic M35/M36 particle overlays for all twelve signature spells, even if SDF shader fails; use name-true GPU mask or coherent 3D fallback alone. This addresses the actual original symptom rather than merely layering a spear on top of smoke.
