@@ -1,0 +1,19 @@
+﻿{
+    "engine":  "Actual Horizon Nightly 2026-11-20, Minecraft 26.3",
+    "renderer":  "Vulkan",
+    "gpu":  "Radeon RX 580 Series",
+    "fps_observed_after_cast":  67.70293426513672,
+    "camera":  [
+                   0.0,
+                   -23.0
+               ],
+    "position":  [
+                     0.0,
+                     69.0,
+                     0.0
+                 ],
+    "shader_is_beautiful":  false,
+    "user_controls_intact":  true,
+    "version":  "M40 0.8.8 INTERNAL",
+    "screenshot_count":  6
+}

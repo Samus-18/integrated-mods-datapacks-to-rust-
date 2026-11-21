@@ -11,7 +11,7 @@ if (-not (Test-Path -LiteralPath $ModPath -PathType Leaf)) { throw 'CI-certified
 if (Get-Process horizon-client -ErrorAction SilentlyContinue) {
   throw 'Horizon already running. Do NOT hijack a live user session.'
 }
-if (-not $OutputRoot) { $OutputRoot = Join-Path $PSScriptRoot 'aetheria-horizon\preview-5spells-wasm\target\m39-runtime-qa' }
+if (-not $OutputRoot) { $OutputRoot = Join-Path $PSScriptRoot 'aetheria-horizon\preview-5spells-wasm\target\m40-runtime-qa' }
 New-Item -ItemType Directory -Force -Path $OutputRoot | Out-Null
 $isolated = Join-Path $OutputRoot 'isolated-game'
 New-Item -ItemType Directory -Force -Path $isolated | Out-Null

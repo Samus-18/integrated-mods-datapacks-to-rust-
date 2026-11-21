@@ -38,10 +38,18 @@ fn living_blade(scene:&mut Scene,from:V,to:V,width:f64,
     if width<0.02{return;}
     let axis=sub(to,from);
     let middle=add(from,scale(axis,0.48));
-    let r=add(scale(right,width*twist.cos()),
-        scale(up,width*twist.sin()));
-    let n=add(scale(right,-width*0.38*twist.sin()),
-        scale(up,width*0.38*twist.cos()));
+    // M41 fix from actual RX580 screenshot: the old leaf width vector
+    // ran PARALLEL to the radial growth axis, collapsing leaves into needles.
+    // Width is now geometrically perpendicular to each blade's own axis.
+    let axis_unit=norm(axis);
+    let dot_r=axis_unit[0]*right[0]+axis_unit[1]*right[1]+axis_unit[2]*right[2];
+    let dot_u=axis_unit[0]*up[0]+axis_unit[1]*up[1]+axis_unit[2]*up[2];
+    let tangent=if dot_r*dot_r+dot_u*dot_u>0.0001{
+        norm(add(scale(right,-dot_u),scale(up,dot_r)))
+    } else {radial(right,up,twist,1.0)};
+    let thickness=norm(cross(axis_unit,tangent));
+    let r=scale(tangent,width);
+    let n=scale(thickness,width*0.36);
     // Faceted upper/lower faces meet at a continuous sharp tip.
     let l=sub(middle,r); let rr=add(middle,r);
     let raised=add(middle,n); let lowered=sub(middle,n);
@@ -60,7 +68,7 @@ pub(super) fn render_body(c:Cast,age:f64,scene:&mut Scene){
        {return;}
     let (aim,right,up)=frame(c);
     let grow=ease((age-1.0)/7.0);
-    let fade=1.0-ease((age-67.0)/17.0);
+    let fade=1.0-ease((age-61.0)/21.0);
     if grow<=0.01||fade<=0.01{return;}
     let head=flight_head(c,age);
     if age<8.0{
@@ -121,33 +129,47 @@ pub(super) fn render_body(c:Cast,age:f64,scene:&mut Scene){
                 0.11*pulse,right,up,0.25+t,BLADE);
         }
     } else {
-        // Impact and aftermath: the dart BREAKS into a spreading thorn
-        // flower/root-star around the hit location, no unchanged arrow held
-        // in the air for five seconds.
-        let t=ease((age-35.0)/18.0);
-        let burst=(0.52+0.48*t)*fade;
-        for j in 0..9 {
-            let a=TAU*j as f64/9.0+0.19*(age-36.0)/30.0;
-            let r=radial(right,up,a,1.15+1.20*t);
-            let start=add(head,scale(aim,-0.10));
-            let bend=add(add(start,scale(r,0.40*burst)),
-                scale(aim,0.12+0.14*(j%3) as f64));
-            let tip=add(add(start,scale(r,(0.80+0.34*(j%3) as f64)*burst)),
-                scale(aim,-0.32-0.35*t));
-            scene.tube(start,bend,0.115*burst,0.067*burst,
-                a,DARK_BARK,5);
-            living_blade(scene,bend,tip,
-                0.25*burst,right,up,a,
-                if j%3==0{EDGE}else if j%3==1{BLADE}else{BARK});
+        // M41 screenshot correction: replace the rejected sparse radial
+        // toothpick/star with a CONNECTED, filled, faceted leaf-bud mass.
+        // Broad tangential petals overlap its central green seed, and each
+        // has genuine 3D thickness. No large empty center or same 9 spokes.
+        let t=ease((age-35.0)/16.0);
+        let burst=(0.58+0.42*t)*fade;
+        // Irregular dense double core creates a contiguous silhouette even
+        // between petals, rather than a black pinhole and star spokes.
+        scene.solid_crystal(
+            add(head,scale(aim,-0.52)),
+            add(head,scale(aim,0.55)),
+            0.68*burst,0.12,BLADE,7);
+        scene.solid_crystal(
+            add(head,scale(up,-0.46)),
+            add(head,scale(up,0.48)),
+            0.48*burst,0.38,SAP,6);
+        // Seven wide overlapping living leaves, rotated in depth as a
+        // flower instead of nine equally-sized needles.
+        for j in 0..7{
+            let jf=j as f64;
+            let a=TAU*jf/7.0+0.11*(age-36.0)/30.0
+                +0.07*(jf*2.1).sin();
+            let forward=if j%2==0{0.19}else{-0.13};
+            let start=add(head,scale(aim,-0.12));
+            let tip=add(add(head,radial(right,up,a,
+                (1.20+0.22*(jf*1.9).sin())*burst)),
+                scale(aim,forward+0.21*t));
+            living_blade(scene,start,tip,
+                (0.52+0.13*(jf*1.3).sin().abs())*burst,
+                right,up,a,if j%3==0{EDGE}else{BLADE});
         }
-        // Bright inner connected leaf petals after penetration, not a halo.
-        for j in 0..5{
-            let a=TAU*j as f64/5.0+PI*0.11;
-            let origin=add(head,scale(aim,0.02));
-            living_blade(scene,origin,
-                add(add(origin,scale(aim,0.22*t)),
-                    radial(right,up,a,0.75*burst)),
-                0.18*burst,right,up,a,SAP);
+        // Inner leaves close the gaps in the body and fold forward in 3D.
+        for j in 0..7 {
+            let jf=j as f64;
+            let a=TAU*(jf+0.43)/7.0+0.04*age;
+            let start=add(head,scale(aim,0.10));
+            let tip=add(add(head,
+                radial(right,up,a,0.80*burst)),
+                scale(aim,0.39*(jf*1.6).sin()));
+            living_blade(scene,start,tip,
+                0.44*burst,right,up,a,SAP);
         }
     }
 }
@@ -161,16 +183,16 @@ pub(super) fn render_spores(c:Cast,age:f64,camera:V,scene:&mut Scene){
     let hit=flight_head(c,age);
     let impact=ease((age-35.0)/10.0);
     let fade=1.0-ease((age-65.0)/15.0);
-    for j in 0..12 {
+    for j in 0..20 {
         let f=j as f64;
         let theta=f*2.3999632+age*0.045;
-        let spread=(0.21+0.48*impact)*(0.35+(j%4) as f64/4.0);
+        let spread=(0.23+0.62*impact)*(0.35+(j%5) as f64/5.0);
         let drift=radial(right,up,theta,spread);
         let world=add(add(hit,drift),[0.0,
-            0.08*((age*0.12+f*0.9).sin()),0.0]);
-        let sz=(0.08+0.025*(j%3) as f64)*fade.max(0.015);
-        let _=sprite(scene,camera,world,sz,sz*1.7,
-            f*0.13+age*0.014,0x007BBB52,110);
+            0.13*((age*0.12+f*0.9).sin()),0.0]);
+        let sz=(0.12+0.023*(j%4) as f64)*fade.max(0.015);
+        let _=sprite(scene,camera,world,sz,sz*1.45,
+            f*0.13+age*0.014,0x008ABD5A,110);
     }
 }
 #[cfg(test)]
@@ -199,6 +221,19 @@ mod tests{
         for pair in captures.windows(2){assert_ne!(pair[0],pair[1]);}
     }
     #[test]
+    fn m41_leaf_width_must_cross_growth_axis_not_collapse_into_a_spoke(){
+        let mut scene=Scene::new(50);
+        living_blade(&mut scene,[0.,0.,0.],[1.,0.,0.],
+            0.55,[1.,0.,0.],[0.,1.,0.],0.0,BLADE);
+        assert_eq!(scene.facets.len(),6);
+        let mut low=f64::INFINITY;let mut high=f64::NEG_INFINITY;
+        for (q,_) in scene.facets {for point in q{
+            low=low.min(point[1]);high=high.max(point[1]);
+        }}
+        assert!(high-low>1.0,
+           "Visual QA M40 regression: leaf was a thin radial spoke");
+    }
+    #[test]
     fn forward_motion_and_budget_never_fall_back_to_flat_hero_card(){
         let c=cast();
         let (dir,_,_)=frame(c);
@@ -213,6 +248,6 @@ mod tests{
         }
         let mut p=Scene::new(30);
         render_spores(c,24.0,[6.0,70.0,9.0],&mut p);
-        assert!(p.facets.len()<=12);
+        assert!(p.facets.len()<=20);
     }
 }

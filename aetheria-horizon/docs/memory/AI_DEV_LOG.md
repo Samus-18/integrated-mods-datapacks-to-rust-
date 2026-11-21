@@ -436,3 +436,14 @@ M38 2026-11-21 actual-client QA: Found installed M32 not M37; launched M37 with 
 
 ## 2026-11-21 — M40 genuine world-space Thorn Dart candidate
 The M39 0.8.7 *actual RX580 Vulkan game screenshot* rejected its flat green silhouette. In M40 0.8.8, a new thorn_living.rs builds a fully spatial seed→flight→root burst→fade using bounded 3D facets with original bark/leaf volumes and tiny optional spore masks; it disables id-100 SDF hero billboard regardless of shader availability. Other 199 visual dispatch routes remain. Real pinned WASM CI and actual M40 gameplay screenshot acceptance are required; this is NOT one of 100 fully approved spells, nor server gameplay damage. See docs/M40_WORLDSPACE_THORN_QA.md.
+
+## 2026-11-21 — M40 actual visual rejection → M41 systemic repair
+M40 CI 44924606657 PASS. REAL isolated Horizon Vulkan RX580, ~67.7 FPS.
+Images archived docs/qa/actual-horizon; M40 art FAIL spiky sparse radial star.
+M41 fixes geometric root cause (leaf width axis collapsed), adds closed
+filled green/brown seed bud and broad overlapping petals, changes fade.
+Also corrects M36 giant single-card fake hero material across all
+100 name-authored source effects with small spatially distributed WGSL
+fragments along 48 distinct positional choreography families.
+33/33 local exact-source Rust QA pass including M40 bug regression test.
+M41 not CI-compiled/actual-game accepted yet, ZERO fully playable 100 gate.

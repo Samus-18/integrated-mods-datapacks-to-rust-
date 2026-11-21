@@ -26,3 +26,16 @@ approved game art. Compile/CI result pending. ACTUAL RX580 Vulkan screenshots
 and multi-angle QA must be reviewed before art acceptance. No new native GPU
 instancing, HDR scene texture, server hit effects or 100 completed spells.
 Other 199 spell routes unchanged; user M32 installation untouched.
+
+## Actual Horizon game result: M40 0.8.8 FAIL — 2026-11-21
+GitHub pinned CI 44924606657 PASS, package SHA256:
+e519c2b505ffd0c5222197abe01418ec484028bd5c5f5b5a54949c545159e642
+Actual isolated Horizon Nightly 2026-11-20, MC 26.3, Vulkan RX580.
+Observed FPS after cast ~67.7, no game/world errors.
+Photos M40_03 (flight), M40_04 (impact), M40_05 (afterglow) under
+docs/qa/actual-horizon/, along with QA_M40_real_game_report.json.
+Art verdict FAIL: sparse nine-spoke brown/green star, not a living blossom.
+Root cause: blade width was PARALLEL to radial growth direction,
+collapsing full leaves into tiny triangles/toothpicks. M41 fixes local
+tangent, fills core with faceted seed and overlapping broad petals.
+M41 still requires new actual game screenshot; no approval claimed.

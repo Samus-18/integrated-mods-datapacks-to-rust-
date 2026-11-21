@@ -1,6 +1,6 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - M40 3D Living Thorn / Staged Botanical Burst (QA only)"
-version = "0.8.8"
+name = "Aetheria Horizon - M41 100 Spatial Material Layers + Living Thorn (QA only)"
+version = "0.8.9"
 api = "0.2"
 side = "client"
 description = "12 named signed-distance GPU signature silhouettes plus fallback sculpted 3D, 100 authored particle motions and 200 demo spell IDs. Experimental client VFX, no gameplay damage/world edits and no verified beauty/FPS."

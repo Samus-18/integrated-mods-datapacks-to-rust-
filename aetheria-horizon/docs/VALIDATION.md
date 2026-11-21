@@ -126,3 +126,12 @@ Latest M36 WASM official pinned SDK [run 44907516110](https://github.com/Samus-1
 
 ### M40 live botanical 3D candidate (2026-11-21)
 On the new `aetheria-m40-worldspace-thorn` branch, id-100 Thorn Dart was moved out of its rejected 2.5D SDF hero card into original, bounded, real 3D worldspace quads with four materially distinct age phases; optional dedicated tiny masked spores remain. Added tests for 3D volume, distinct phase geometry, directional travel and budget. CI and real Horizon GPU screenshots are required before claiming visual success; original M39 RX580 images are the negative baseline. World damage/authority and total 100-spell acceptance remain incomplete.
+
+### M40 real game and M41 source QA, 2026-11-21
+M40 pinned SDK wasm CI 44924606657 PASS, SHA256
+e519c2b505ffd0c5222197abe01418ec484028bd5c5f5b5a54949c545159e642.
+REAL Horizon RX580 Vulkan ~67.7 FPS, shape visual FAIL due spiky spokes.
+Evidence docs/qa/actual-horizon (game screenshots, never generated images).
+M41 tangent geometric fix and 100-identity material layer revision
+passed 33/33 local exact-source tests. M41 CI and actual GPU verdict pending.
+100 playable spell gate, server hooks and art acceptance remain unmet.
