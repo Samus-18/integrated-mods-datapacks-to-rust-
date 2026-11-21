@@ -201,7 +201,15 @@ pub(super) fn render(
     let n=if scene.reduced_detail {author.density as usize/2}
         else {author.density as usize};
     let overall=age/104.0;
-    let envelope=ease(age/8.0)*(1.0-ease((age-83.0)/21.0));
+    // Four actual visual phases: condensation, growth/travel,
+    // impact/structural hold, then material afterglow. Each authored
+    // spell's phase/sweep/tempo shifts the timing and displacement.
+    let charge_end=13.0+8.0*author.phase;
+    let impact_start=44.0+7.0*author.phase;
+    let formation=ease(age/charge_end);
+    let impact=ease((age-impact_start)/(13.0+author.tempo*3.0));
+    let afterglow=ease((age-74.0)/30.0);
+    let envelope=ease(age/8.0)*(1.0-ease((age-84.0)/20.0));
     for i in 0..n{
         if scene.facets.len()>=scene.budget{break;}
         // Deterministic seeded spread, not a shared random cone.
@@ -209,16 +217,36 @@ pub(super) fn render(
         let u=rand(cast.kind,i,0);
         let v=rand(cast.kind,i,1);
         let born=4.0+rand(cast.kind,i,2)*34.0*author.phase;
-        let life=(age-born)/(50.0+29.0*rand(cast.kind,i,3));
+        let life=(age-born)/(67.0+22.0*rand(cast.kind,i,3));
         if !(0.0..1.0).contains(&life){continue;}
-        let fade=ease(life*8.0)*(1.0-ease((life-0.72)/0.28))*envelope;
+        let fade=ease(life*8.0)*(1.0-ease((life-0.79)/0.21))*envelope;
         if fade<0.06{continue;}
-        let local=pose(author,q,u,v,overall);
+        let mut local=pose(author,q,u,v,overall);
+        let structural=matches!(author.pattern,
+            Pattern::Bridge|Pattern::Cage|Pattern::Shield|Pattern::Mirror
+            |Pattern::Canopy|Pattern::Net|Pattern::Stasis|Pattern::Pool
+            |Pattern::Sigil|Pattern::Compass|Pattern::Clock|Pattern::Fold);
+        let expansion=if structural {
+            // Walls, pools and bridges GROW/hold instead of exploding.
+            0.18+0.82*formation
+        }else{
+            0.34+0.66*formation+
+                impact*0.36*author.sweep*(1.0-afterglow)
+        };
+        local[0]*=expansion;
+        local[2]*=expansion;
+        local[1]=local[1]*(0.42+0.58*formation)+
+            if structural {0.18*impact}else{
+                impact*(0.65+0.55*v)*author.sweep*(1.0-afterglow)
+            };
         let position=add(cast.center,transform(cast.direction,
-            [local[0],local[1]+0.12*(life*TAU+q*TAU*2.0).sin(),
+            [local[0]+0.14*(life*TAU+q*TAU).sin(),
+             local[1]+0.12*(life*TAU+q*TAU*2.0).sin(),
              local[2]+0.17*(life*TAU*author.twist).sin()]));
-        let width=(0.09+0.16*v)*(0.42+0.58*fade)
-            *(1.0+0.12*author.sweep);
+        // Better visual weight: soft shader mask conceals rectangle edges,
+        // with bounded size; no 3D Blender model per spell.
+        let width=(0.19+0.24*v)*(0.57+0.43*fade)
+            *(1.0+0.10*author.sweep);
         let height=width*match author.pattern{
             Pattern::Lance|Pattern::Jet|Pattern::Serpent=>1.8,
             Pattern::Rain|Pattern::Wisp|Pattern::Weave=>1.5,
