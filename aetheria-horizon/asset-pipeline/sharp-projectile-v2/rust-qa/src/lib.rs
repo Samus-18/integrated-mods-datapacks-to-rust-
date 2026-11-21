@@ -147,6 +147,8 @@ impl Scene {
         self.end_component(previous);
     }
 }
+#[path="../../../../preview-5spells-wasm/src/thorn_living.rs"]
+mod thorn_living;
 #[path="../../../../preview-5spells-wasm/src/signature_forms.rs"]
 mod signature_forms;
 #[path="../../../../preview-5spells-wasm/src/signature_shader.rs"]
