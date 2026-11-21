@@ -27,7 +27,12 @@ fn local(c:Cast,x:f64,y:f64,z:f64)->V{
     let horizontal=[c.direction[0],0.0,c.direction[2]];
     let d=if length(horizontal)>0.001{norm(horizontal)}else{[0.0,0.0,1.0]};
     let r=[d[2],0.0,-d[0]];
-    add(c.center,add(add(scale(r,x),v3(0.0,y,0.0)),scale(d,z)))
+    // M37.1: Hero geometry should occupy real cinematic world volume.
+    // Previous source inspection showed only 60-140px shapes at 20-block
+    // perspective distance, so the eye could not read the actual name.
+    // Worldquad cost is unchanged by this scaling; game performance still
+    // needs independent measurement in Horizon/RX580.
+    add(c.center,add(add(scale(r,x*2.05),v3(0.0,y*1.75,0.0)),scale(d,z*2.05)))
 }
 fn vlerp(a:V,b:V,t:f64)->V{add(a,scale(sub(b,a),t))}
 fn mutate(color:u32,i:usize)->u32{
@@ -54,14 +59,38 @@ fn ribbon(scene:&mut Scene,curve:&[V],width:f64,color:u32,vertical:bool){
     scene.end_component(prev);
 }
 fn connected_body(scene:&mut Scene,pts:&[V],radius:f64,color:u32,sides:usize){
-    if pts.len()<2{return;}
-    let Some(prev)=scene.begin_component((pts.len()-1)*sides)else{return;};
-    for i in 0..pts.len()-1 {
+    if pts.len()<2 || !(5..=10).contains(&sides) {return;}
+    // A SINGLE SKIN with shared ring vertices, smooth camera silhouettes,
+    // and stable tangent frames. M37 first art audit exposed hard joints
+    // between separately drawn cylinders. This is not separate rods.
+    let faces=(pts.len()-1)*sides;
+    let Some(prev)=scene.begin_component(faces)else{return;};
+    let mut rings:Vec<Vec<V>>=Vec::with_capacity(pts.len());
+    for i in 0..pts.len(){
+        let tangent=norm(sub(
+            pts[(i+1).min(pts.len()-1)],
+            pts[i.saturating_sub(1)]
+        ));
+        let guide=if tangent[1].abs()<0.94{[0.0,1.0,0.0]}
+                  else{[1.0,0.0,0.0]};
+        let side=norm(cross(tangent,guide));
+        let other=norm(cross(tangent,side));
         let t=i as f64/(pts.len()-1) as f64;
-        let a=radius*(0.89-0.69*ease(t));
-        let b=radius*(0.89-0.69*ease((i+1) as f64/(pts.len()-1) as f64));
-        scene.tube(pts[i],pts[i+1],a.max(0.02),b.max(0.02),
-            t*PI*0.19,mutate(color,i),sides);
+        let width=radius*(0.91-0.68*ease(t)).max(0.12);
+        let mut ring=Vec::with_capacity(sides);
+        for j in 0..sides{
+            let a=TAU*j as f64/sides as f64+0.14*t;
+            ring.push(add(pts[i],add(scale(side,width*a.cos()),
+                scale(other,width*a.sin()))));
+        }
+        rings.push(ring);
+    }
+    for i in 0..pts.len()-1{
+        for j in 0..sides {
+            let k=(j+1)%sides;
+            scene.quad([rings[i][j],rings[i][k],
+                rings[i+1][k],rings[i+1][j]],mutate(color,j+i));
+        }
     }
     scene.end_component(prev);
 }
@@ -82,7 +111,7 @@ fn serpent(c:Cast,age:f64,scene:&mut Scene){
         let y=0.50+3.80*t+0.35*(theta*0.65).sin();
         spine.push(local(c,rad*theta.cos(),y*grow,1.7+rad*theta.sin()));
     }
-    connected_body(scene,&spine,0.68*fade,FIRE,6);
+    connected_body(scene,&spine,0.78*fade,FIRE,8);
     let h=spine[count-1];
     let previous=spine[count-3];
     let forward=norm(sub(h,previous));
@@ -105,6 +134,22 @@ fn serpent(c:Cast,age:f64,scene:&mut Scene){
         scene.membrane(center,tail,add(tail,[0.0,0.18,0.0]),wing,
             mutate(0xAFFF6A1B,j));
     }
+    // Two living flame crests travel along the actual snake's skin, rather
+    // than spraying disconnected rectangular sparks around an orange rod.
+    for flank in [-1.0,1.0] {
+        let mut flame=Vec::new();
+        for j in (1..count).step_by(2) {
+            let t=j as f64/(count-1) as f64;
+            let a=t*TAU*3.3+spin*2.1;
+            flame.push(add(spine[j],[
+                flank*(0.42+0.20*t)*a.cos(),
+                (0.45+0.38*t)*(a*0.7).sin().abs(),
+                flank*(0.34+0.10*t)*a.sin(),
+            ]));
+        }
+        ribbon(scene,&flame,0.42*fade,
+            if flank<0.0 {0x9CFF9B37}else{0xA5F94817},true);
+    }
 }
 fn ember(c:Cast,age:f64,scene:&mut Scene){
     let (grow,fade)=phase(age);
@@ -126,6 +171,20 @@ fn ember(c:Cast,age:f64,scene:&mut Scene){
         let trail=local(c,(j as f64-1.0)*0.72,1.2+0.35*j as f64,
             -2.3+1.6*step);
         scene.membrane(back,base,tip,trail,0x77FFB24F);
+    }
+    for flame in 0..2 {
+        // Broad molten scrolls make the fast glowing spear readable as
+        // COMBUSTION, not a small polygonal bronze dagger.
+        let mut stream=Vec::new();
+        for j in 0..13{
+            let u=j as f64/12.0;
+            let a=TAU*(u*2.0+flame as f64*0.5)+age*0.065;
+            let r=(0.55+0.65*(1.0-u))*grow*fade;
+            stream.push(local(c,r*a.cos(),1.1+r*a.sin(),
+                -2.3+9.8*u+4.0*step));
+        }
+        ribbon(scene,&stream,0.31*fade,
+            if flame==0{0xDFFF8923}else{0x9FFFCC67},true);
     }
 }
 fn snowblind(c:Cast,age:f64,scene:&mut Scene){
@@ -281,6 +340,19 @@ fn arc_net(c:Cast,age:f64,scene:&mut Scene){
         }
         shard(scene,a,add(a,[0.0,0.32*fade,0.0]),0.19*fade,PLASMA);
     }
+    // Crossing plasma strands complete a true linked lattice instead of
+    // a vague triangle with unrelated floating blue points.
+    for k in 0..3{
+        let a=nodes[k];let b=nodes[k+3];
+        let mut braid=Vec::new();
+        for j in 0..5{
+            let t=j as f64/4.0;
+            let point=vlerp(a,b,t);
+            let jitter=0.24*(TAU*(t*2.0)+age*0.13+k as f64).sin();
+            braid.push(add(point,[jitter,0.13+0.30*t*(1.0-t),-jitter]));
+        }
+        ribbon(scene,&braid,0.16*fade,0xBEA9D8FF,true);
+    }
     shard(scene,hub,add(hub,[0.0,0.74,0.0]),0.4*fade,0xFFD1EDFF);
     for i in 0..3 {
         let a=nodes[i*2];let b=nodes[(i*2+1)%6];
@@ -342,6 +414,22 @@ fn moment_slip(c:Cast,age:f64,scene:&mut Scene){
         let tip=add(pos,[0.25*a.cos(),0.29+0.17*jump.abs(),0.13]);
         shard(scene,pos,tip,0.15*fade,mutate(TIME,i));
     }
+    // Broken timeline ribbons show past/future directions simultaneously.
+    // Their phase jumps are intentional displacements, not generic rings.
+    for echo in 0..3{
+        let mut trajectory=Vec::new();
+        for j in 0..11{
+            let u=j as f64/10.0;
+            let fractured=(age*0.16+u*9.0+echo as f64*3.1).floor();
+            let theta=u*TAU*1.25+echo as f64*TAU/3.0;
+            let radius=(0.7+2.5*u)*grow;
+            trajectory.push(local(c,
+                radius*theta.cos()+0.18*(fractured*1.7).sin(),
+                0.8+2.0*(u*PI).sin()+0.12*fractured.sin(),
+                1.0+radius*theta.sin()));
+        }
+        ribbon(scene,&trajectory,0.28*fade,mutate(0xC5FFD885,echo),true);
+    }
 }
 fn carrion(c:Cast,age:f64,scene:&mut Scene){
     let (grow,fade)=phase(age);if grow<0.04||fade<0.03{return;}
@@ -363,6 +451,20 @@ fn carrion(c:Cast,age:f64,scene:&mut Scene){
                 0.36+0.35*flap,0.07]);
             let tip=add(body,[side*0.61,0.12-0.24*flap,-0.58]);
             scene.membrane(shoulder,wing,tip,body,mutate(0xA48F4EA7,i));
+        }
+        if i%2==0{
+            // Each spectral bird pulls its own fading, curved afterimage,
+            // creating a recognizable flock rather than 7 static triangles.
+            let mut path=Vec::new();
+            for j in 0..7{
+                let u=j as f64/6.0;
+                let angle=a-1.1*u;
+                path.push(local(c,
+                    r*(1.0-0.55*u)*angle.cos(),
+                    1.1+2.3*u-0.32*u,
+                    r*(1.0-0.55*u)*angle.sin()+1.0-0.6*u));
+            }
+            ribbon(scene,&path,0.18*fade,0x886FA4B6,true);
         }
     }
     let center=local(c,0.0,1.9,1.0);
