@@ -1,9 +1,9 @@
 id = "aetheria_preview"
-name = "Aetheria Horizon - M35 Procedural VFX Internal Test"
-version = "0.8.3"
+name = "Aetheria Horizon - M36 100 Named Procedural Spells QA"
+version = "0.8.4"
 api = "0.2"
 side = "client"
-description = "200 preview spell IDs; 10-school deterministic procedural particle VFX with original mask WGSL, plus original solid Frost Needle and Rime Bridge; client-only. No real bloom, multiplayer effects or collision."
+description = "200 demo spell IDs, 100 individually authored procedural movement profiles, 48 shape trajectories, 12 shader materials, two original 3D hero previews; visual/renderer QA only. No server gameplay or bloom."
 authors = ["Samus-18"]
 capabilities = ["registries"]
 

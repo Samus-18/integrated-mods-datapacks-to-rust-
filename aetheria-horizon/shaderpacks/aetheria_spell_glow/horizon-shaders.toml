@@ -1,0 +1,45 @@
+schema = 1
+id = "aetheria_spell_glow"
+name = "Aetheria — Restrained Magic Glow"
+version = "0.1.0"
+api = "0.2"
+description = "Optional lightweight Horizon post effect for luminous fantasy magic. Does not grant spells, physics or game powers."
+authors = ["Samus-18"]
+license = "MIT"
+
+[[post]]
+file = "glow.wgsl"
+name = "Magic glow and colour response"
+
+[[options]]
+id = "magic_glow"
+name = "Magic glow strength"
+description = "Soft halo around bright saturated energy without whiteout."
+type = "float"
+default = 0.28
+min = 0.0
+max = 0.6
+step = 0.05
+
+[[options]]
+id = "highlight_gate"
+name = "Highlight threshold"
+description = "Only sufficiently luminous parts of the picture bloom."
+type = "float"
+default = 0.90
+min = 0.60
+max = 1.40
+step = 0.05
+
+[[options]]
+id = "magic_vibrance"
+name = "Spell colour vibrance"
+description = "Small colour response to saturated highlights."
+type = "float"
+default = 0.10
+min = 0.0
+max = 0.30
+step = 0.05
+
+[budget]
+gpu_ms = 1.5

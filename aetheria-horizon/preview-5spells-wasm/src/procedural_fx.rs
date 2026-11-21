@@ -39,7 +39,7 @@ fn rnd(slot:usize,i:usize,k:usize)->f64{
     hash(1.0+slot as f64*23.621+i as f64*79.137+k as f64*7.913)
 }
 fn finite(v:[f64;3])->bool {v.iter().all(|v|v.is_finite())}
-fn sprite(
+pub(super) fn sprite(
     scene:&mut Scene,camera:[f64;3],at:[f64;3],
     width:f64,height:f64,roll:f64,rgb:u32,material:u8
 )->bool {

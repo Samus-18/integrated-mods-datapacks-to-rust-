@@ -1,0 +1,46 @@
+name: Aetheria M36 optional Horizon 0.2 magic glow post shader
+on:
+  push:
+    paths:
+      - 'aetheria-horizon/shaderpacks/aetheria_spell_glow/**'
+      - '.github/workflows/aetheria-magic-glow.yml'
+  workflow_dispatch:
+jobs:
+  validate-and-package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Install OFFICIAL Horizon shader API validator from pinned SDK
+        run: cargo install --locked --git https://github.com/horizon-rust/horizon --rev 0a875da91dbb0fdcb7ba8c42c11341aa229af51a --bin horizon-shader horizon-shader-api
+      - name: Validate same shader pack rules as Horizon launcher
+        run: horizon-shader check aetheria-horizon/shaderpacks/aetheria_spell_glow
+      - name: Package as optional Horizon .hshader
+        run: horizon-shader pack aetheria-horizon/shaderpacks/aetheria_spell_glow
+      - name: Confirm official format, stage count and final file
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import zipfile,tomllib
+          base=Path('aetheria-horizon/shaderpacks')
+          files=list(base.glob('aetheria_spell_glow-*.hshader'))
+          assert len(files)==1,files
+          p=files[0]
+          with zipfile.ZipFile(p) as z:
+              assert z.testzip() is None
+              names=set(z.namelist())
+              print('inside:', sorted(names))
+              assert 'horizon-shaders.toml' in names
+              assert 'glow.wgsl' in names
+              m=tomllib.loads(z.read('horizon-shaders.toml').decode())
+              assert m['api']=='0.2'
+              assert m['id']=='aetheria_spell_glow'
+              assert len(m['post'])==1
+          print('HORIZON_MAGIC_POST_QA_OK',p,p.stat().st_size)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Aetheria-M36-OPTIONAL-Magic-Glow-Horizon-0.2
+          path: aetheria-horizon/shaderpacks/aetheria_spell_glow-*.hshader
+          if-no-files-found: error

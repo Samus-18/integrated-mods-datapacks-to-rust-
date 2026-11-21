@@ -122,6 +122,17 @@ mod tests {
         assert!(actual.contains("input.color.a<0.285"));
         assert!(actual.contains("input.color.a<0.335"));
         assert!(actual.contains("input.color.a<0.39"));
+        // Twelve genuinely distinct fragment silhouettes, no shaderless
+        // billboards on an unsupported Horizon client.
+        for threshold in ["0.48","0.53","0.59","0.64",
+            "0.70","0.76","0.82","0.87"] {
+            assert!(actual.contains(&format!("input.color.a<{threshold}")),
+                "missing M36 silhouette threshold {threshold}");
+        }
+        assert!(actual.contains("Jagged plasma arc"));
+        assert!(actual.contains("Unfurling living petal"));
+        assert!(actual.contains("Discontinuous temporal"));
+        assert!(!actual.contains("MainDepthSampler"));
         assert!(actual.contains("return vec4<f32>(min(glow,vec3<f32>(1.14)),opacity);"));
         assert!(!actual.contains("textureSample("));
         assert!(!actual.contains("MainDepthSampler"));
